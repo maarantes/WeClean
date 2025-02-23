@@ -2,7 +2,7 @@ import React from "react";
 import { Text } from "react-native";
 import { useFonts } from "./hooks/UsarFontes";
 
-import PaginaHome from "./pages/Home";
+import PaginaInicio from "./pages/Inicio";
 
 const Index = () => {
   const fontLoaded = useFonts();
@@ -12,7 +12,7 @@ const Index = () => {
   }
 
   return (
-    <PaginaHome />
+    <PaginaInicio />
   );
 };
 
