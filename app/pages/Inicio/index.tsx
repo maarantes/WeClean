@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, ScrollView, SafeAreaView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, SafeAreaView} from "react-native";
 import { useFonts } from "../../hooks/UsarFontes";
 import { styles } from "./styles";
 
@@ -7,15 +7,13 @@ import CardTarefa from "../../components/CardTarefa/index";
 import ParteCima from "../../components/ParteCima/index";
 import { globalStyles } from "@/app/globalStyles";
 
-import TarefaIcon from "../../../assets/images/tarefa.svg";
-
 const SemTarefa = () => (
   <View style={styles.container_sem_tarefa}>
     <Text style={styles.texto_sem_tarefa}>Nenhuma tarefa!</Text>
   </View>
 );
 
-const PaginaHome = () => {
+const PaginaInicio = () => {
   const fontLoaded = useFonts();
 
   if (!fontLoaded) {
@@ -24,6 +22,7 @@ const PaginaHome = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      
       {/* Componente fixo no topo */}
       <ParteCima />
 
@@ -32,12 +31,6 @@ const PaginaHome = () => {
         style={globalStyles.containerPagina}
         contentContainerStyle={{ paddingBottom: 80, paddingTop: 80 }}>
         <Text style={[globalStyles.titulo, globalStyles.mbottom32]}>Sua Semana</Text>
-
-        <TouchableOpacity
-            style={styles.botao_adicionar} >
-            <TarefaIcon width={20} height={20} />
-            <Text style={styles.botao_adicionar_texto} >Criar Nova Tarefa</Text>
-        </TouchableOpacity>
     
         <Text style={[globalStyles.textoNormal, globalStyles.mbottom16]}>Segunda-Feira</Text>
         <View style={styles.container_dia_semana}>
@@ -69,8 +62,9 @@ const PaginaHome = () => {
           <SemTarefa />
         </View>
       </ScrollView>
+
     </SafeAreaView>
   );
 };
 
-export default PaginaHome;
+export default PaginaInicio;
