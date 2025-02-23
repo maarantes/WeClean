@@ -21,7 +21,7 @@ const PaginaInicio = () => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white"}}>
       
       {/* Componente fixo no topo */}
       <ParteCima />
