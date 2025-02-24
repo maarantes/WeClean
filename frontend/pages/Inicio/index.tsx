@@ -1,11 +1,12 @@
 import React from "react";
-import { View, Text, ScrollView, SafeAreaView} from "react-native";
+import { View, Text, ScrollView, SafeAreaView } from "react-native";
 import { useFonts } from "../../hooks/UsarFontes";
 import { styles } from "./styles";
+import { globalStyles } from "@/frontend/globalStyles";
 
 import CardTarefa from "../../components/CardTarefa/index";
 import ParteCima from "../../components/ParteCima/index";
-import { globalStyles } from "@/app/globalStyles";
+import { Navbar } from "@/frontend/components/Navbar";
 
 const SemTarefa = () => (
   <View style={styles.container_sem_tarefa}>
@@ -21,17 +22,15 @@ const PaginaInicio = () => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white"}}>
-      
-      {/* Componente fixo no topo */}
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+
       <ParteCima />
 
-      {/* Conteúdo rolável */}
       <ScrollView
         style={globalStyles.containerPagina}
         contentContainerStyle={{ paddingBottom: 80, paddingTop: 80 }}>
         <Text style={[globalStyles.titulo, globalStyles.mbottom32]}>Sua Semana</Text>
-    
+
         <Text style={[globalStyles.textoNormal, globalStyles.mbottom16]}>Segunda-Feira</Text>
         <View style={styles.container_dia_semana}>
           <CardTarefa horario="12:00" exibirBotaoConcluir={true} />
@@ -63,6 +62,8 @@ const PaginaInicio = () => {
         </View>
       </ScrollView>
 
+      <Navbar />
+      
     </SafeAreaView>
   );
 };
