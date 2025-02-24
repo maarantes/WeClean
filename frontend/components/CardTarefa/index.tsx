@@ -24,7 +24,7 @@ const CardTarefa: React.FC<CardTarefaProps> = ({ horario, exibirBotaoConcluir = 
     <View style={styles.container}>
       <View style={styles.container_cima}>
         <Text style={globalStyles.textoNormal}>Passar Aspirador</Text>
-        <AlarmeIcon width={16} height={16} />
+        <AlarmeIcon width={16} height={16} color="#606060" />
       </View>
 
       <View style={styles.container_baixo}>
@@ -34,25 +34,25 @@ const CardTarefa: React.FC<CardTarefaProps> = ({ horario, exibirBotaoConcluir = 
 
         <View style={styles.container_info_dir}>
           <View style={styles.container_info_relogio}>
-            <RelogioIcon width={16} height={16} />
-            <Text style={styles.cor_80_normal}>{horario}</Text> {/* Horário dinâmico */}
+            <RelogioIcon width={16} height={16} color="#606060" />
+            <Text style={styles.cor_80_normal}>{horario}</Text>
           </View>
-
+          
           {/* Exibir ou não o botão "Concluir" */}
-          {exibirBotaoConcluir && (
+          {exibirBotaoConcluir ? (
             <TouchableOpacity
               style={[
                 styles.botao_concluir,
-                concluido && styles.botao_concluido,
+                concluido ? styles.botao_concluido : null,
               ]}
               onPress={handlePress}
             >
               <ConcluirIcon width={12} height={12} color={concluido ? "#FFFFFF" : "#606060"} />
-              <Text style={[styles.cor_80, concluido && styles.cor_white]}>
+              <Text style={[styles.cor_80, concluido ? styles.cor_white : null]}>
                 {concluido ? "Concluído" : "Concluir"}
               </Text>
             </TouchableOpacity>
-          )}
+          ) : null}
         </View>
       </View>
     </View>
