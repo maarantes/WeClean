@@ -5,8 +5,6 @@ export const globalStyles = StyleSheet.create({
   containerPagina: {
     paddingTop: 60,
     paddingHorizontal: 20,
-    // Padding Bottom não funciona pelo StyleSheet
-    // Tem que colocar contentContainerStyle={{paddingBottom: 80 }} no ScrollableView
 },
 
   titulo: {

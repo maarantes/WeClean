@@ -10,9 +10,9 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#FFF",
+    backgroundColor: "white",
     zIndex: 1000,
-    paddingTop: 32,
+    paddingTop: 40,
     paddingHorizontal: 20,
     paddingBottom: 12
 },
