@@ -28,7 +28,7 @@ const PaginaInicio = () => {
 
       <ScrollView
         style={globalStyles.containerPagina}
-        contentContainerStyle={{ paddingBottom: 80, paddingTop: 80 }}>
+        contentContainerStyle={{ paddingBottom: 140, paddingTop: 80 }}>
         <Text style={[globalStyles.titulo, globalStyles.mbottom32]}>Sua Semana</Text>
 
         <Text style={[globalStyles.textoNormal, globalStyles.mbottom16]}>Segunda-Feira</Text>

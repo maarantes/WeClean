@@ -12,11 +12,10 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "white",
     zIndex: 1000,
-    paddingTop: 40,
+    paddingTop: 60,
     paddingHorizontal: 20,
     paddingBottom: 12
-},
-
+  },
 
   containerBotoes: {
     flexDirection: "row",
