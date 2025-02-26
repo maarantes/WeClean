@@ -35,17 +35,71 @@ export const styles = StyleSheet.create({
     label: {
         fontFamily: "Inter-SemiBold",
         fontSize: 16,
+        marginBottom: 12,
         color: "#606060",
     },
 
     input: {
         backgroundColor: "#F5F5F5",
         borderRadius: 4,
-        marginTop: 8,
         color: "#606060",
         paddingHorizontal: 12,
         fontSize: 16
-    }
+    },
 
+    cima: {
+        marginTop: 32
+    },
+
+    dividir: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center"
+    },
+
+    botao_horario: {
+        flexDirection: "row",
+        gap: 16,
+        paddingVertical: 8,
+        justifyContent: "center",
+        alignItems: "center",
+        width: "48%",
+        backgroundColor: "#5A189A",
+        borderRadius: 4
+    },
+
+    botao_horario_texto: {
+        color: "white",
+        fontFamily: "Inter-Medium"
+    },
+
+    horario: {
+        flexDirection: "row",
+        gap: 16,
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        justifyContent: "space-between",
+        alignItems: "center",
+        width: "48%",
+        backgroundColor: "#F5F5F5",
+        borderRadius: 4,
+    },
+
+    horario_texto: {
+        color: "#606060",
+        fontFamily: "Inter-Medium"
+    },
+
+    roxo: {
+        color: "#5A189A",
+        fontFamily: "Inter-SemiBold"
+    },
+
+    lista_integrantes: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        gap: 12
+
+    }
   
 });
