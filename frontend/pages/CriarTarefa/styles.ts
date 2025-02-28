@@ -95,11 +95,116 @@ export const styles = StyleSheet.create({
         fontFamily: "Inter-SemiBold"
     },
 
+    branco: {
+        color: "white",
+        fontFamily: "Inter-SemiBold"
+    },
+
     lista_integrantes: {
         flexDirection: "row",
         flexWrap: "wrap",
         gap: 12
 
+    },
+
+    lista_botoes: {
+        marginRight: -20
+    },
+
+    botao_frequencia: {
+        flexDirection: "row",
+        paddingVertical: 8,
+        paddingHorizontal: 8,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#5A189A",
+        borderRadius: 4,
+        marginRight: 8
+    },
+
+    botao_frequencia_normal: {
+        flexDirection: "row",
+        paddingVertical: 8,
+        paddingHorizontal: 8,
+        justifyContent: "center",
+        alignItems: "center",
+        borderWidth: 1,
+        borderColor: "#5A189A",
+        color: "#5A189A",
+        borderRadius: 4,
+        marginRight: 8
+    },
+
+    ultimo: {
+        marginRight: 20
+    },
+
+    lista_semanal: {
+        marginTop: 16,
+        flexDirection: "row",
+        gap: "2%"
+    },
+
+    botao_frequencia_semanal: {
+        flexDirection: "row",
+        paddingVertical: 8,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#5A189A",
+        borderRadius: 4,
+        width: "12.5714%"
+    },
+
+    botao_frequencia_semanal_normal: {
+        flexDirection: "row",
+        paddingVertical: 8,
+        justifyContent: "center",
+        alignItems: "center",
+        borderWidth: 1,
+        borderColor: "#5A189A",
+        color: "#5A189A",
+        borderRadius: 4,
+        width: "12.5714%"
+    },
+
+    lista_intervalo: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginTop: 16
+    },
+
+    input_menor: {
+        backgroundColor: "#F5F5F5",
+        color: "#606060",
+        paddingHorizontal: 12,
+        fontSize: 16,
+        marginHorizontal: 12,
+        width: 64
+    },
+
+    cimaMetade: {
+        marginTop: 16
+    },
+
+    botao_add_data: {
+        flexDirection: "row",
+        paddingVertical: 8,
+        justifyContent: "center",
+        alignItems: "center",
+        borderWidth: 1.25,
+        borderColor: "#5A189A",
+        borderRadius: 4
+    },
+
+    botao_add_data_texto: {
+        fontFamily: "Inter-Medium",
+        color: "#5A189A",
+    },
+
+    nav_bottom: {
+        alignItems: "center",
+        paddingVertical: 20,
+        borderTopWidth: 1,
+        borderColor: "#E8E8E8"
     }
-  
 });
