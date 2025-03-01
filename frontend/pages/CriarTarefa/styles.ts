@@ -11,9 +11,11 @@ export const styles = StyleSheet.create({
         left: 0,
         right: 0,
         backgroundColor: "white",
-        paddingVertical: 60,
+        paddingTop: 60,
+        paddingBottom: 20,
         paddingHorizontal: 20,
-        zIndex: 1
+        zIndex: 1,
+        elevation: 2
     },
   
     titulo_cima: {
@@ -206,5 +208,12 @@ export const styles = StyleSheet.create({
         paddingVertical: 20,
         borderTopWidth: 1,
         borderColor: "#E8E8E8"
+    },
+
+    erro_texto: {
+        color: "#DE1D64",
+        fontFamily: "Inter-Medium",
+        fontSize: 12,
+        marginTop: 12
     }
 });
