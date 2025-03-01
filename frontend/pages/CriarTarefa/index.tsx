@@ -8,6 +8,7 @@ import Checkbox from "expo-checkbox";
 
 import { styles } from "./styles";
 import { globalStyles } from "@/frontend/globalStyles";
+import { definirAlarme } from "@/frontend/services/CriarAlarme";
 
 import SetaBackIcon from "../../../assets/images/setaBack.svg";
 import CalendarioMiniIcon from "../../../assets/images/calendario_mini.svg";
@@ -39,6 +40,7 @@ const PaginaCriarTarefa = () => {
 
   const escolherBotaoFrequencia = (index: number) => {
     setBotaoFrequenciaAtivo(index);
+    setErroFrequencia(false);
 
     if (index === 0) { // Diariamente
       setDiasSelecionados(DiasDaSemana); // Adiciona todos os dias
@@ -70,6 +72,7 @@ const PaginaCriarTarefa = () => {
           const horas = selectedDate.getHours().toString().padStart(2, "0");
           const minutos = selectedDate.getMinutes().toString().padStart(2, "0");
           setHorario(`${horas}:${minutos}`);
+          setErroHorario(false);
         }
       },
     });
@@ -103,6 +106,9 @@ const PaginaCriarTarefa = () => {
     setIntegranteSelecionado((prevSelecionado) =>
       prevSelecionado === nome ? null : nome
     );
+    if (erroIntegrante) {
+      setErroIntegrante(false);
+    }
   };
 
   const criarTarefa = () => {
@@ -129,24 +135,24 @@ const PaginaCriarTarefa = () => {
       setErroIntegrante(false);
     }
   
-    // Validação da frequência corretamente configurada
+    // Validação correta da frequência
     if (botaoFrequenciaAtivo === null) {
       setErroFrequencia(true);
       temErro = true;
     } else {
       setErroFrequencia(false);
   
-      if (botaoFrequenciaAtivo === 1 && diasSelecionados.length === 0) { 
+      if (botaoFrequenciaAtivo === 1 && diasSelecionados.length === 0) {
         setErroFrequencia(true);
         temErro = true;
       }
   
-      if (botaoFrequenciaAtivo === 2 && (!intervalo || Number(intervalo) <= 0)) { 
+      if (botaoFrequenciaAtivo === 2 && (!intervalo || Number(intervalo) <= 0)) {
         setErroFrequencia(true);
         temErro = true;
       }
   
-      if (botaoFrequenciaAtivo === 3 && datasSelecionadas.every((item) => item.data === null)) { 
+      if (botaoFrequenciaAtivo === 3 && datasSelecionadas.every((item) => item.data === null)) {
         setErroFrequencia(true);
         temErro = true;
       }
@@ -157,17 +163,59 @@ const PaginaCriarTarefa = () => {
       return;
     }
   
-    // Se passou pela validação, cria a tarefa
+    // Mapeia a frequência corretamente de acordo com a seleção
+    let frequenciaFormatada = null;
+  
+    if (botaoFrequenciaAtivo === 0) {
+      frequenciaFormatada = "DOM, SEG, TER, QUA, QUI, SEX, SAB"; // Diariamente
+    } else if (botaoFrequenciaAtivo === 1) {
+      frequenciaFormatada = diasSelecionados.join(", "); // Semanalmente
+    } else if (botaoFrequenciaAtivo === 2) {
+      frequenciaFormatada = `A cada ${intervalo} dias`; // Intervalo de tempo
+    } else if (botaoFrequenciaAtivo === 3) {
+      frequenciaFormatada = datasSelecionadas
+        .filter((item) => item.data !== null)
+        .map((item) => item.data?.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }))
+        .join(", "); // Datas específicas
+    }
+  
+    // Criar JSON da tarefa
     const tarefa = {
       nome,
+      descricao: descricao.trim() !== "" ? descricao : null,
       horario,
-      integrante: integranteSelecionado, // Agora é obrigatório
-      frequencia: botaoFrequenciaAtivo,
+      alarme: alarmeAtivado,
+      integrante: integranteSelecionado,
+      frequencia: {
+        tipo:
+          botaoFrequenciaAtivo === 0 ? "diariamente" :
+          botaoFrequenciaAtivo === 1 ? "semanal" :
+          botaoFrequenciaAtivo === 2 ? "intervalo" :
+          botaoFrequenciaAtivo === 3 ? "anualmente":
+          "null",
+    
+        info:
+          botaoFrequenciaAtivo === 0 ? "DOM, SEG, TER, QUA, QUI, SEX, SAB" : // Diariamente
+          botaoFrequenciaAtivo === 1 ? diasSelecionados.join(", ") : // Semanalmente (dias selecionados)
+          botaoFrequenciaAtivo === 2 ? intervalo : // Intervalo de tempo
+          botaoFrequenciaAtivo === 3
+            ? datasSelecionadas
+                .filter((item) => item.data !== null)
+                .map((item) => item.data?.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }))
+                .join(", ") // Anualmente em datas específicas
+            : null,
+      },
     };
   
     console.log("JSON para envio:", JSON.stringify(tarefa, null, 2));
-    Alert.alert("Sucesso", "Tarefa criada com sucesso!");
-  };    
+
+    if (alarmeAtivado) {
+      definirAlarme(horario);
+    }
+    
+    Alert.alert("Sucesso", "Tarefa criada com sucesso!", [{ text: "OK", onPress: () => navigation.goBack() }]);
+  };
+     
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -186,8 +234,14 @@ const PaginaCriarTarefa = () => {
           style={styles.input}
           placeholder="Digite aqui..."
           value={nome}
-          onChangeText={setNome}
+          onChangeText={(text) => {
+            setNome(text);
+            if (erroNome && text.trim() !== "") {
+              setErroNome(false);
+            }
+          }}
         />
+        {erroNome && <Text style={styles.erro_texto}>Este campo é obrigatório!</Text>}
 
         <View style={[styles.cima, styles.dividir]}>
           <Text style={styles.label}>DESCRIÇÃO</Text>
@@ -230,6 +284,8 @@ const PaginaCriarTarefa = () => {
           <Text style={{ marginLeft: 10, fontFamily: "Inter-Medium", color: "#606060" }}>Ativar alarme para esta tarefa</Text>
         </View>
 
+        {erroHorario && <Text style={styles.erro_texto}>Este campo é obrigatório!</Text>}
+
         <Text style={[styles.label, styles.cima]}>INTEGRANTES</Text>
 
         <View style={styles.lista_integrantes}>
@@ -245,6 +301,8 @@ const PaginaCriarTarefa = () => {
             />
           ))}
         </View>
+
+        {erroIntegrante && <Text style={styles.erro_texto}>Este campo é obrigatório!</Text>}
 
         <View style={[styles.cima, styles.dividir]}>
           <Text style={styles.label}>FREQUÊNCIA</Text>
@@ -308,7 +366,7 @@ const PaginaCriarTarefa = () => {
                 <View style={styles.horario}>
                   <Text style={styles.horario_texto}>Atual:</Text>
                   <Text style={styles.roxo}>
-                    {item.data ? item.data.toLocaleDateString("pt-BR") : "Nenhum"}
+                    {item.data ? item.data.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) : "Nenhum"}
                   </Text>
                 </View>
               </View>
@@ -322,6 +380,20 @@ const PaginaCriarTarefa = () => {
               <Text style={styles.botao_add_data_texto}>Adicionar Outra Data</Text>
             </TouchableOpacity>
           </View>
+        )}
+
+        {erroFrequencia && (
+          <Text style={styles.erro_texto}>
+            {botaoFrequenciaAtivo === null
+              ? "Selecione uma opção de frequência."
+              : botaoFrequenciaAtivo === 1 && diasSelecionados.length === 0
+              ? "Escolha pelo menos um dia da semana."
+              : botaoFrequenciaAtivo === 2 && (!intervalo || Number(intervalo) <= 0)
+              ? "Defina um intervalo válido de dias."
+              : botaoFrequenciaAtivo === 3 && datasSelecionadas.every((item) => item.data === null)
+              ? "Escolha pelo menos uma data."
+              : ""}
+          </Text>
         )}
       </ScrollView>
       
