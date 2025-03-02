@@ -73,4 +73,65 @@ export const styles = StyleSheet.create({
   cor_white: {
     color: "#ffffff",
   },
+
+  roxo: {
+    color: "#5A189A"
+  },
+
+  // Modal
+
+  modal_container: {
+    margin: 0,
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
+
+  modal_content: {
+    width: "100%",
+    minHeight: "25%",
+    backgroundColor: "white",
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    padding: 20,
+    alignItems: "center",
+  },
+
+  titulo_menor: {
+    fontSize: 18
+  },
+
+  texto_modal: {
+    color: "#404040",
+    fontSize: 16,
+    fontFamily: "Inter-SemiBold",
+    marginVertical: 32
+  },
+
+  texto_modal_anual: {
+    color: "#404040",
+    fontSize: 16,
+    fontFamily: "Inter-SemiBold",
+    maxWidth: "90%",
+    lineHeight: 32,
+    flexWrap: "wrap",
+    marginVertical: 32,
+    textAlign: "center"
+  },
+
+  botao_fechar: {
+    flexDirection: "row",
+    gap: 16,
+    paddingVertical: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "48%",
+    backgroundColor: "#5A189A",
+    borderRadius: 4
+},
+
+  botao_fechar_texto: {
+    color: "white",
+    fontFamily: "Inter-Medium"
+},
+
 });

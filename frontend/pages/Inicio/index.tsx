@@ -33,7 +33,7 @@ const PaginaInicio = () => {
 
         <Text style={[globalStyles.textoNormal, globalStyles.mbottom16]}>Segunda-Feira</Text>
         <View style={styles.container_dia_semana}>
-          <CardTarefa horario="12:00" exibirBotaoConcluir={true} />
+          <CardTarefa horario="12:00" exibirBotao={true} />
         </View>
 
         <Text style={[globalStyles.textoNormal, globalStyles.mbottom16]}>Terça-Feira</Text>
@@ -48,7 +48,7 @@ const PaginaInicio = () => {
 
         <Text style={[globalStyles.textoNormal, globalStyles.mbottom16]}>Quinta-Feira</Text>
         <View style={styles.container_dia_semana}>
-          <CardTarefa horario="12:00" exibirBotaoConcluir={true} />
+          <CardTarefa horario="12:00" exibirBotao={true} />
         </View>
 
         <Text style={[globalStyles.textoNormal, globalStyles.mbottom16]}>Sexta-Feira</Text>
