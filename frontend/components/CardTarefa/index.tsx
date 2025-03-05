@@ -13,14 +13,16 @@ import CalendarioIcon from "../../../assets/images/calendario_mini.svg";
 import Badge from "../Badge";
 
 interface CardTarefaProps {
-  horario: string;
+  horario?: string;
+  alarme?: boolean;
   exibirBotao?: boolean;
   freq_semanal?: string;
   freq_intervalo?: string;
   freq_anual?: string;
+  menor?: boolean;
 }
 
-const CardTarefa: React.FC<CardTarefaProps> = ({ horario, exibirBotao = true, freq_semanal, freq_anual, freq_intervalo }) => {
+const CardTarefa: React.FC<CardTarefaProps> = ({ horario, alarme = false, exibirBotao = true, freq_semanal, freq_anual, freq_intervalo, menor = false }) => {
   const [concluido, setConcluido] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -29,20 +31,20 @@ const CardTarefa: React.FC<CardTarefaProps> = ({ horario, exibirBotao = true, fr
   };
 
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={[styles.container, menor && styles.menor]}>
       <View style={styles.container_cima}>
-        <Text style={globalStyles.textoNormal}>Passar Aspirador</Text>
-        <AlarmeIcon width={16} height={16} color="#606060" />
+        <Text style={[globalStyles.textoNormal, menor && styles.texto_menor]}>Passar Aspirador</Text>
+        <AlarmeIcon width={16} height={16} color="#606060" style={(!alarme || menor) && styles.none} />
       </View>
 
       <View style={styles.container_baixo}>
         <View style={styles.container_info}>
-          <Badge backgroundColor="#CAEAFB" iconColor="#144F70" text="Marco" />
+          <Badge backgroundColor="#CAEAFB" iconColor="#144F70" text="Marco" isSelected={true}/>
         </View>
 
         <View style={styles.container_info_dir}>
           
-          <View style={styles.container_info_relogio}>
+          <View style={[styles.container_info_relogio, menor && styles.none]}>
             <RelogioIcon width={16} height={16} color="#606060" />
             <Text style={styles.cor_80_normal}>{horario}</Text>
           </View>
@@ -85,7 +87,8 @@ const CardTarefa: React.FC<CardTarefaProps> = ({ horario, exibirBotao = true, fr
           )}
         </View>
       </View>
-
+      
+      {(freq_semanal || freq_anual) && (
       <Modal
         isVisible={isModalVisible}
         onBackdropPress={() => setModalVisible(false)}
@@ -110,9 +113,9 @@ const CardTarefa: React.FC<CardTarefaProps> = ({ horario, exibirBotao = true, fr
             <Text style={styles.botao_fechar_texto}>Fechar</Text>
           </TouchableOpacity>
         </View>
-
       </Modal>
-    </View>
+      )}
+    </TouchableOpacity>
   );
 };
 
