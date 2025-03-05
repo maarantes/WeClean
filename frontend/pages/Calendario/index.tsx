@@ -1,9 +1,14 @@
 import React, { useState, useMemo } from "react";
 import { View, Text, ScrollView, SafeAreaView, TouchableOpacity } from "react-native";
+
 import { styles } from "./styles";
 import { globalStyles } from "@/frontend/globalStyles";
+
 import ParteCima from "../../components/ParteCima/index";
 import { Navbar } from "@/frontend/components/Navbar";
+import CardTarefa from "@/frontend/components/CardTarefa";
+
+import SetaDiaIcon from "../../../assets/images/setaDia.svg";
 
 const nomesDosMeses = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -142,9 +147,33 @@ const PaginaCalendario = () => {
             </View>
           </View>
         </View>
+          
+        <View style={styles.container_escolher}>
+          <TouchableOpacity style={styles.dia_botao}>
+            <SetaDiaIcon width={44} color="#FFFFFF" style={styles.rotate}/>
+          </TouchableOpacity>
+
+          <View style={styles.dia_atual}>
+            <Text style={styles.dia_atual_esq}>Segunda-Feira</Text>
+            <Text style={styles.dia_atual_dir}>10/03</Text>
+          </View>
+
+          <TouchableOpacity style={styles.dia_botao}>
+            <SetaDiaIcon width={44} color="#FFFFFF"/>
+          </TouchableOpacity>
+
+        </View>
+
+        <View style={styles.cards}>
+          <CardTarefa exibirBotao={false} menor={true} />
+          <CardTarefa exibirBotao={false} menor={true} />
+          <CardTarefa exibirBotao={false} menor={true} />
+        </View>
+
       </ScrollView>
       <Navbar />
     </SafeAreaView>
+    
   );
 };
 

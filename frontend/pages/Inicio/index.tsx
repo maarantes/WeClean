@@ -1,12 +1,13 @@
 import React from "react";
 import { View, Text, ScrollView, SafeAreaView } from "react-native";
 import { useFonts } from "../../hooks/UsarFontes";
+
 import { styles } from "./styles";
 import { globalStyles } from "@/frontend/globalStyles";
 
-import CardTarefa from "../../components/CardTarefa/index";
-import ParteCima from "../../components/ParteCima/index";
 import { Navbar } from "@/frontend/components/Navbar";
+import ParteCima from "../../components/ParteCima/index";
+import CardTarefa from "../../components/CardTarefa/index";
 
 const SemTarefa = () => (
   <View style={styles.container_sem_tarefa}>
@@ -33,7 +34,7 @@ const PaginaInicio = () => {
 
         <Text style={[globalStyles.textoNormal, globalStyles.mbottom16]}>Segunda-Feira</Text>
         <View style={styles.container_dia_semana}>
-          <CardTarefa horario="12:00" exibirBotao={true} />
+          <CardTarefa horario="12:00" exibirBotao={true} alarme={true} />
         </View>
 
         <Text style={[globalStyles.textoNormal, globalStyles.mbottom16]}>Terça-Feira</Text>

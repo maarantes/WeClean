@@ -5,8 +5,20 @@ export const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
     backgroundColor: "#F8F8F8",
-    padding: 16,
+    padding: 12,
     borderRadius: 8
+  },
+
+  menor: {
+    width: "49%"
+  },
+
+  texto_menor: {
+    fontSize: 14,
+  },
+
+  none: {
+    display: "none"
   },
 
   container_cima: {

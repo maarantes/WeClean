@@ -42,7 +42,7 @@ const PaginaTarefas = () => {
 
         <Text style={[globalStyles.textoNormal, globalStyles.mbottom16]}>Diariamente</Text>
         <View style={styles.container_cards}>
-          <CardTarefa horario="12:00" exibirBotao={false} />
+          <CardTarefa horario="12:00" exibirBotao={false} alarme={true}/>
         </View>
 
         <Text style={[globalStyles.textoNormal, globalStyles.mbottom16]}>Semanalmente</Text>
@@ -52,7 +52,7 @@ const PaginaTarefas = () => {
 
         <Text style={[globalStyles.textoNormal, globalStyles.mbottom16]}>A cada intervalo de tempo</Text>
         <View style={styles.container_cards}>
-          <CardTarefa horario="12:00" exibirBotao={false} freq_intervalo={"4"}/>
+          <CardTarefa horario="12:00" exibirBotao={false} freq_intervalo={"4"} alarme={true}/>
         </View>
 
         <Text style={[globalStyles.textoNormal, globalStyles.mbottom16]}>Anualmente</Text>
