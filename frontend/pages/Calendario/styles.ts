@@ -99,10 +99,53 @@ export const styles = StyleSheet.create({
 
   container_baixo: {
     gap: 4
+  },
+
+  container_escolher: {
+    flexDirection: "row",
+    marginTop: 32,
+    gap: "2%"
+  },
+
+  dia_botao: {
+    backgroundColor: "#5A189A",
+    width: "18%",
+    paddingVertical: 12,
+    borderRadius: 2,
+    alignItems: "center"
+  },
+
+  rotate: {
+    transform: [{ rotate: "180deg" }]
+  },
+
+  dia_atual: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    backgroundColor: "#F5F5F5",
+    width: "60%",
+    borderRadius: 2
+  },
+
+  dia_atual_esq: {
+    fontFamily: "Inter-Medium",
+    color: "#404040"
+  },
+
+  dia_atual_dir: {
+    fontSize: 12,
+    fontFamily: "Inter-SemiBold",
+    color: "#808080"
+  },
+
+  cards: {
+    flexDirection: "row",
+    columnGap: "2%",
+    rowGap: "4%",
+    marginTop: 16,
+    flexWrap: "wrap"
   }
-
-
-
-
 
 });
