@@ -36,3 +36,7 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+
+# Ignorar variáveis de ambiente
+.env
+env.d.ts
