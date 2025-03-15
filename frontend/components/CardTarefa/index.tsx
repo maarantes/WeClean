@@ -12,6 +12,12 @@ import CalendarioIcon from "../../../assets/images/calendario_mini.svg";
 
 import Badge from "../Badge";
 
+interface Integrante {
+  nome: string;
+  cor_primaria: string;
+  cor_secundaria: string;
+}
+
 interface CardTarefaProps {
   horario?: string;
   alarme?: boolean;
@@ -20,9 +26,19 @@ interface CardTarefaProps {
   freq_intervalo?: string;
   freq_anual?: string;
   menor?: boolean;
+  integrantes?: Integrante[];
 }
 
-const CardTarefa: React.FC<CardTarefaProps> = ({ horario, alarme = false, exibirBotao = true, freq_semanal, freq_anual, freq_intervalo, menor = false }) => {
+const CardTarefa: React.FC<CardTarefaProps> = ({
+  horario,
+  alarme = false,
+  exibirBotao = true,
+  freq_semanal,
+  freq_anual,
+  freq_intervalo,
+  menor = false,
+  integrantes = [],
+}) => {
   const [concluido, setConcluido] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -39,11 +55,22 @@ const CardTarefa: React.FC<CardTarefaProps> = ({ horario, alarme = false, exibir
 
       <View style={styles.container_baixo}>
         <View style={styles.container_info}>
-          <Badge backgroundColor="#CAEAFB" iconColor="#144F70" text="Marco" isSelected={true}/>
+          {integrantes.length > 0 && (
+            <>
+              <Badge
+                backgroundColor={integrantes[0].cor_primaria}
+                iconColor={integrantes[0].cor_secundaria}
+                text={integrantes[0].nome}
+                isSelected={true}
+              />
+              {integrantes.length > 1 && (
+                <Text style={styles.texto_integrantes_extras}>+{integrantes.length - 1}</Text>
+              )}
+            </>
+          )}
         </View>
 
         <View style={styles.container_info_dir}>
-          
           <View style={[styles.container_info_relogio, menor && styles.none]}>
             <RelogioIcon width={16} height={16} color="#606060" />
             <Text style={styles.cor_80_normal}>{horario}</Text>
@@ -70,13 +97,9 @@ const CardTarefa: React.FC<CardTarefaProps> = ({ horario, alarme = false, exibir
             </TouchableOpacity>
           )}
 
-          {/* Botão de Concluir */}
           {exibirBotao && (
             <TouchableOpacity
-              style={[
-                styles.botao_concluir,
-                concluido ? styles.botao_concluido : null,
-              ]}
+              style={[styles.botao_concluir, concluido ? styles.botao_concluido : null]}
               onPress={handlePress}
             >
               <ConcluirIcon width={12} height={12} color={concluido ? "#FFFFFF" : "#606060"} />
@@ -87,33 +110,30 @@ const CardTarefa: React.FC<CardTarefaProps> = ({ horario, alarme = false, exibir
           )}
         </View>
       </View>
-      
+
       {(freq_semanal || freq_anual) && (
-      <Modal
-        isVisible={isModalVisible}
-        onBackdropPress={() => setModalVisible(false)}
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
-        backdropColor="#404040"
-        backdropOpacity={0.5}
-        style={styles.modal_container}>
+        <Modal
+          isVisible={isModalVisible}
+          onBackdropPress={() => setModalVisible(false)}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          backdropColor="#404040"
+          backdropOpacity={0.5}
+          style={styles.modal_container}
+        >
+          <View style={styles.modal_content}>
+            <Text style={[globalStyles.titulo, styles.titulo_menor]}>
+              {freq_anual ? "Datas Selecionadas" : "Dias Selecionados"}
+            </Text>
 
-        <View style={styles.modal_content}>
-          <Text style={[globalStyles.titulo, styles.titulo_menor]}>{freq_anual ? "Datas Selecionadas" : "Dias Selecionados"}</Text>
+            {freq_semanal && <Text style={styles.texto_modal}>{freq_semanal}</Text>}
+            {freq_anual && <Text style={styles.texto_modal_anual}>{freq_anual}</Text>}
 
-          {freq_semanal &&
-          <Text style={styles.texto_modal}>{freq_semanal}</Text>
-          }
-
-          {freq_anual &&
-          <Text style={styles.texto_modal_anual}>{freq_anual}</Text>
-          }
-
-          <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.botao_fechar}>
-            <Text style={styles.botao_fechar_texto}>Fechar</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
+            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.botao_fechar}>
+              <Text style={styles.botao_fechar_texto}>Fechar</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
       )}
     </TouchableOpacity>
   );

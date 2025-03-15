@@ -36,6 +36,7 @@ export const styles = StyleSheet.create({
 
   container_info: {
     flexDirection: "row",
+    alignItems: "center",
     gap: 12
   },
 
@@ -145,5 +146,15 @@ export const styles = StyleSheet.create({
     color: "white",
     fontFamily: "Inter-Medium"
 },
+
+  texto_integrantes_extras: {
+    backgroundColor: "#E8E8E8",
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    color: "#808080",
+    fontFamily: "Inter-SemiBold",
+    marginLeft: -5,
+    borderRadius: 2
+  }
 
 });

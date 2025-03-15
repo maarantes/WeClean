@@ -52,7 +52,7 @@ const PaginaCriarTarefa = () => {
   const integrantes = ["Marco", "Bruna", "Mãe", "Pai"];
   const frequencias = ["Diariamente", "Semanalmente", "A cada intervalo de tempo", "Anualmente em datas específicas"];
 
-  const [integranteSelecionado, setIntegranteSelecionado] = useState<string | null>(null);
+  const [integrantesSelecionados, setIntegrantesSelecionados] = useState<string[]>([]);
 
   const toggleDiaSemana = (dia: string) => {
     setDiasSelecionados((prevDias) =>
@@ -103,12 +103,11 @@ const PaginaCriarTarefa = () => {
   };
 
   const toggleIntegrante = (nome: string) => {
-    setIntegranteSelecionado((prevSelecionado) =>
-      prevSelecionado === nome ? null : nome
+    setIntegrantesSelecionados((prevSelecionados) =>
+      prevSelecionados.includes(nome)
+        ? prevSelecionados.filter((integrante) => integrante !== nome)
+        : [...prevSelecionados, nome]
     );
-    if (erroIntegrante) {
-      setErroIntegrante(false);
-    }
   };
 
   const criarTarefa = () => {
@@ -128,7 +127,7 @@ const PaginaCriarTarefa = () => {
       setErroHorario(false);
     }
   
-    if (!integranteSelecionado) {
+    if (!integrantesSelecionados) {
       setErroIntegrante(true);
       temErro = true;
     } else {
@@ -185,7 +184,7 @@ const PaginaCriarTarefa = () => {
       descricao: descricao.trim() !== "" ? descricao : null,
       horario,
       alarme: alarmeAtivado,
-      integrante: integranteSelecionado,
+      integrantes: integrantesSelecionados,
       frequencia: {
         tipo:
           botaoFrequenciaAtivo === 0 ? "diariamente" :
@@ -295,7 +294,7 @@ const PaginaCriarTarefa = () => {
               backgroundColor="#CAEAFB"
               iconColor="#144F70"
               text={integrante}
-              isSelected={integranteSelecionado === integrante}
+              isSelected={integrantesSelecionados.includes(integrante)}
               onPress={() => toggleIntegrante(integrante)}
               clicavel={true}
             />

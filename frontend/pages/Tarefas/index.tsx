@@ -42,22 +42,30 @@ const PaginaTarefas = () => {
 
         <Text style={[globalStyles.textoNormal, globalStyles.mbottom16]}>Diariamente</Text>
         <View style={styles.container_cards}>
-          <CardTarefa horario="12:00" exibirBotao={false} alarme={true}/>
+          <CardTarefa horario="12:00" exibirBotao={false} alarme={true} integrantes={[
+          { nome: "Marco", cor_primaria: "#CAEAFB", cor_secundaria: "#144F70" },
+          ]}/>
         </View>
 
         <Text style={[globalStyles.textoNormal, globalStyles.mbottom16]}>Semanalmente</Text>
         <View style={styles.container_cards}>
-          <CardTarefa horario="12:00" exibirBotao={false} freq_semanal="TER, QUI, SEX" />
+          <CardTarefa horario="12:00" exibirBotao={false} freq_semanal="TER, QUI, SEX" integrantes={[
+          { nome: "Marco", cor_primaria: "#CAEAFB", cor_secundaria: "#144F70" },
+          ]}/>
         </View>
 
         <Text style={[globalStyles.textoNormal, globalStyles.mbottom16]}>A cada intervalo de tempo</Text>
         <View style={styles.container_cards}>
-          <CardTarefa horario="12:00" exibirBotao={false} freq_intervalo={"4"} alarme={true}/>
+          <CardTarefa horario="12:00" exibirBotao={false} freq_intervalo={"4"} alarme={true} integrantes={[
+          { nome: "Marco", cor_primaria: "#CAEAFB", cor_secundaria: "#144F70" },
+          ]}/>
         </View>
 
         <Text style={[globalStyles.textoNormal, globalStyles.mbottom16]}>Anualmente</Text>
         <View style={styles.container_cards}>
-          <CardTarefa horario="12:00" exibirBotao={false} freq_anual="01/12  ·  02/12  ·  03/12"/>
+          <CardTarefa horario="12:00" exibirBotao={false} freq_anual="01/12  ·  02/12  ·  03/12" integrantes={[
+          { nome: "Marco", cor_primaria: "#CAEAFB", cor_secundaria: "#144F70" },
+          ]}/>
         </View>
         
       </ScrollView>
