@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { ActivityIndicator } from "react-native";
 import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, TextInput, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -16,8 +17,12 @@ import RelogioIcon from "../../../assets/images/relogio.svg";
 import TarefaIcon from "../../../assets/images/tarefa.svg";
 import Badge from "@/frontend/components/Badge";
 
+import { criarTarefa as criarTarefaService, Frequencia } from "@/backend/services/tarefaService";
+
 const PaginaCriarTarefa = () => {
+
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const [loading, setLoading] = useState(false);
 
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
@@ -110,112 +115,103 @@ const PaginaCriarTarefa = () => {
     );
   };
 
-  const criarTarefa = () => {
-    let temErro = false;
+  const criarTarefa = async () => {
+    if (!nome.trim()) return Alert.alert("Erro", "O nome da tarefa é obrigatório.");
+    if (horario === "Nenhum") return Alert.alert("Erro", "Escolha um horário para a tarefa.");
+    if (integrantesSelecionados.length === 0) return Alert.alert("Erro", "Selecione pelo menos um integrante.");
+    if (botaoFrequenciaAtivo === null) return Alert.alert("Erro", "Escolha uma frequência.");
   
-    if (!nome.trim()) {
-      setErroNome(true);
-      temErro = true;
-    } else {
-      setErroNome(false);
+    let frequencia: Frequencia;
+  
+    switch (botaoFrequenciaAtivo) {
+      case 0:
+        // Tarefa diária
+        frequencia = {
+          tipo: "diariamente",
+          diasSemana: [0, 1, 2, 3, 4, 5, 6],
+          intervaloDias: null,
+          datasEspecificas: null,
+        };
+        break;
+      case 1:
+        // Tarefa semanal
+        frequencia = {
+          tipo: "semanal",
+          diasSemana: diasSelecionados.map((dia) => DiasDaSemana.indexOf(dia)),
+          intervaloDias: null,
+          datasEspecificas: null,
+        };
+        break;
+      case 2:
+        // Tarefa com intervalo
+        frequencia = {
+          tipo: "intervalo",
+          diasSemana: null,
+          intervaloDias: intervalo ? parseInt(intervalo, 10) : 1,
+          datasEspecificas: null,
+        };
+        break;
+      case 3:
+        // Tarefa anual
+        frequencia = {
+          tipo: "anualmente",
+          diasSemana: null,
+          intervaloDias: null,
+          datasEspecificas: datasSelecionadas
+            .filter((item) => item.data !== null)
+            .map((item) =>
+              item.data!.toLocaleDateString("pt-BR", {
+                day: "2-digit",
+                month: "2-digit",
+              })
+            ),
+        };
+        break;
+      default:
+        // Como fallback, atribuímos uma frequência diária
+        frequencia = {
+          tipo: "diariamente",
+          diasSemana: [0, 1, 2, 3, 4, 5, 6],
+          intervaloDias: null,
+          datasEspecificas: null,
+        };
+        break;
     }
   
-    if (horario === "Nenhum") {
-      setErroHorario(true);
-      temErro = true;
-    } else {
-      setErroHorario(false);
-    }
+    // Formata a data de criação utilizando o horário local (YYYY-MM-DD)
+    const now = new Date();
+    const dataCriacao = `${now.getFullYear()}-${(now.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}`;
   
-    if (!integrantesSelecionados) {
-      setErroIntegrante(true);
-      temErro = true;
-    } else {
-      setErroIntegrante(false);
-    }
-  
-    // Validação correta da frequência
-    if (botaoFrequenciaAtivo === null) {
-      setErroFrequencia(true);
-      temErro = true;
-    } else {
-      setErroFrequencia(false);
-  
-      if (botaoFrequenciaAtivo === 1 && diasSelecionados.length === 0) {
-        setErroFrequencia(true);
-        temErro = true;
-      }
-  
-      if (botaoFrequenciaAtivo === 2 && (!intervalo || Number(intervalo) <= 0)) {
-        setErroFrequencia(true);
-        temErro = true;
-      }
-  
-      if (botaoFrequenciaAtivo === 3 && datasSelecionadas.every((item) => item.data === null)) {
-        setErroFrequencia(true);
-        temErro = true;
-      }
-    }
-  
-    if (temErro) {
-      Alert.alert("Erro", "Alguns campos ficaram em branco ou não foram configurados corretamente. Preencha-os.");
-      return;
-    }
-  
-    // Mapeia a frequência corretamente de acordo com a seleção
-    let frequenciaFormatada = null;
-  
-    if (botaoFrequenciaAtivo === 0) {
-      frequenciaFormatada = "DOM, SEG, TER, QUA, QUI, SEX, SAB"; // Diariamente
-    } else if (botaoFrequenciaAtivo === 1) {
-      frequenciaFormatada = diasSelecionados.join(", "); // Semanalmente
-    } else if (botaoFrequenciaAtivo === 2) {
-      frequenciaFormatada = `A cada ${intervalo} dias`; // Intervalo de tempo
-    } else if (botaoFrequenciaAtivo === 3) {
-      frequenciaFormatada = datasSelecionadas
-        .filter((item) => item.data !== null)
-        .map((item) => item.data?.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }))
-        .join(", "); // Datas específicas
-    }
-  
-    // Criar JSON da tarefa
-    const tarefa = {
+    const novaTarefa = {
       nome,
       descricao: descricao.trim() !== "" ? descricao : null,
       horario,
       alarme: alarmeAtivado,
       integrantes: integrantesSelecionados,
-      frequencia: {
-        tipo:
-          botaoFrequenciaAtivo === 0 ? "diariamente" :
-          botaoFrequenciaAtivo === 1 ? "semanal" :
-          botaoFrequenciaAtivo === 2 ? "intervalo" :
-          botaoFrequenciaAtivo === 3 ? "anualmente":
-          "null",
-    
-        info:
-          botaoFrequenciaAtivo === 0 ? "DOM, SEG, TER, QUA, QUI, SEX, SAB" : // Diariamente
-          botaoFrequenciaAtivo === 1 ? diasSelecionados.join(", ") : // Semanalmente (dias selecionados)
-          botaoFrequenciaAtivo === 2 ? intervalo : // Intervalo de tempo
-          botaoFrequenciaAtivo === 3
-            ? datasSelecionadas
-                .filter((item) => item.data !== null)
-                .map((item) => item.data?.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }))
-                .join(", ") // Anualmente em datas específicas
-            : null,
-      },
+      frequencia,
+      dataCriacao,
     };
   
-    console.log("JSON para envio:", JSON.stringify(tarefa, null, 2));
-
-    if (alarmeAtivado) {
-      definirAlarme(horario);
+    console.log("Criando Tarefa:", JSON.stringify(novaTarefa, null, 2));
+    setLoading(true);
+  
+    try {
+      await criarTarefaService(novaTarefa);
+      Alert.alert("Sucesso", "Tarefa adicionada com sucesso!", [
+        { text: "OK", onPress: () => navigation.goBack() },
+      ]);
+  
+      if (alarmeAtivado) definirAlarme(horario);
+    } catch (error) {
+      console.error("Erro ao salvar tarefa:", error);
+      Alert.alert("Erro", "Falha ao adicionar a tarefa ao Firestore.");
+    } finally {
+      setLoading(false);
     }
-    
-    Alert.alert("Sucesso", "Tarefa criada com sucesso!", [{ text: "OK", onPress: () => navigation.goBack() }]);
   };
-     
-
+  
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <View style={styles.container_cima}>
@@ -397,12 +393,15 @@ const PaginaCriarTarefa = () => {
       </ScrollView>
       
       <View style={styles.nav_bottom}>
-        <TouchableOpacity style={styles.botao_horario} onPress={criarTarefa}>
-          <TarefaIcon width={16} height={16} color="#FFFFFF" />
-          <Text style={styles.botao_horario_texto}>Criar Tarefa</Text>
-        </TouchableOpacity>
+      {loading ? (
+        <ActivityIndicator size="large" color="#5A189A" />
+      ) : (
+      <TouchableOpacity style={styles.botao_horario} onPress={criarTarefa}>
+        <TarefaIcon width={16} height={16} color="#FFFFFF" />
+        <Text style={styles.botao_horario_texto}>Criar Tarefa</Text>
+      </TouchableOpacity>
+      )}
       </View>
-
     </SafeAreaView>
   );
 };

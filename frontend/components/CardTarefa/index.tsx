@@ -19,6 +19,7 @@ interface Integrante {
 }
 
 interface CardTarefaProps {
+  nome: string;
   horario?: string;
   alarme?: boolean;
   exibirBotao?: boolean;
@@ -30,6 +31,7 @@ interface CardTarefaProps {
 }
 
 const CardTarefa: React.FC<CardTarefaProps> = ({
+  nome,
   horario,
   alarme = false,
   exibirBotao = true,
@@ -49,7 +51,7 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
   return (
     <TouchableOpacity style={[styles.container, menor && styles.menor]}>
       <View style={styles.container_cima}>
-        <Text style={[globalStyles.textoNormal, menor && styles.texto_menor]}>Passar Aspirador</Text>
+        <Text style={[globalStyles.textoNormal, menor && styles.texto_menor]}>{nome}</Text>
         <AlarmeIcon width={16} height={16} color="#606060" style={(!alarme || menor) && styles.none} />
       </View>
 
