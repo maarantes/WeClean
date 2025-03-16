@@ -42,7 +42,7 @@ export const styles = StyleSheet.create({
 
   cor_80: {
     color: "#808080",
-    marginLeft: 8
+    marginLeft: 8,
   },
 
   cor_80_normal: {
@@ -52,8 +52,9 @@ export const styles = StyleSheet.create({
   botao_concluir: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    justifyContent: "center",
+    paddingVertical: 4,
+    width: 105,
     borderWidth: 1,
     borderColor: "#808080",
     borderRadius: 4,
@@ -155,6 +156,132 @@ export const styles = StyleSheet.create({
     fontFamily: "Inter-SemiBold",
     marginLeft: -5,
     borderRadius: 2
-  }
+  },
+
+  modal_container_descricao: {
+    width: "100%", 
+    height: "85%",
+    alignSelf: "center",
+    backgroundColor: "white",
+    paddingTop: 20,
+    paddingHorizontal: 20,
+    margin: 0,
+    justifyContent: "flex-start",
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+  },
+
+  detalhe_secao: {
+    backgroundColor: "#FAFAFA",
+    padding: 12,
+    borderRadius: 4,
+    marginTop: 16
+  },
+
+  detalhe_cima: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 24
+  },
+
+  modal_scroll: {
+    marginTop: -20,
+    paddingBottom: 40
+  },
+
+  detalhe_botoes: {
+    flexDirection: "row",
+    gap: "4%",
+    marginBottom: 16
+  },
+
+  detalhe_botao_editar: {
+    flexDirection: "row",
+    gap: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: "#DACAFB",
+    borderRadius: 4,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "48%"
+  },
+
+  detalhe_botao_editar_texto: {
+    color: "#5A189A",
+    fontFamily: "Inter-SemiBold"
+  },
+
+  detalhe_botao_excluir: {
+    flexDirection: "row",
+    gap: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: "#FBDFE4",
+    borderRadius: 4,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "48%"
+  },
+
+  detalhe_botao_excluir_texto: {
+    color: "#E7516E",
+    fontFamily: "Inter-SemiBold"
+  },
+
+  detalhe_campo_titulo: {
+    color: "#606060",
+    marginBottom: 8,
+    fontFamily: "Inter-SemiBold"
+  },
+
+  detalhe_campo_texto: {
+    color: "#404040",
+    fontSize: 16,
+    fontFamily: "Inter-SemiBold"
+  },
+
+  detalhe_campo_texto_descricao: {
+    color: "#404040",
+    fontSize: 14,
+    fontFamily: "Inter-Medium"
+  },
+
+  flex_row_between: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+
+  flex_row: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8
+  },
+
+  flex_wrap: {
+    flexDirection: "row",
+    gap: 8,
+    flexWrap: "wrap"
+  },
+
+  detalhe_campo_texto_horario: {
+    color: "#808080",
+    fontSize: 16,
+    fontFamily: "Inter-Medium"
+  },
+
+  alarme_ativado: {
+    color: "#115614",
+    fontFamily: "Inter-SemiBold"
+  },
+
+  detalhe_campo_texto_cinza: {
+    color: "#606060",
+    fontSize: 14,
+    fontFamily: "Inter-Medium"
+  },
+
+
 
 });

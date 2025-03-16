@@ -152,7 +152,9 @@ export const registrarTarefaNoCalendario = async (tarefa: Tarefa): Promise<void>
     const tarefaEntry = {
       id: tarefa.id,
       nome: tarefa.nome,
+      descricao: tarefa.descricao,
       horario: tarefa.horario,
+      alarme: tarefa.alarme,
       frequencia: tarefa.frequencia,
       dataCriacao: tarefa.dataCriacao,
       integrantes: tarefa.integrantes // Incluindo os integrantes

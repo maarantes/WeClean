@@ -5,9 +5,10 @@ import { useFonts } from "../../hooks/UsarFontes";
 
 import { styles } from "./styles";
 import { globalStyles } from "@/frontend/globalStyles";
+
 import { Navbar } from "@/frontend/components/Navbar";
 import ParteCima from "../../components/ParteCima/index";
-import CardTarefa from "../../components/CardTarefa/index";
+import CardTarefa, { FrequenciaModalTexto } from "../../components/CardTarefa/index";
 
 // Definição dos dias da semana (para agrupamento)
 const DiasDaSemana = [
@@ -89,9 +90,11 @@ const PaginaInicio = () => {
                     <CardTarefa
                       key={index}
                       nome={tarefa.nome}
+                      descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
                       horario={tarefa.horario}
                       exibirBotao={true}
                       alarme={tarefa.alarme}
+                      freq_texto={FrequenciaModalTexto(tarefa.frequencia)}
                       integrantes={
                         tarefa.integrantes?.map((integrante: string) => ({
                           nome: integrante,

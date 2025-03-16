@@ -11,7 +11,7 @@ import { globalStyles } from "@/frontend/globalStyles";
 import TarefaIcon from "../../../assets/images/tarefa.svg";
 import ParteCima from "@/frontend/components/ParteCima";
 import { Navbar } from "@/frontend/components/Navbar";
-import CardTarefa from "@/frontend/components/CardTarefa";
+import CardTarefa, { FrequenciaModalTexto } from "@/frontend/components/CardTarefa";
 
 // Importa a função que busca as tarefas da coleção "Tarefas"
 import { obterTarefas } from "@/backend/services/tarefaService";
@@ -22,20 +22,6 @@ const PaginaTarefas = () => {
 
   const [tarefas, setTarefas] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Função auxiliar para converter um array de números (0 a 6) em siglas
-  const convertDiasSemana = (dias: number[]): string => {
-    const mapDias: { [key: number]: string } = {
-      0: "DOM",
-      1: "SEG",
-      2: "TER",
-      3: "QUA",
-      4: "QUI",
-      5: "SEX",
-      6: "SAB",
-    };
-    return dias.map((dia) => mapDias[dia]).join(", ");
-  };
 
   useEffect(() => {
     const carregarTarefas = async () => {
@@ -109,9 +95,11 @@ const PaginaTarefas = () => {
                 <CardTarefa
                   key={tarefa.id}
                   nome={tarefa.nome}
+                  descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
                   horario={tarefa.horario}
                   exibirBotao={false}
                   alarme={tarefa.alarme}
+                  freq_texto={FrequenciaModalTexto(tarefa.frequencia)}
                   integrantes={tarefa.integrantes?.map((nome: string) => ({
                     nome,
                     cor_primaria: "#CAEAFB",
@@ -135,13 +123,10 @@ const PaginaTarefas = () => {
                 <CardTarefa
                   key={tarefa.id}
                   nome={tarefa.nome}
+                  descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
                   horario={tarefa.horario}
                   exibirBotao={false}
-                  freq_semanal={
-                    tarefa.frequencia?.diasSemana
-                      ? convertDiasSemana(tarefa.frequencia.diasSemana)
-                      : ""
-                  }
+                  freq_texto={FrequenciaModalTexto(tarefa.frequencia)}
                   integrantes={tarefa.integrantes?.map((nome: string) => ({
                     nome,
                     cor_primaria: "#CAEAFB",
@@ -165,14 +150,11 @@ const PaginaTarefas = () => {
                 <CardTarefa
                   key={tarefa.id}
                   nome={tarefa.nome}
+                  descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
                   horario={tarefa.horario}
                   exibirBotao={false}
-                  freq_intervalo={
-                    tarefa.frequencia?.intervaloDias
-                      ? `${tarefa.frequencia.intervaloDias}`
-                      : ""
-                  }
                   alarme={tarefa.alarme}
+                  freq_texto={FrequenciaModalTexto(tarefa.frequencia)}
                   integrantes={tarefa.integrantes?.map((nome: string) => ({
                     nome,
                     cor_primaria: "#CAEAFB",
@@ -196,13 +178,11 @@ const PaginaTarefas = () => {
                 <CardTarefa
                   key={tarefa.id}
                   nome={tarefa.nome}
+                  descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
                   horario={tarefa.horario}
                   exibirBotao={false}
-                  freq_anual={
-                    tarefa.frequencia?.datasEspecificas
-                      ? tarefa.frequencia.datasEspecificas.join("  ·  ")
-                      : ""
-                  }
+                  freq_texto={FrequenciaModalTexto(tarefa.frequencia)}
+                  alarme={tarefa.alarme}
                   integrantes={tarefa.integrantes?.map((nome: string) => ({
                     nome,
                     cor_primaria: "#CAEAFB",

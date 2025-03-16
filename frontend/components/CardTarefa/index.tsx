@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import Modal from "react-native-modal";
 
 import { styles } from "./styles";
@@ -9,6 +9,9 @@ import ConcluirIcon from "../../../assets/images/concluir.svg";
 import AlarmeIcon from "../../../assets/images/alarme.svg";
 import RelogioIcon from "../../../assets/images/relogio.svg";
 import CalendarioIcon from "../../../assets/images/calendario_mini.svg";
+import FecharIcon from "../../../assets/images/fechar.svg";
+import EditarIcon from "../../../assets/images/editar.svg";
+import ExcluirIcon from "../../../assets/images/excluir.svg";
 
 import Badge from "../Badge";
 
@@ -20,38 +23,71 @@ interface Integrante {
 
 interface CardTarefaProps {
   nome: string;
+  descricao: string;
   horario?: string;
   alarme?: boolean;
   exibirBotao?: boolean;
-  freq_semanal?: string;
-  freq_intervalo?: string;
-  freq_anual?: string;
+  freq_texto?: string;
   menor?: boolean;
   integrantes?: Integrante[];
 }
 
+const converterDias = (dias: number[]): string => {
+  const mapDias: Record<number, string> = {
+    0: "DOM",
+    1: "SEG",
+    2: "TER",
+    3: "QUA",
+    4: "QUI",
+    5: "SEX",
+    6: "SAB"
+  };
+  return dias.map((dia: number) => mapDias[dia]).join(", ");
+};
+
+export const FrequenciaModalTexto = (frequencia: any) => {
+  if (!frequencia) return "Diariamente"; // valor padrão se não houver
+  switch (frequencia.tipo) {
+    case "semanal": {
+      const dias = frequencia.diasSemana ? converterDias(frequencia.diasSemana) : "";
+      return `Semanalmente: ${dias}`;
+    }
+    case "intervalo": {
+      return `Intervalo: A cada ${frequencia.intervaloDias} dias`;
+    }
+    case "anualmente": {
+      const datas = frequencia.datasEspecificas ? frequencia.datasEspecificas.join("  ·  ") : "";
+      return `Anualmente: ${datas}`;
+    }
+    default:
+      return "Diariamente";
+  }
+};
+
 const CardTarefa: React.FC<CardTarefaProps> = ({
   nome,
+  descricao,
   horario,
   alarme = false,
   exibirBotao = true,
-  freq_semanal,
-  freq_anual,
-  freq_intervalo,
+  freq_texto,
   menor = false,
   integrantes = [],
 }) => {
   const [concluido, setConcluido] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isCardModalVisible, setCardModalVisible] = useState(false);
 
   const handlePress = () => {
     setConcluido(!concluido);
   };
 
   return (
-    <TouchableOpacity style={[styles.container, menor && styles.menor]}>
+    <TouchableOpacity 
+      style={[styles.container, menor && styles.menor]} 
+      onPress={() => setCardModalVisible(true)} activeOpacity={0.5}>
       <View style={styles.container_cima}>
-        <Text style={[globalStyles.textoNormal, menor && styles.texto_menor]}>{nome}</Text>
+        <Text  numberOfLines={1} ellipsizeMode="tail"style={[globalStyles.textoNormal, menor && styles.texto_menor]}>{nome}</Text>
         <AlarmeIcon width={16} height={16} color="#606060" style={(!alarme || menor) && styles.none} />
       </View>
 
@@ -78,27 +114,6 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
             <Text style={styles.cor_80_normal}>{horario}</Text>
           </View>
 
-          {freq_semanal && (
-            <TouchableOpacity style={styles.container_info_relogio} onPress={() => setModalVisible(true)}>
-              <CalendarioIcon width={16} height={16} color="#5A189A" />
-              <Text style={[styles.cor_80_normal, styles.roxo]}>Ver dias</Text>
-            </TouchableOpacity>
-          )}
-
-          {freq_intervalo && (
-            <View style={styles.container_info_relogio}>
-              <CalendarioIcon width={16} height={16} color="#606060" />
-              <Text style={styles.cor_80_normal}>A cada {freq_intervalo} dias</Text>
-            </View>
-          )}
-
-          {freq_anual && (
-            <TouchableOpacity style={styles.container_info_relogio} onPress={() => setModalVisible(true)}>
-              <CalendarioIcon width={16} height={16} color="#5A189A" />
-              <Text style={[styles.cor_80_normal, styles.roxo]}>Ver datas</Text>
-            </TouchableOpacity>
-          )}
-
           {exibirBotao && (
             <TouchableOpacity
               style={[styles.botao_concluir, concluido ? styles.botao_concluido : null]}
@@ -113,30 +128,81 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
         </View>
       </View>
 
-      {(freq_semanal || freq_anual) && (
-        <Modal
-          isVisible={isModalVisible}
-          onBackdropPress={() => setModalVisible(false)}
-          animationIn="slideInUp"
-          animationOut="slideOutDown"
-          backdropColor="#404040"
-          backdropOpacity={0.5}
-          style={styles.modal_container}
-        >
-          <View style={styles.modal_content}>
-            <Text style={[globalStyles.titulo, styles.titulo_menor]}>
-              {freq_anual ? "Datas Selecionadas" : "Dias Selecionados"}
-            </Text>
+      <Modal
+        isVisible={isCardModalVisible}
+        onBackdropPress={() => setCardModalVisible(false)}
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
+        backdropColor="#404040"
+        backdropOpacity={0.5}
+        style={{ margin: 0, justifyContent: "flex-end" }}>
+        <View style={styles.modal_container_descricao}>
 
-            {freq_semanal && <Text style={styles.texto_modal}>{freq_semanal}</Text>}
-            {freq_anual && <Text style={styles.texto_modal_anual}>{freq_anual}</Text>}
-
-            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.botao_fechar}>
-              <Text style={styles.botao_fechar_texto}>Fechar</Text>
+          <View style={styles.detalhe_cima}>
+            <Text style={[globalStyles.titulo, styles.titulo_menor]}>Detalhes da Tarefa</Text>
+            <TouchableOpacity onPress={() => setCardModalVisible(false)}>
+              <FecharIcon width={32} height={32} />
             </TouchableOpacity>
           </View>
-        </Modal>
-      )}
+
+          <View style={styles.detalhe_botoes}>
+            <TouchableOpacity style={styles.detalhe_botao_excluir}>
+              <ExcluirIcon width={24} height={24} />
+              <Text style={styles.detalhe_botao_excluir_texto}>Excluir</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.detalhe_botao_editar}>
+              <EditarIcon width={24} height={24} />
+              <Text style={styles.detalhe_botao_editar_texto}>Editar</Text>
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView contentContainerStyle={styles.modal_scroll}>
+          <View style={styles.detalhe_secao}>
+            <Text style={styles.detalhe_campo_titulo}>NOME</Text>
+            <Text style={styles.detalhe_campo_texto}>{nome}</Text>
+          </View>
+
+          <View style={styles.detalhe_secao}>
+            <Text style={styles.detalhe_campo_titulo}>DESCRIÇÃO</Text>
+            <Text style={descricao ? styles.detalhe_campo_texto_descricao : styles.detalhe_campo_texto_cinza}>{descricao}</Text>
+          </View>
+
+          <View style={styles.detalhe_secao}>
+            <Text style={styles.detalhe_campo_titulo}>HORÁRIO E ALARME</Text>
+            <View style={styles.flex_row_between}>
+              <View style={styles.flex_row}>
+                <RelogioIcon width={16} height={16} strokeWidth={1.5} color="#808080" />
+                <Text style={styles.detalhe_campo_texto_horario}>{horario}</Text>
+              </View>
+              <Text style={[styles.detalhe_campo_texto_descricao, alarme && styles.alarme_ativado]}>
+              {alarme ? "Alarme ativado" : "Sem Alarme"}</Text>
+            </View>
+          </View>
+
+          <View style={styles.detalhe_secao}>
+            <Text style={styles.detalhe_campo_titulo}>INTEGRANTES</Text>
+            <View style={styles.flex_wrap}>
+            {integrantes.map((integrante, index) => (
+              <Badge
+               key={index}
+                backgroundColor={integrante.cor_primaria}
+                iconColor={integrante.cor_secundaria}
+                text={integrante.nome}
+                isSelected={true}
+              />
+            ))}
+            </View>
+          </View>
+
+          <View style={styles.detalhe_secao}>
+            <Text style={styles.detalhe_campo_titulo}>FREQUÊNCIA</Text>
+            <Text style={styles.detalhe_campo_texto_cinza}>{freq_texto}</Text>
+          </View>
+          </ScrollView>
+
+        </View>
+      </Modal>
+
     </TouchableOpacity>
   );
 };
