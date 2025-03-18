@@ -1,4 +1,4 @@
-import {collection, doc, setDoc, getDoc, getDocs, updateDoc, arrayUnion, where, query, documentId } from "firebase/firestore";
+import {collection, doc, setDoc, getDoc, getDocs, updateDoc, arrayUnion, where, query, documentId, deleteDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { getUltimoMesAtualizado, setUltimoMesAtualizado } from "../ultimoMesAtualizado"
 
@@ -277,4 +277,36 @@ export const updateTarefaConcluido = async (
       await updateDoc(calendarRef, { tarefas: updatedTasks });
     }
   }
+};
+
+
+export const excluirTarefa = async (taskId: string): Promise<void> => {
+  // Exclui todas as instâncias (passadas, atuais e futuras) na coleção "Calendário"
+  const calendarRef = collection(db, "Calendário");
+  const querySnapshot = await getDocs(calendarRef);
+  for (const docSnapshot of querySnapshot.docs) {
+    const dataDoc = docSnapshot.data();
+    if (dataDoc.tarefas) {
+      const updatedTasks = dataDoc.tarefas.filter((task: any) => task.id !== taskId);
+      await updateDoc(doc(db, "Calendário", docSnapshot.id), { tarefas: updatedTasks });
+    }
+  }
+
+  // Exclui a tarefa na coleção "Tarefas"
+  const tarefaRef = doc(db, "Tarefas", taskId);
+  await deleteDoc(tarefaRef);
+};
+
+
+export const editarTarefa = async (updatedTask: Tarefa, dataReferencia: string): Promise<void> => {
+  // 1. Atualiza a tarefa na coleção "Tarefas"
+  const tarefaRef = doc(db, "Tarefas", updatedTask.id!);
+  const { id, ...dataToUpdate } = updatedTask;
+  await updateDoc(tarefaRef, dataToUpdate);
+
+  // 2. Exclui as instâncias futuras (a partir da data de referência)
+  await excluirTarefa(updatedTask.id!);
+
+  // 3. Registra as novas ocorrências no calendário
+  await registrarTarefaNoCalendario(updatedTask);
 };
