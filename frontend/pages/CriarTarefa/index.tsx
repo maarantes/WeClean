@@ -192,6 +192,7 @@ const PaginaCriarTarefa = () => {
       integrantes: integrantesSelecionados,
       frequencia,
       dataCriacao,
+      concluido: false,
     };
   
     console.log("Criando Tarefa:", JSON.stringify(novaTarefa, null, 2));

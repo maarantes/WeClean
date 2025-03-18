@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import Modal from "react-native-modal";
 
@@ -8,7 +8,6 @@ import { globalStyles } from "../../globalStyles";
 import ConcluirIcon from "../../../assets/images/concluir.svg";
 import AlarmeIcon from "../../../assets/images/alarme.svg";
 import RelogioIcon from "../../../assets/images/relogio.svg";
-import CalendarioIcon from "../../../assets/images/calendario_mini.svg";
 import FecharIcon from "../../../assets/images/fechar.svg";
 import EditarIcon from "../../../assets/images/editar.svg";
 import ExcluirIcon from "../../../assets/images/excluir.svg";
@@ -23,14 +22,18 @@ interface Integrante {
 
 interface CardTarefaProps {
   nome: string;
-  descricao: string;
+  descricao?: string;
   horario?: string;
   alarme?: boolean;
   exibirBotao?: boolean;
   freq_texto?: string;
   menor?: boolean;
   integrantes?: Integrante[];
+  dataInstancia?: string;
+  concluido?: boolean;
+  onUpdateConcluido?: (dataInstancia: string, novoValor: boolean) => void;
 }
+
 
 const converterDias = (dias: number[]): string => {
   const mapDias: Record<number, string> = {
@@ -46,7 +49,7 @@ const converterDias = (dias: number[]): string => {
 };
 
 export const FrequenciaModalTexto = (frequencia: any) => {
-  if (!frequencia) return "Diariamente"; // valor padrão se não houver
+  if (!frequencia) return "Diariamente";
   switch (frequencia.tipo) {
     case "semanal": {
       const dias = frequencia.diasSemana ? converterDias(frequencia.diasSemana) : "";
@@ -73,49 +76,110 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
   freq_texto,
   menor = false,
   integrantes = [],
+  dataInstancia,
+  concluido,
+  onUpdateConcluido,
 }) => {
-  const [concluido, setConcluido] = useState(false);
-  const [isModalVisible, setModalVisible] = useState(false);
   const [isCardModalVisible, setCardModalVisible] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  // Define a última ação realizada: "concluido" ou "desmarcado"
+  const [lastAction, setLastAction] = useState<"concluido" | "desmarcado" | null>(null);
+
+  // Efeito para esconder o alerta automaticamente após 4 segundos
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (showAlert) {
+      timer = setTimeout(() => {
+        setShowAlert(false);
+      }, 4000);
+    }
+    return () => timer && clearTimeout(timer);
+  }, [showAlert]);
 
   const handlePress = () => {
-    setConcluido(!concluido);
+
+    if (!dataInstancia) return;
+
+    // Se não concluída, marca como concluída e exibe o alerta; se já estiver concluída, desmarca.
+    if (!concluido) {
+      onUpdateConcluido?.(dataInstancia, true);
+      setAlertMessage("Você concluiu a tarefa");
+      setLastAction("concluido");
+      setShowAlert(true);
+    } else {
+      onUpdateConcluido?.(dataInstancia, false);
+      setAlertMessage("A tarefa foi desmarcada como concluída");
+      setLastAction("desmarcado");
+      setShowAlert(true);
+    }
+  };
+
+  // Ao clicar em "Desfazer", desfaz a última ação
+  const handleDesfazer = () => {
+
+    if (!dataInstancia) return;
+
+    if (lastAction === "concluido") {
+      // Desfazer a conclusão: volta a ser false
+      onUpdateConcluido?.(dataInstancia, false);
+    } else if (lastAction === "desmarcado") {
+      // Desfazer a desmarcação: volta a ser true
+      onUpdateConcluido?.(dataInstancia, true);
+    }
+    setShowAlert(false);
   };
 
   return (
-    <TouchableOpacity 
-      style={[styles.container, menor && styles.menor]} 
-      onPress={() => setCardModalVisible(true)} activeOpacity={0.5}>
-      <View style={styles.container_cima}>
-        <Text  numberOfLines={1} ellipsizeMode="tail"style={[globalStyles.textoNormal, menor && styles.texto_menor]}>{nome}</Text>
-        <AlarmeIcon width={16} height={16} color="#606060" style={(!alarme || menor) && styles.none} />
-      </View>
-
-      <View style={styles.container_baixo}>
-        <View style={styles.container_info}>
-          {integrantes.length > 0 && (
-            <>
-              <Badge
-                backgroundColor={integrantes[0].cor_primaria}
-                iconColor={integrantes[0].cor_secundaria}
-                text={integrantes[0].nome}
-                isSelected={true}
-              />
-              {integrantes.length > 1 && (
-                <Text style={styles.texto_integrantes_extras}>+{integrantes.length - 1}</Text>
-              )}
-            </>
-          )}
+    <>
+      <TouchableOpacity 
+        style={[styles.container, menor && styles.menor]} 
+        onPress={() => setCardModalVisible(true)}
+        activeOpacity={0.5}
+      >
+        <View style={styles.container_cima}>
+          <Text  
+            numberOfLines={1} 
+            ellipsizeMode="tail"
+            style={[globalStyles.textoNormal, menor && styles.texto_menor]}
+          >
+            {nome}
+          </Text>
+          <AlarmeIcon 
+            width={16} 
+            height={16} 
+            color="#606060" 
+            style={(!alarme || menor) && styles.none} 
+          />
         </View>
 
-        <View style={styles.container_info_dir}>
-          <View style={[styles.container_info_relogio, menor && styles.none]}>
-            <RelogioIcon width={16} height={16} color="#606060" />
-            <Text style={styles.cor_80_normal}>{horario}</Text>
+        <View style={styles.container_baixo}>
+          <View style={styles.container_info}>
+            {integrantes.length > 0 && (
+              <>
+                <Badge
+                  backgroundColor={integrantes[0].cor_primaria}
+                  iconColor={integrantes[0].cor_secundaria}
+                  text={integrantes[0].nome}
+                  isSelected={true}
+                />
+                {integrantes.length > 1 && (
+                  <Text style={styles.texto_integrantes_extras}>
+                    +{integrantes.length - 1}
+                  </Text>
+                )}
+              </>
+            )}
           </View>
 
-          {exibirBotao && (
-            <TouchableOpacity
+          <View style={styles.container_info_dir}>
+            <View style={[styles.container_info_relogio, menor && styles.none]}>
+              <RelogioIcon width={16} height={16} color="#606060" />
+              <Text style={styles.cor_80_normal}>{horario}</Text>
+            </View>
+
+            {exibirBotao && (
+              <TouchableOpacity
               style={[styles.botao_concluir, concluido ? styles.botao_concluido : null]}
               onPress={handlePress}
             >
@@ -124,86 +188,91 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
                 {concluido ? "Concluído" : "Concluir"}
               </Text>
             </TouchableOpacity>
-          )}
+            
+            )}
+          </View>
         </View>
-      </View>
 
-      <Modal
-        isVisible={isCardModalVisible}
-        onBackdropPress={() => setCardModalVisible(false)}
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
-        backdropColor="#404040"
-        backdropOpacity={0.5}
-        style={{ margin: 0, justifyContent: "flex-end" }}>
-        <View style={styles.modal_container_descricao}>
+        <Modal
+          isVisible={isCardModalVisible}
+          onBackdropPress={() => setCardModalVisible(false)}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          backdropColor="#404040"
+          backdropOpacity={0.5}
+          style={{ margin: 0, justifyContent: "flex-end" }}
+        >
+          <View style={styles.modal_container_descricao}>
+            <View style={styles.detalhe_cima}>
+              <Text style={[globalStyles.titulo, styles.titulo_menor]}>
+                Detalhes da Tarefa
+              </Text>
+              <TouchableOpacity onPress={() => setCardModalVisible(false)}>
+                <FecharIcon width={32} height={32} />
+              </TouchableOpacity>
+            </View>
 
-          <View style={styles.detalhe_cima}>
-            <Text style={[globalStyles.titulo, styles.titulo_menor]}>Detalhes da Tarefa</Text>
-            <TouchableOpacity onPress={() => setCardModalVisible(false)}>
-              <FecharIcon width={32} height={32} />
-            </TouchableOpacity>
-          </View>
+            <View style={styles.detalhe_botoes}>
+              <TouchableOpacity style={styles.detalhe_botao_excluir}>
+                <ExcluirIcon width={24} height={24} />
+                <Text style={styles.detalhe_botao_excluir_texto}>Excluir</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.detalhe_botao_editar}>
+                <EditarIcon width={24} height={24} />
+                <Text style={styles.detalhe_botao_editar_texto}>Editar</Text>
+              </TouchableOpacity>
+            </View>
 
-          <View style={styles.detalhe_botoes}>
-            <TouchableOpacity style={styles.detalhe_botao_excluir}>
-              <ExcluirIcon width={24} height={24} />
-              <Text style={styles.detalhe_botao_excluir_texto}>Excluir</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.detalhe_botao_editar}>
-              <EditarIcon width={24} height={24} />
-              <Text style={styles.detalhe_botao_editar_texto}>Editar</Text>
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView contentContainerStyle={styles.modal_scroll}>
-          <View style={styles.detalhe_secao}>
-            <Text style={styles.detalhe_campo_titulo}>NOME</Text>
-            <Text style={styles.detalhe_campo_texto}>{nome}</Text>
-          </View>
-
-          <View style={styles.detalhe_secao}>
-            <Text style={styles.detalhe_campo_titulo}>DESCRIÇÃO</Text>
-            <Text style={descricao ? styles.detalhe_campo_texto_descricao : styles.detalhe_campo_texto_cinza}>{descricao}</Text>
-          </View>
-
-          <View style={styles.detalhe_secao}>
-            <Text style={styles.detalhe_campo_titulo}>HORÁRIO E ALARME</Text>
-            <View style={styles.flex_row_between}>
-              <View style={styles.flex_row}>
-                <RelogioIcon width={16} height={16} strokeWidth={1.5} color="#808080" />
-                <Text style={styles.detalhe_campo_texto_horario}>{horario}</Text>
+            <ScrollView contentContainerStyle={styles.modal_scroll}>
+              <View style={styles.detalhe_secao}>
+                <Text style={styles.detalhe_campo_titulo}>NOME</Text>
+                <Text style={styles.detalhe_campo_texto}>{nome}</Text>
               </View>
-              <Text style={[styles.detalhe_campo_texto_descricao, alarme && styles.alarme_ativado]}>
-              {alarme ? "Alarme ativado" : "Sem Alarme"}</Text>
-            </View>
+
+              <View style={styles.detalhe_secao}>
+                <Text style={styles.detalhe_campo_titulo}>DESCRIÇÃO</Text>
+                <Text style={descricao ? styles.detalhe_campo_texto_descricao : styles.detalhe_campo_texto_cinza}>
+                  {descricao}
+                </Text>
+              </View>
+
+              <View style={styles.detalhe_secao}>
+                <Text style={styles.detalhe_campo_titulo}>HORÁRIO E ALARME</Text>
+                <View style={styles.flex_row_between}>
+                  <View style={styles.flex_row}>
+                    <RelogioIcon width={16} height={16} strokeWidth={1.5} color="#808080" />
+                    <Text style={styles.detalhe_campo_texto_horario}>{horario}</Text>
+                  </View>
+                  <Text style={[styles.detalhe_campo_texto_descricao, alarme && styles.alarme_ativado]}>
+                    {alarme ? "Alarme ativado" : "Sem Alarme"}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.detalhe_secao}>
+                <Text style={styles.detalhe_campo_titulo}>INTEGRANTES</Text>
+                <View style={styles.flex_wrap}>
+                  {integrantes.map((integrante, index) => (
+                    <Badge
+                      key={index}
+                      backgroundColor={integrante.cor_primaria}
+                      iconColor={integrante.cor_secundaria}
+                      text={integrante.nome}
+                      isSelected={true}
+                    />
+                  ))}
+                </View>
+              </View>
+
+              <View style={styles.detalhe_secao}>
+                <Text style={styles.detalhe_campo_titulo}>FREQUÊNCIA</Text>
+                <Text style={styles.detalhe_campo_texto_cinza}>{freq_texto}</Text>
+              </View>
+            </ScrollView>
           </View>
-
-          <View style={styles.detalhe_secao}>
-            <Text style={styles.detalhe_campo_titulo}>INTEGRANTES</Text>
-            <View style={styles.flex_wrap}>
-            {integrantes.map((integrante, index) => (
-              <Badge
-               key={index}
-                backgroundColor={integrante.cor_primaria}
-                iconColor={integrante.cor_secundaria}
-                text={integrante.nome}
-                isSelected={true}
-              />
-            ))}
-            </View>
-          </View>
-
-          <View style={styles.detalhe_secao}>
-            <Text style={styles.detalhe_campo_titulo}>FREQUÊNCIA</Text>
-            <Text style={styles.detalhe_campo_texto_cinza}>{freq_texto}</Text>
-          </View>
-          </ScrollView>
-
-        </View>
-      </Modal>
-
-    </TouchableOpacity>
+        </Modal>
+      </TouchableOpacity>
+    </>
   );
 };
 

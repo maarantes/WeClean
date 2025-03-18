@@ -18,6 +18,17 @@ export const styles = StyleSheet.create({
     container_dia_semana: {
         gap: 20,
         marginBottom: 32
+    },
+
+    flex_between: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "flex-end"
+    },
+
+    data_dia: {
+        color: "#C4C4C4",
+        fontSize: 14
     }
     
-  });
+});
