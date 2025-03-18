@@ -2,7 +2,6 @@ import {collection, doc, setDoc, getDoc, getDocs, updateDoc, arrayUnion, where, 
 import { db } from "../firebaseConfig";
 import { getUltimoMesAtualizado, setUltimoMesAtualizado } from "../ultimoMesAtualizado"
 
-// Interfaces para tipagem da tarefa e da frequência
 export interface Frequencia {
   tipo: "diariamente" | "semanal" | "intervalo" | "anualmente";
   diasSemana?: number[] | null;
@@ -18,7 +17,8 @@ export interface Tarefa {
   alarme: boolean;
   integrantes: string[];
   frequencia: Frequencia;
-  dataCriacao: string; // Formato "YYYY-MM-DD" em horário local
+  dataCriacao: string;
+  concluido?: boolean;
 }
 
 /**
@@ -157,7 +157,8 @@ export const registrarTarefaNoCalendario = async (tarefa: Tarefa): Promise<void>
       alarme: tarefa.alarme,
       frequencia: tarefa.frequencia,
       dataCriacao: tarefa.dataCriacao,
-      integrantes: tarefa.integrantes // Incluindo os integrantes
+      integrantes: tarefa.integrantes,
+      concluido: tarefa.concluido ?? false
     };
 
     try {
@@ -254,4 +255,26 @@ export const obterTarefas = async (): Promise<Tarefa[]> => {
   });
 
   return tarefas;
+};
+
+export const updateTarefaConcluido = async (
+  id: string, 
+  data: string, // data no formato "YYYY-MM-DD" do documento Calendário a ser atualizado
+  novoValor: boolean
+): Promise<void> => {
+  // Atualiza somente o documento Calendário identificado pela data
+  const calendarRef = doc(db, "Calendário", data);
+  const docSnapshot = await getDoc(calendarRef);
+  if (docSnapshot.exists()) {
+    const dataDoc = docSnapshot.data();
+    if (dataDoc.tarefas) {
+      const updatedTasks = dataDoc.tarefas.map((task: any) => {
+        if (task.id === id) {
+          return { ...task, concluido: novoValor };
+        }
+        return task;
+      });
+      await updateDoc(calendarRef, { tarefas: updatedTasks });
+    }
+  }
 };
