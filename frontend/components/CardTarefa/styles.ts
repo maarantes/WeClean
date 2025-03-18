@@ -294,4 +294,60 @@ export const styles = StyleSheet.create({
     fontFamily: "Inter-Medium"
   },
 
+  modal_exclusao_container: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 16,
+    alignItems: "center",
+    gap: 24
+  },
+
+  modal_exclusao_titulo: {
+    fontFamily: "HeptaSlab-SemiBold",
+    fontSize: 16,
+  },
+
+  modal_exclusao_texto: {
+    fontFamily: "Inter-Medium",
+    color: "#606060",
+    fontSize: 14
+  },
+
+  modal_excluir_botao_excluir: {
+    flexDirection: "row",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: "#FBDFE4",
+    borderRadius: 4,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "45%"
+  },
+
+  modal_botao_excluir_texto: {
+    color: "#E7516E",
+    fontFamily: "Inter-SemiBold"
+  },
+
+  modal_exclusao_botoes: {
+    flexDirection: "row",
+    gap: 32
+  },
+
+  modal_excluir_botao_cancelar: {
+    flexDirection: "row",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: "#DACAFB",
+    borderRadius: 4,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "45%"
+  },
+
+  modal_botao_cancelar_texto: {
+    color: "#5A189A",
+    fontFamily: "Inter-SemiBold"
+  },
+
 });

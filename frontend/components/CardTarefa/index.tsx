@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import Modal from "react-native-modal";
 
 import { styles } from "./styles";
@@ -13,6 +13,8 @@ import EditarIcon from "../../../assets/images/editar.svg";
 import ExcluirIcon from "../../../assets/images/excluir.svg";
 
 import Badge from "../Badge";
+import { excluirTarefa } from "@/backend/services/tarefaService";
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 interface Integrante {
   nome: string;
@@ -21,6 +23,7 @@ interface Integrante {
 }
 
 interface CardTarefaProps {
+  id: string;
   nome: string;
   descricao?: string;
   horario?: string;
@@ -32,7 +35,25 @@ interface CardTarefaProps {
   dataInstancia?: string;
   concluido?: boolean;
   onUpdateConcluido?: (dataInstancia: string, novoValor: boolean) => void;
+  onTaskDeleted?: () => void;
 }
+
+type RootStackParamList = {
+  CriarTarefa: {
+    task: {
+      id: string;
+      nome: string;
+      descricao?: string;
+      horario?: string;
+      alarme: boolean;
+      freq_texto?: string;
+      integrantes: Integrante[];
+      dataInstancia?: string;
+      concluido?: boolean;
+    };
+    dataReferencia: string;
+  };
+};
 
 
 const converterDias = (dias: number[]): string => {
@@ -68,6 +89,7 @@ export const FrequenciaModalTexto = (frequencia: any) => {
 };
 
 const CardTarefa: React.FC<CardTarefaProps> = ({
+  id,
   nome,
   descricao,
   horario,
@@ -79,11 +101,20 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
   dataInstancia,
   concluido,
   onUpdateConcluido,
+  onTaskDeleted
 }) => {
+
   const [isCardModalVisible, setCardModalVisible] = useState(false);
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [lastAction, setLastAction] = useState<"concluido" | "desmarcado" | null>(null);
+
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const dataKey = dataInstancia;
+  const tarefa = { id, nome, descricao, horario, alarme, freq_texto, integrantes, dataInstancia, concluido };
 
   const handlePress = () => {
 
@@ -190,11 +221,16 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
             </View>
 
             <View style={styles.detalhe_botoes}>
-              <TouchableOpacity style={styles.detalhe_botao_excluir}>
+              <TouchableOpacity style={styles.detalhe_botao_excluir} onPress={() => {setConfirmModalVisible(true); setCardModalVisible(false);}}>
                 <ExcluirIcon width={24} height={24} />
                 <Text style={styles.detalhe_botao_excluir_texto}>Excluir</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.detalhe_botao_editar}>
+              <TouchableOpacity style={styles.detalhe_botao_editar} onPress={() => {
+              if (dataKey) {
+              navigation.navigate("CriarTarefa", { task: tarefa, dataReferencia: dataKey });
+              } else {
+                console.error("DataKey não foi importado.");
+              }}}>
                 <EditarIcon width={24} height={24} />
                 <Text style={styles.detalhe_botao_editar_texto}>Editar</Text>
               </TouchableOpacity>
@@ -249,6 +285,51 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
             </ScrollView>
           </View>
         </Modal>
+
+        {/* Modal de confirmação de exclusão */}
+        <Modal
+          isVisible={confirmModalVisible}
+          onBackdropPress={() => setConfirmModalVisible(false)}
+          backdropColor="#404040"
+          backdropOpacity={0.5}
+          animationIn="slideInUp"
+          animationOut="slideOutDown" >
+        <View style={styles.modal_exclusao_container}>
+          <Text style={styles.modal_exclusao_titulo}>
+            Confirmação de Exclusão
+          </Text>
+          <Text style={styles.modal_exclusao_texto}>
+            Você tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.
+          </Text>
+          <View style={styles.modal_exclusao_botoes}>
+
+            <TouchableOpacity
+              style={styles.modal_excluir_botao_excluir}
+              onPress={async () => {
+                setIsDeleting(true);
+                await excluirTarefa(id);
+                setConfirmModalVisible(false);
+                setCardModalVisible(false);
+                if (onTaskDeleted) {
+                  onTaskDeleted(); // Recarrega a página
+                }
+              }}>
+              {isDeleting ? (
+              <ActivityIndicator size="small" color="#E7516E" /> ) : (
+              <Text style={styles.modal_botao_excluir_texto}>Excluir Tarefa</Text>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.modal_excluir_botao_cancelar}
+              onPress={() => setConfirmModalVisible(false)}
+            >
+              <Text style={styles.modal_botao_cancelar_texto}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       </TouchableOpacity>
     </>
   );

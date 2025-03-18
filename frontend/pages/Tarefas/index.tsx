@@ -93,7 +93,7 @@ const PaginaTarefas = () => {
             {tarefasDiarias.length > 0 ? (
               tarefasDiarias.map((tarefa) => (
                 <CardTarefa
-                  key={tarefa.id}
+                  id={tarefa.id}
                   nome={tarefa.nome}
                   descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
                   horario={tarefa.horario}
@@ -105,7 +105,7 @@ const PaginaTarefas = () => {
                     cor_primaria: "#CAEAFB",
                     cor_secundaria: "#144F70"
                   })) || []}
-                  
+                  dataInstancia={tarefa.dataCriacao}
                 />
               ))
             ) : (
@@ -121,7 +121,7 @@ const PaginaTarefas = () => {
             {tarefasSemanais.length > 0 ? (
               tarefasSemanais.map((tarefa) => (
                 <CardTarefa
-                  key={tarefa.id}
+                  id={tarefa.id}
                   nome={tarefa.nome}
                   descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
                   horario={tarefa.horario}
@@ -132,7 +132,7 @@ const PaginaTarefas = () => {
                     cor_primaria: "#CAEAFB",
                     cor_secundaria: "#144F70"
                   })) || []}
-                  
+                  dataInstancia={tarefa.dataCriacao}
                 />
               ))
             ) : (
@@ -148,7 +148,7 @@ const PaginaTarefas = () => {
             {tarefasIntervalo.length > 0 ? (
               tarefasIntervalo.map((tarefa) => (
                 <CardTarefa
-                  key={tarefa.id}
+                  id={tarefa.id}
                   nome={tarefa.nome}
                   descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
                   horario={tarefa.horario}
@@ -160,6 +160,7 @@ const PaginaTarefas = () => {
                     cor_primaria: "#CAEAFB",
                     cor_secundaria: "#144F70"
                   })) || []}
+                  dataInstancia={tarefa.dataCriacao}
                   
                 />
               ))
@@ -176,7 +177,7 @@ const PaginaTarefas = () => {
             {tarefasAnuais.length > 0 ? (
               tarefasAnuais.map((tarefa) => (
                 <CardTarefa
-                  key={tarefa.id}
+                  id={tarefa.id}
                   nome={tarefa.nome}
                   descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
                   horario={tarefa.horario}
@@ -187,7 +188,8 @@ const PaginaTarefas = () => {
                     nome,
                     cor_primaria: "#CAEAFB",
                     cor_secundaria: "#144F70"
-                  })) || []}                  
+                  })) || []}
+                  dataInstancia={tarefa.dataCriacao}      
                 />
               ))
             ) : (

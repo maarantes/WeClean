@@ -165,9 +165,7 @@ const PaginaCalendario = () => {
         </View>
 
         <View style={styles.cards}>
-          <CardTarefa exibirBotao={false} menor={true} />
-          <CardTarefa exibirBotao={false} menor={true} />
-          <CardTarefa exibirBotao={false} menor={true} />
+
         </View>
 
       </ScrollView>

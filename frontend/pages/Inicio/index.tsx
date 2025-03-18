@@ -38,8 +38,6 @@ const PaginaInicio = () => {
   const fontLoaded = useFonts();
   const [tarefasSemana, setTarefasSemana] = useState<{ [data: string]: any[] }>({});
   const [loading, setLoading] = useState(true);
-
-  // Estado do alerta gerenciado no componente pai
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
 
@@ -49,6 +47,24 @@ const PaginaInicio = () => {
     dataInst: string;
     prevValue: boolean;
   } | null>(null);
+
+  // Função para carregar as tarefas da semana
+  const carregarTarefasSemana = async () => {
+    setLoading(true);
+    try {
+      const tarefasDoCalendario = await obterTarefasCalendario();
+      console.log("Tarefas carregadas do Firebase:", tarefasDoCalendario);
+      setTarefasSemana(tarefasDoCalendario);
+    } catch (error) {
+      console.error("Erro ao carregar tarefas:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    carregarTarefasSemana();
+  }, []);
 
   // Função para desfazer a ação do alerta e reverter a atualização
   const handleDesfazer = () => {
@@ -66,24 +82,6 @@ const PaginaInicio = () => {
       setShowAlert(false);
     }
   };
-
-  useEffect(() => {
-    const carregarTarefasSemana = async () => {
-      setLoading(true);
-      try {
-        // Obtém as tarefas do Calendário. As chaves dos documentos são datas no formato "YYYY-MM-DD"
-        const tarefasDoCalendario = await obterTarefasCalendario();
-        console.log("Tarefas carregadas do Firebase:", tarefasDoCalendario);
-        setTarefasSemana(tarefasDoCalendario);
-      } catch (error) {
-        console.error("Erro ao carregar tarefas:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    carregarTarefasSemana();
-  }, []);
 
   if (!fontLoaded) return <Text>Carregando fontes...</Text>;
 
@@ -130,51 +128,52 @@ const PaginaInicio = () => {
                   <Text style={styles.data_dia}>{formatarDataKey(dataKey)}</Text>
                 </View>
                 <View style={styles.container_gap}>
-                {tarefas.length > 0 ? (
-                  tarefas.map((tarefa, index) => (
-                    <CardTarefa
-                      key={index}
-                      nome={tarefa.nome}
-                      descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
-                      horario={tarefa.horario}
-                      exibirBotao={true}
-                      alarme={tarefa.alarme}
-                      freq_texto={FrequenciaModalTexto(tarefa.frequencia)}
-                      integrantes={
-                        tarefa.integrantes?.map((integrante: string) => ({
-                          nome: integrante,
-                          cor_primaria: "#CAEAFB",
-                          cor_secundaria: "#144F70"
-                        })) || []
-                      }
-                      concluido={tarefa.concluido}
-                      dataInstancia={dataKey}
-                      onUpdateConcluido={(dataInst: string, novoValor: boolean) => {
-                        // Armazena a atualização para possibilitar o desfazer
-                        setLastTaskUpdate({
-                          id: tarefa.id,
-                          dataInst,
-                          prevValue: !novoValor, // valor anterior: oposto do novo
-                        });
-                        updateTarefaConcluido(tarefa.id, dataInst, novoValor);
-                        setTarefasSemana((prev) => ({
-                          ...prev,
-                          [dataInst]: prev[dataInst].map((t: any) =>
-                            t.id === tarefa.id ? { ...t, concluido: novoValor } : t
-                          )
-                        }));
-                        setAlertMessage(
-                          novoValor
-                            ? "A tarefa foi concluída"
-                            : "A tarefa foi reaberta"
-                        );
-                        setShowAlert(true);
-                      }}
-                    />
-                  ))
-                ) : (
-                  <SemTarefa />
-                )}
+                  {tarefas.length > 0 ? (
+                    tarefas.map((tarefa, index) => (
+                      <CardTarefa
+                        key={index}
+                        id={tarefa.id}
+                        nome={tarefa.nome}
+                        descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
+                        horario={tarefa.horario}
+                        exibirBotao={true}
+                        alarme={tarefa.alarme}
+                        freq_texto={FrequenciaModalTexto(tarefa.frequencia)}
+                        integrantes={
+                          tarefa.integrantes?.map((integrante: string) => ({
+                            nome: integrante,
+                            cor_primaria: "#CAEAFB",
+                            cor_secundaria: "#144F70"
+                          })) || []
+                        }
+                        concluido={tarefa.concluido}
+                        dataInstancia={dataKey}
+                        onUpdateConcluido={(dataInst: string, novoValor: boolean) => {
+                          setLastTaskUpdate({
+                            id: tarefa.id,
+                            dataInst,
+                            prevValue: !novoValor, // valor anterior: oposto do novo
+                          });
+                          updateTarefaConcluido(tarefa.id, dataInst, novoValor);
+                          setTarefasSemana((prev) => ({
+                            ...prev,
+                            [dataInst]: prev[dataInst].map((t: any) =>
+                              t.id === tarefa.id ? { ...t, concluido: novoValor } : t
+                            )
+                          }));
+                          setAlertMessage(
+                            novoValor
+                              ? "A tarefa foi concluída"
+                              : "A tarefa foi reaberta"
+                          );
+                          setShowAlert(true);
+                        }}
+                        onTaskDeleted={carregarTarefasSemana}
+                      />
+                    ))
+                  ) : (
+                    <SemTarefa />
+                  )}
                 </View>
               </View>
             );
