@@ -129,6 +129,7 @@ const PaginaInicio = () => {
                   <Text style={globalStyles.textoNormal}>{nomeDia}</Text>
                   <Text style={styles.data_dia}>{formatarDataKey(dataKey)}</Text>
                 </View>
+                <View style={styles.container_gap}>
                 {tarefas.length > 0 ? (
                   tarefas.map((tarefa, index) => (
                     <CardTarefa
@@ -174,6 +175,7 @@ const PaginaInicio = () => {
                 ) : (
                   <SemTarefa />
                 )}
+                </View>
               </View>
             );
           })}

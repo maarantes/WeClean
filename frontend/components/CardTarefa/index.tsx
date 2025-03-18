@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import Modal from "react-native-modal";
 
@@ -83,19 +83,7 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
   const [isCardModalVisible, setCardModalVisible] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
-  // Define a última ação realizada: "concluido" ou "desmarcado"
   const [lastAction, setLastAction] = useState<"concluido" | "desmarcado" | null>(null);
-
-  // Efeito para esconder o alerta automaticamente após 4 segundos
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (showAlert) {
-      timer = setTimeout(() => {
-        setShowAlert(false);
-      }, 4000);
-    }
-    return () => timer && clearTimeout(timer);
-  }, [showAlert]);
 
   const handlePress = () => {
 
@@ -114,36 +102,19 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
       setShowAlert(true);
     }
   };
-
-  // Ao clicar em "Desfazer", desfaz a última ação
-  const handleDesfazer = () => {
-
-    if (!dataInstancia) return;
-
-    if (lastAction === "concluido") {
-      // Desfazer a conclusão: volta a ser false
-      onUpdateConcluido?.(dataInstancia, false);
-    } else if (lastAction === "desmarcado") {
-      // Desfazer a desmarcação: volta a ser true
-      onUpdateConcluido?.(dataInstancia, true);
-    }
-    setShowAlert(false);
-  };
-
+  
   return (
     <>
       <TouchableOpacity 
         style={[styles.container, menor && styles.menor]} 
         onPress={() => setCardModalVisible(true)}
-        activeOpacity={0.5}
-      >
+        activeOpacity={0.5}>
         <View style={styles.container_cima}>
           <Text  
             numberOfLines={1} 
             ellipsizeMode="tail"
-            style={[globalStyles.textoNormal, menor && styles.texto_menor]}
-          >
-            {nome}
+            style={[globalStyles.textoNormal, menor && styles.texto_menor]}>
+          {nome}
           </Text>
           <AlarmeIcon 
             width={16} 
@@ -195,21 +166,27 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
 
         <Modal
           isVisible={isCardModalVisible}
+          onBackButtonPress={() => setCardModalVisible(false)}
           onBackdropPress={() => setCardModalVisible(false)}
           animationIn="slideInUp"
           animationOut="slideOutDown"
           backdropColor="#404040"
           backdropOpacity={0.5}
-          style={{ margin: 0, justifyContent: "flex-end" }}
-        >
+          style={{ margin: 0, justifyContent: "flex-end" }}> 
           <View style={styles.modal_container_descricao}>
-            <View style={styles.detalhe_cima}>
+            <View>
+              <View style={styles.detalhe_cima_topo}>
+                <TouchableOpacity onPress={() => setCardModalVisible(false)} style={styles.modal_notch}>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.detalhe_cima}>
               <Text style={[globalStyles.titulo, styles.titulo_menor]}>
                 Detalhes da Tarefa
               </Text>
               <TouchableOpacity onPress={() => setCardModalVisible(false)}>
                 <FecharIcon width={32} height={32} />
               </TouchableOpacity>
+              </View>
             </View>
 
             <View style={styles.detalhe_botoes}>
@@ -231,9 +208,10 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
 
               <View style={styles.detalhe_secao}>
                 <Text style={styles.detalhe_campo_titulo}>DESCRIÇÃO</Text>
-                <Text style={descricao ? styles.detalhe_campo_texto_descricao : styles.detalhe_campo_texto_cinza}>
-                  {descricao}
+                <Text style={descricao === "Não há descrição para esta tarefa." ? styles.detalhe_campo_texto_cinza : styles.detalhe_campo_texto_descricao}>
+                {descricao}
                 </Text>
+
               </View>
 
               <View style={styles.detalhe_secao}>
@@ -243,7 +221,7 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
                     <RelogioIcon width={16} height={16} strokeWidth={1.5} color="#808080" />
                     <Text style={styles.detalhe_campo_texto_horario}>{horario}</Text>
                   </View>
-                  <Text style={[styles.detalhe_campo_texto_descricao, alarme && styles.alarme_ativado]}>
+                  <Text style={[styles.detalhe_campo_texto_cinza, alarme && styles.alarme_ativado]}>
                     {alarme ? "Alarme ativado" : "Sem Alarme"}
                   </Text>
                 </View>

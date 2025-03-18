@@ -29,6 +29,10 @@ export const styles = StyleSheet.create({
     data_dia: {
         color: "#C4C4C4",
         fontSize: 14
+    },
+
+    container_gap: {
+        gap: 20
     }
     
 });

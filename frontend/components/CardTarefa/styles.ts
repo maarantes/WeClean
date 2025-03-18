@@ -177,6 +177,18 @@ export const styles = StyleSheet.create({
     borderRadius: 4,
     marginTop: 16
   },
+  
+  detalhe_cima_topo: {
+    alignItems: "center"
+  },
+
+  modal_notch: {
+    width: 64,
+    height: 4,
+    borderRadius: 20,
+    backgroundColor: "#404040",
+    marginBottom: 20
+  },
 
   detalhe_cima: {
     flexDirection: "row",
@@ -277,7 +289,7 @@ export const styles = StyleSheet.create({
   },
 
   detalhe_campo_texto_cinza: {
-    color: "#606060",
+    color: "#808080",
     fontSize: 14,
     fontFamily: "Inter-Medium"
   },

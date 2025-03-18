@@ -17,15 +17,15 @@ const AlertaConcluido: React.FC<AlertaConcluidoProps> = ({ visible, message, onU
   useEffect(() => {
     if (visible) {
       setShouldRender(true);
-      viewRef.current?.animate("slideInUp", 500);
+      viewRef.current?.animate("slideInUp", 250);
       const timer = setTimeout(() => {
         viewRef.current
-          ?.animate("slideOutDown", 500)
+          ?.animate("slideOutDown", 250)
           .then(() => {
             setShouldRender(false);
             onClose(); // Fecha o alerta sem desfazer a ação
           });
-      }, 5000);
+      }, 3000);
       return () => clearTimeout(timer);
     } else {
       viewRef.current?.animate("slideOutDown", 500).then(() => setShouldRender(false));
