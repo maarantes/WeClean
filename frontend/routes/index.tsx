@@ -11,7 +11,10 @@ export type RootStackParamList = {
     Tarefas: undefined;
     Calendário: undefined;
     Perfil: undefined;
-    CriarTarefa: undefined;
+    CriarTarefa: {
+        task?: any;
+        dataReferencia?: string;
+      };
 }
 
 const Stack = createStackNavigator<RootStackParamList>();

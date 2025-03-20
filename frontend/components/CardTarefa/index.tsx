@@ -55,7 +55,6 @@ type RootStackParamList = {
   };
 };
 
-
 const converterDias = (dias: number[]): string => {
   const mapDias: Record<number, string> = {
     0: "DOM",
@@ -228,6 +227,7 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
               <TouchableOpacity style={styles.detalhe_botao_editar} onPress={() => {
               if (dataKey) {
               navigation.navigate("CriarTarefa", { task: tarefa, dataReferencia: dataKey });
+              setCardModalVisible(false)
               } else {
                 console.error("DataKey não foi importado.");
               }}}>
