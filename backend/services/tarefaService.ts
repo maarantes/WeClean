@@ -21,10 +21,8 @@ export interface Tarefa {
   concluido?: boolean;
 }
 
-/**
- * Formata a data local no padrão "YYYY-MM-DD"
- * @param date Data a ser formatada
- */
+// Formata a data local no padrão "YYYY-MM-DD"
+
 const formatLocalDate = (date: Date): string => {
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -32,11 +30,13 @@ const formatLocalDate = (date: Date): string => {
   return `${year}-${month}-${day}`;
 };
 
-/**
- * Função para criar uma tarefa:
- * 1. Registra a tarefa na coleção "Tarefas".
- * 2. Registra as ocorrências da tarefa na coleção "Calendário" para o mês atual.
- */
+
+
+
+// Função para criar uma tarefa:
+// 1. Registra a tarefa na coleção "Tarefas".
+// 2. Registra as ocorrências da tarefa na coleção "Calendário" para o mês atual.
+
 export const criarTarefa = async (tarefa: Tarefa): Promise<void> => {
   const tarefaRef = doc(collection(db, "Tarefas"));
   const tarefaComId: Tarefa = { ...tarefa, id: tarefaRef.id };
@@ -46,18 +46,19 @@ export const criarTarefa = async (tarefa: Tarefa): Promise<void> => {
   await registrarTarefaNoCalendario(tarefaComId);
 };
 
-/**
- * Função para registrar uma tarefa na coleção "Calendário" para o mês atual.
- * Calcula as datas de ocorrência com base na frequência e nas regras:
- * 
- * - Diariamente: Em todos os dias do mês a partir do dia de criação (ou do dia 1 se criado em mês anterior).
- * - Semanalmente: Em cada dia que corresponda aos dias da semana selecionados,
- *   iniciando no dia de criação se este mês; se a tarefa já era cadastrada, inicia do dia 1.
- * - Intervalo: Inicia na data de criação e repete a cada X dias; se a tarefa foi criada em mês anterior,
- *   calcula a próxima ocorrência respeitando o intervalo.
- * - Anualmente: Para cada data específica (formato "DD/MM") que pertença ao mês atual,
- *   registra se estiver de acordo com o dia de criação.
- */
+
+
+// Função para registrar uma tarefa na coleção "Calendário" para o mês atual.
+// Calcula as datas de ocorrência com base na frequência e nas regras:
+// 
+// Diariamente: Em todos os dias do mês a partir do dia de criação (ou do dia 1 se criado em mês anterior).
+// Semanalmente: Em cada dia que corresponda aos dias da semana selecionados,
+// iniciando no dia de criação se este mês; se a tarefa já era cadastrada, inicia do dia 1.
+// Intervalo: Inicia na data de criação e repete a cada X dias; se a tarefa foi criada em mês anterior,
+// calcula a próxima ocorrência respeitando o intervalo.
+// Anualmente: Para cada data específica (formato "DD/MM") que pertença ao mês atual,
+// registra se estiver de acordo com o dia de criação.
+
 export const registrarTarefaNoCalendario = async (tarefa: Tarefa): Promise<void> => {
   const now = new Date();
   const currentYear = now.getFullYear();
@@ -175,13 +176,13 @@ export const registrarTarefaNoCalendario = async (tarefa: Tarefa): Promise<void>
 };
 
 
-/**
- * Função para atualizar o Calendário para o mês atual:
- * - Verifica se o mês atual já foi processado (usando getUltimoMesAtualizado).
- * - Se não, percorre todas as tarefas da coleção "Tarefas" e registra as ocorrências
- *   para o mês atual conforme as regras de frequência.
- * - Ao final, marca o mês atual como atualizado (com setUltimoMesAtualizado).
- */
+
+// Função para atualizar o Calendário para o mês atual:
+// Verifica se o mês atual já foi processado (usando getUltimoMesAtualizado).
+// Se não, percorre todas as tarefas da coleção "Tarefas" e registra as ocorrências
+// para o mês atual conforme as regras de frequência.
+// Ao final, marca o mês atual como atualizado (com setUltimoMesAtualizado).
+
 export const atualizarCalendario = async (): Promise<void> => {
   const now = new Date();
   const currentYear = now.getFullYear();
@@ -208,9 +209,10 @@ export const atualizarCalendario = async (): Promise<void> => {
   await setUltimoMesAtualizado(currentMonthStr);
 };
 
-/**
- * Retorna as tarefas cadastradas na coleção "Calendário" para a semana atual (de domingo a sábado).
- */
+
+
+//Retorna as tarefas cadastradas na coleção "Calendário" para a semana atual (de domingo a sábado).
+
 export const obterTarefasCalendario = async (): Promise<Record<string, any[]>> => {
   // Data atual (horário local)
   const now = new Date();
@@ -257,6 +259,8 @@ export const obterTarefas = async (): Promise<Tarefa[]> => {
   return tarefas;
 };
 
+
+
 export const updateTarefaConcluido = async (
   id: string, 
   data: string, // data no formato "YYYY-MM-DD" do documento Calendário a ser atualizado
@@ -280,6 +284,7 @@ export const updateTarefaConcluido = async (
 };
 
 
+
 export const excluirTarefa = async (taskId: string): Promise<void> => {
   // Exclui todas as instâncias (passadas, atuais e futuras) na coleção "Calendário"
   const calendarRef = collection(db, "Calendário");
@@ -298,15 +303,30 @@ export const excluirTarefa = async (taskId: string): Promise<void> => {
 };
 
 
+
+export const removerDocumentosVaziosNoCalendario = async (): Promise<void> => {
+  const calendarioRef = collection(db, "Calendário");
+  const querySnapshot = await getDocs(calendarioRef);
+  
+  for (const docSnapshot of querySnapshot.docs) {
+    const dataDoc = docSnapshot.data();
+    // Verifica se o array de tarefas está vazio ou não existe
+    if (!dataDoc.tarefas || dataDoc.tarefas.length === 0) {
+      await deleteDoc(doc(db, "Calendário", docSnapshot.id));
+    }
+  }
+};
+
+
+
 export const editarTarefa = async (updatedTask: Tarefa, dataReferencia: string): Promise<void> => {
-  // 1. Atualiza a tarefa na coleção "Tarefas"
-  const tarefaRef = doc(db, "Tarefas", updatedTask.id!);
-  const { id, ...dataToUpdate } = updatedTask;
-  await updateDoc(tarefaRef, dataToUpdate);
-
-  // 2. Exclui as instâncias futuras (a partir da data de referência)
+  // 1. Exclui a tarefa antiga (documento em "Tarefas" e ocorrências no "Calendário")
   await excluirTarefa(updatedTask.id!);
-
-  // 3. Registra as novas ocorrências no calendário
-  await registrarTarefaNoCalendario(updatedTask);
+  
+  // 2. Remove o id para que a nova tarefa receba um novo identificador
+  const { id, ...novaTarefa } = updatedTask;
+  
+  // 3. Cria a nova tarefa com as informações atualizadas e exclui os dias sem nenhuma tarefa na coleção Calendário
+  await criarTarefa(novaTarefa as Tarefa);
+  await removerDocumentosVaziosNoCalendario();
 };
