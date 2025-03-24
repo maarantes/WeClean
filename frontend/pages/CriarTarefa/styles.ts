@@ -82,6 +82,18 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 12,
         justifyContent: "space-between",
         alignItems: "center",
+        width: "34%",
+        backgroundColor: "#F5F5F5",
+        borderRadius: 4,
+    },
+
+    horario_primeiro: {
+        flexDirection: "row",
+        gap: 16,
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        justifyContent: "space-between",
+        alignItems: "center",
         width: "48%",
         backgroundColor: "#F5F5F5",
         borderRadius: 4,
@@ -89,12 +101,19 @@ export const styles = StyleSheet.create({
 
     horario_texto: {
         color: "#606060",
-        fontFamily: "Inter-Medium"
+        fontFamily: "Inter-Medium",
+        fontSize: 14
+    },
+
+    horario_texto_roxo: {
+        color: "#5A189A",
+        fontFamily: "Inter-SemiBold",
+        fontSize: 14
     },
 
     roxo: {
         color: "#5A189A",
-        fontFamily: "Inter-SemiBold"
+        fontFamily: "Inter-SemiBold",
     },
 
     branco: {
@@ -130,8 +149,7 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 8,
         justifyContent: "center",
         alignItems: "center",
-        borderWidth: 1,
-        borderColor: "#5A189A",
+        backgroundColor: "#EAE3FA",
         color: "#5A189A",
         borderRadius: 4,
         marginRight: 8
@@ -215,5 +233,14 @@ export const styles = StyleSheet.create({
         fontFamily: "Inter-Medium",
         fontSize: 12,
         marginTop: 12
+    },
+
+    botao_remover_data: {
+        width: "10%",
+        height: 36,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#F5F5F5",
+        borderRadius: 2
     }
 });

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Text, ScrollView, SafeAreaView, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { useFonts } from "../../hooks/UsarFontes";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/frontend/routes";
 
@@ -23,23 +23,30 @@ const PaginaTarefas = () => {
   const [tarefas, setTarefas] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const carregarTarefas = async () => {
+    setLoading(true);
+    try {
+      // Obtém as tarefas da coleção "Tarefas"
+      const tarefasFirestore = await obterTarefas();
+      console.log("Tarefas carregadas:", tarefasFirestore);
+      setTarefas(tarefasFirestore);
+    } catch (error) {
+      console.error("Erro ao carregar tarefas:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   useEffect(() => {
-    const carregarTarefas = async () => {
-      setLoading(true);
-      try {
-        // Obtém as tarefas da coleção "Tarefas"
-        const tarefasFirestore = await obterTarefas();
-        console.log("Tarefas carregadas:", tarefasFirestore);
-        setTarefas(tarefasFirestore);
-      } catch (error) {
-        console.error("Erro ao carregar tarefas:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     carregarTarefas();
   }, []);
+  
+  useFocusEffect(
+    useCallback(() => {
+      carregarTarefas();
+    }, [])
+  );
+  
 
   // Agrupa as tarefas conforme o tipo de frequência
   const tarefasDiarias = tarefas.filter(
@@ -77,8 +84,7 @@ const PaginaTarefas = () => {
 
           <TouchableOpacity
             style={styles.botao_adicionar}
-            onPress={() => navigate("CriarTarefa")}
-          >
+            onPress={() => navigate('CriarTarefa', {})}>
             <TarefaIcon width={20} height={20} color={"#5A189A"} />
             <Text style={styles.botao_adicionar_texto}>
               Criar Nova Tarefa
@@ -91,8 +97,9 @@ const PaginaTarefas = () => {
           </Text>
           <View style={styles.container_cards}>
             {tarefasDiarias.length > 0 ? (
-              tarefasDiarias.map((tarefa) => (
+              tarefasDiarias.map((tarefa, index) => (
                 <CardTarefa
+                  key={index}
                   id={tarefa.id}
                   nome={tarefa.nome}
                   descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
@@ -106,6 +113,7 @@ const PaginaTarefas = () => {
                     cor_secundaria: "#144F70"
                   })) || []}
                   dataInstancia={tarefa.dataCriacao}
+                  onTaskDeleted={carregarTarefas}
                 />
               ))
             ) : (
@@ -119,8 +127,9 @@ const PaginaTarefas = () => {
           </Text>
           <View style={styles.container_cards}>
             {tarefasSemanais.length > 0 ? (
-              tarefasSemanais.map((tarefa) => (
+              tarefasSemanais.map((tarefa, index) => (
                 <CardTarefa
+                  key={index}
                   id={tarefa.id}
                   nome={tarefa.nome}
                   descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
@@ -133,6 +142,7 @@ const PaginaTarefas = () => {
                     cor_secundaria: "#144F70"
                   })) || []}
                   dataInstancia={tarefa.dataCriacao}
+                  onTaskDeleted={carregarTarefas}
                 />
               ))
             ) : (
@@ -146,8 +156,9 @@ const PaginaTarefas = () => {
           </Text>
           <View style={styles.container_cards}>
             {tarefasIntervalo.length > 0 ? (
-              tarefasIntervalo.map((tarefa) => (
+              tarefasIntervalo.map((tarefa, index) => (
                 <CardTarefa
+                  key={index}
                   id={tarefa.id}
                   nome={tarefa.nome}
                   descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
@@ -161,7 +172,7 @@ const PaginaTarefas = () => {
                     cor_secundaria: "#144F70"
                   })) || []}
                   dataInstancia={tarefa.dataCriacao}
-                  
+                  onTaskDeleted={carregarTarefas}
                 />
               ))
             ) : (
@@ -175,8 +186,9 @@ const PaginaTarefas = () => {
           </Text>
           <View style={styles.container_cards}>
             {tarefasAnuais.length > 0 ? (
-              tarefasAnuais.map((tarefa) => (
+              tarefasAnuais.map((tarefa, index) => (
                 <CardTarefa
+                  key={index}
                   id={tarefa.id}
                   nome={tarefa.nome}
                   descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
@@ -189,7 +201,8 @@ const PaginaTarefas = () => {
                     cor_primaria: "#CAEAFB",
                     cor_secundaria: "#144F70"
                   })) || []}
-                  dataInstancia={tarefa.dataCriacao}      
+                  dataInstancia={tarefa.dataCriacao}
+                  onTaskDeleted={carregarTarefas} 
                 />
               ))
             ) : (

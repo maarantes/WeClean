@@ -33,6 +33,33 @@ export const styles = StyleSheet.create({
 
     container_gap: {
         gap: 20
+    },
+
+    botao_tipo: {
+        backgroundColor: "#EAE3FA",
+        padding: 8,
+        borderRadius: 4,
+    },
+
+    botao_tipo_ativo: {
+        backgroundColor: "#5A189A",
+        borderWidth: 0
+    },
+
+    botao_tipo_texto: {
+        color: "#5A189A",
+        fontFamily: "Inter-Medium"
+    },
+
+    botao_tipo_texto_ativo: {
+        color: "#FFFFFF",
+        fontFamily: "Inter-Medium"
+    },
+
+    wrapper_botao_tipo: {
+        flexDirection: "row",
+        gap: 8,
+        marginBottom: 20
     }
     
 });

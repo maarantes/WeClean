@@ -24,11 +24,12 @@ export const styles = StyleSheet.create({
     padding: 8,
     width: "50%",
     borderTopLeftRadius: 4,
-    borderBottomLeftRadius: 4
+    borderBottomLeftRadius: 4,
+    fontFamily: "Inter-Medium"
   },
 
   desativado: {
-    backgroundColor: "#DACAFB",
+    backgroundColor: "#EAE3FA",
   },
 
   desativado_texto: {

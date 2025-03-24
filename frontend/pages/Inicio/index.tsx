@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, SafeAreaView, ActivityIndicator } from "react-native";
+import React, { useCallback, useState } from "react";
+import { View, Text, ScrollView, SafeAreaView, ActivityIndicator, TouchableOpacity } from "react-native";
 import { obterTarefasCalendario, updateTarefaConcluido } from "@/backend/services/tarefaService";
 import { useFonts } from "../../hooks/UsarFontes";
 
@@ -10,6 +10,7 @@ import { Navbar } from "@/frontend/components/Navbar";
 import ParteCima from "../../components/ParteCima/index";
 import CardTarefa, { FrequenciaModalTexto } from "../../components/CardTarefa/index";
 import AlertaConcluido from "@/frontend/components/AlertaConcluido";
+import { useFocusEffect } from "@react-navigation/native";
 
 // Definição dos dias da semana para exibição
 const DiasDaSemana = [
@@ -41,6 +42,19 @@ const PaginaInicio = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
 
+  const [filtro, setFiltro] = useState<"tudo" | "pendente" | "concluido">("tudo");
+
+  const filtrarTarefas = (tarefas: any[]) => {
+    switch (filtro) {
+      case "pendente":
+        return tarefas.filter(t => !t.concluido);
+      case "concluido":
+        return tarefas.filter(t => t.concluido);
+      default:
+        return tarefas;
+    }
+  };
+
   // Estado para armazenar a última atualização de tarefa (para desfazer)
   const [lastTaskUpdate, setLastTaskUpdate] = useState<{
     id: string;
@@ -62,9 +76,12 @@ const PaginaInicio = () => {
     }
   };
 
-  useEffect(() => {
-    carregarTarefasSemana();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      // Executa sempre que a tela ganhar foco
+      carregarTarefasSemana();
+    }, [])
+  );
 
   // Função para desfazer a ação do alerta e reverter a atualização
   const handleDesfazer = () => {
@@ -112,11 +129,32 @@ const PaginaInicio = () => {
       ) : (
         <ScrollView
           style={globalStyles.containerPagina}
-          contentContainerStyle={{ paddingBottom: 140, paddingTop: 80 }}
-        >
+          contentContainerStyle={{ paddingBottom: 140, paddingTop: 80 }}>
+          
           <Text style={[globalStyles.titulo, globalStyles.mbottom32]}>
             Tarefas da Semana
           </Text>
+          
+          <View style={styles.wrapper_botao_tipo}>
+            <TouchableOpacity
+              style={[styles.botao_tipo, filtro === "tudo" && styles.botao_tipo_ativo]}
+              onPress={() => setFiltro("tudo")}>
+              <Text style={[styles.botao_tipo_texto, filtro === "tudo" && styles.botao_tipo_texto_ativo]}>Tudo</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.botao_tipo, filtro === "pendente" && styles.botao_tipo_ativo]}
+              onPress={() => setFiltro("pendente")}>
+              <Text style={[styles.botao_tipo_texto, filtro === "pendente" && styles.botao_tipo_texto_ativo]}>Pendente</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.botao_tipo, filtro === "concluido" && styles.botao_tipo_ativo]}
+              onPress={() => setFiltro("concluido")}>
+              <Text style={[styles.botao_tipo_texto, filtro === "concluido" && styles.botao_tipo_texto_ativo]}>Concluído</Text>
+            </TouchableOpacity>
+          </View>
+
           {weekDates.map((dataKey) => {
             const dateObj = parseLocalDate(dataKey);
             const nomeDia = DiasDaSemana[dateObj.getDay()];
@@ -128,8 +166,8 @@ const PaginaInicio = () => {
                   <Text style={styles.data_dia}>{formatarDataKey(dataKey)}</Text>
                 </View>
                 <View style={styles.container_gap}>
-                  {tarefas.length > 0 ? (
-                    tarefas.map((tarefa, index) => (
+                  {filtrarTarefas(tarefas).length > 0 ? (
+                    filtrarTarefas(tarefas).map((tarefa, index) => (
                       <CardTarefa
                         key={index}
                         id={tarefa.id}
@@ -181,7 +219,7 @@ const PaginaInicio = () => {
         </ScrollView>
       )}
 
-      {/* Alerta fixo na parte inferior da tela */}
+      {/* Alerta fixo na parte de baixo da tela */}
       <AlertaConcluido
         visible={showAlert}
         message={alertMessage}

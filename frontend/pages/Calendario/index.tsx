@@ -69,34 +69,39 @@ const PaginaCalendario = () => {
     let semanasFormatadas: { semana: string; inicio: string; fim: string }[] = [];
 
     if (semanasTemp.length >= 2) {
+      // Semana 1
       semanasFormatadas.push({
-        semana: "1-2",
+        semana: "1",
         inicio: semanasTemp[0].inicio.toString().padStart(2, "0"),
         fim: semanasTemp[1].fim.toString().padStart(2, "0"),
       });
-
-      for (let i = 2; i < semanasTemp.length - (temSemana06 ? 2 : 1); i++) {
+    
+      // Semanas intermediárias (Sem. 2 e Sem. 3)
+      let numeroSemana = 2;
+      for (let i = 2; i < semanasTemp.length - (temSemana06 ? 2 : 1); i++, numeroSemana++) {
         semanasFormatadas.push({
-          semana: semanasTemp[i].semana.toString(),
+          semana: numeroSemana.toString(),
           inicio: semanasTemp[i].inicio.toString().padStart(2, "0"),
           fim: semanasTemp[i].fim.toString().padStart(2, "0"),
         });
       }
-
+    
+      // Semana 4
       if (temSemana06) {
         semanasFormatadas.push({
-          semana: "5-6",
+          semana: "4",
           inicio: semanasTemp[4].inicio.toString().padStart(2, "0"),
           fim: semanasTemp[5].fim.toString().padStart(2, "0"),
         });
       } else {
         semanasFormatadas.push({
-          semana: "5",
+          semana: "4",
           inicio: semanasTemp[4].inicio.toString().padStart(2, "0"),
           fim: semanasTemp[4].fim.toString().padStart(2, "0"),
         });
       }
     }
+    
 
     return semanasFormatadas;
   }, [mesAtual, anoAtual]);

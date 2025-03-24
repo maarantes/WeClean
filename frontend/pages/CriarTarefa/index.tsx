@@ -23,6 +23,7 @@ import SetaBackIcon from "../../../assets/images/setaBack.svg";
 import CalendarioMiniIcon from "../../../assets/images/calendario_mini.svg";
 import RelogioIcon from "../../../assets/images/relogio.svg";
 import TarefaIcon from "../../../assets/images/tarefa.svg";
+import FecharIcon from "../../../assets/images/fechar.svg";
 import Badge from "@/frontend/components/Badge";
 
 import {
@@ -49,7 +50,7 @@ const PaginaCriarTarefa = () => {
   const [nome, setNome] = useState("");
   // Se a descrição for o texto padrão, inicia vazia
   const [descricao, setDescricao] = useState("");
-  const [horario, setHorario] = useState("Nenhum");
+  const [horario, setHorario] = useState("N/A");
   const [alarmeAtivado, setAlarmeAtivado] = useState(false);
   const [integrantes] = useState(["Marco", "Bruna", "Mãe", "Pai"]);
   const [frequencias] = useState([
@@ -71,6 +72,7 @@ const PaginaCriarTarefa = () => {
   const [erroHorario, setErroHorario] = useState(false);
   const [erroIntegrante, setErroIntegrante] = useState(false);
   const [erroFrequencia, setErroFrequencia] = useState(false);
+  const [erroFrequenciaMessage, setErroFrequenciaMessage] = useState("");
   const [integrantesSelecionados, setIntegrantesSelecionados] = useState<string[]>([]);
 
   // Modo edição
@@ -84,7 +86,7 @@ const PaginaCriarTarefa = () => {
       setNome(taskToEdit.nome || "");
       // Se a descrição for o texto padrão, inicia vazia
       setDescricao(taskToEdit.descricao === "Não há descrição para esta tarefa." ? "" : taskToEdit.descricao || "");
-      setHorario(taskToEdit.horario || "Nenhum");
+      setHorario(taskToEdit.horario || "N/A");
       setAlarmeAtivado(taskToEdit.alarme || false);
       // Se os integrantes são objetos, extraia o "nome", senão use diretamente
       setIntegrantesSelecionados(
@@ -200,24 +202,101 @@ const PaginaCriarTarefa = () => {
     ]);
   };
 
-  const toggleIntegrante = (nome: string) => {
-    const normalized = capitalize(nome);
-    setIntegrantesSelecionados((prevSelecionados) =>
-      prevSelecionados.includes(normalized)
-        ? prevSelecionados.filter((i) => i !== normalized)
-        : [...prevSelecionados, normalized]
+  const removerData = (id: number) => {
+    setDatasSelecionadas((prevDatas) =>
+      prevDatas.filter((item) => item.id !== id)
     );
   };
 
+  const toggleIntegrante = (nome: string) => {
+    const normalized = capitalize(nome);
+    setIntegrantesSelecionados((prevSelecionados) => {
+      const novoValor = prevSelecionados.includes(normalized)
+        ? prevSelecionados.filter((i) => i !== normalized)
+        : [...prevSelecionados, normalized];
+  
+      // Se houver pelo menos um integrante selecionado, remove o erro
+      if (novoValor.length > 0) {
+        setErroIntegrante(false);
+      }
+      return novoValor;
+    });
+  };
+  
+
   const criarTarefa = async () => {
-    if (!nome.trim())
-      return Alert.alert("Erro", "O nome da tarefa é obrigatório.");
-    if (horario === "Nenhum")
-      return Alert.alert("Erro", "Escolha um horário para a tarefa.");
-    if (integrantesSelecionados.length === 0)
-      return Alert.alert("Erro", "Selecione pelo menos um integrante.");
-    if (botaoFrequenciaAtivo === null)
-      return Alert.alert("Erro", "Escolha uma frequência.");
+
+    let temErro = false;
+   
+     if (!nome.trim()) {
+       setErroNome(true);
+       temErro = true;
+     } else {
+       setErroNome(false);
+     }
+   
+     if (horario === "N/A") {
+       setErroHorario(true);
+       temErro = true;
+     } else {
+       setErroHorario(false);
+     }
+   
+     if (integrantesSelecionados.length === 0) {
+       setErroIntegrante(true);
+       temErro = true;
+     } else {
+       setErroIntegrante(false);
+     }
+   
+     // Validação correta da frequência
+     if (botaoFrequenciaAtivo === null) {
+       setErroFrequencia(true);
+       setErroFrequenciaMessage("Selecione uma opção de frequência.");
+       temErro = true;
+     } else {
+       setErroFrequencia(false);
+   
+       if (botaoFrequenciaAtivo === 1 && diasSelecionados.length === 0) {
+         setErroFrequencia(true);
+         setErroFrequenciaMessage("Escolha pelo menos um dia da semana.");
+         temErro = true;
+       }
+   
+       if (botaoFrequenciaAtivo === 2 && (!intervalo || Number(intervalo) <= 0)) {
+         setErroFrequencia(true);
+         setErroFrequenciaMessage("Defina um intervalo válido de dias.");
+         temErro = true;
+       }
+
+      if (botaoFrequenciaAtivo === 3) {
+        const selectedDates = datasSelecionadas.filter((item) => item.data !== null);
+        if (selectedDates.length === 0) {
+          setErroFrequencia(true);
+          setErroFrequenciaMessage("Escolha pelo menos uma data.");
+          temErro = true;
+        } else {
+          // Formata as datas para "DD/MM"
+          const formattedDates = selectedDates.map((item) =>
+            item.data!.toLocaleDateString("pt-BR", {
+              day: "2-digit",
+              month: "2-digit",
+            })
+          );
+          // Verifica duplicatas
+          const uniqueDates = new Set(formattedDates);
+          if (uniqueDates.size < formattedDates.length) {
+            setErroFrequencia(true);
+            setErroFrequenciaMessage("Não podem haver datas duplicadas.");
+            temErro = true;
+          }
+        }
+      }
+    }
+
+    if (temErro) {
+      return Alert.alert("Erro", "Alguns campos ficaram em branco ou não foram configurados corretamente. Preencha-os.");
+    }
 
     let frequencia: Frequencia;
     switch (botaoFrequenciaAtivo) {
@@ -365,11 +444,13 @@ const PaginaCriarTarefa = () => {
             <RelogioIcon width={16} height={16} color="#FFFFFF" />
             <Text style={styles.botao_horario_texto}>Escolher Horário</Text>
           </TouchableOpacity>
-          <View style={styles.horario}>
+          <View style={styles.horario_primeiro}>
             <Text style={styles.horario_texto}>Atual:</Text>
             <Text style={styles.roxo}>{horario}</Text>
           </View>
         </View>
+
+        {erroHorario && <Text style={styles.erro_texto}>Este campo é obrigatório!</Text>}
 
         <View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
           <Checkbox
@@ -381,7 +462,6 @@ const PaginaCriarTarefa = () => {
             Ativar alarme para esta tarefa
           </Text>
         </View>
-        {erroHorario && <Text style={styles.erro_texto}>Este campo é obrigatório!</Text>}
 
         <Text style={[styles.label, styles.cima]}>INTEGRANTES</Text>
         <View style={styles.lista_integrantes}>
@@ -462,28 +542,37 @@ const PaginaCriarTarefa = () => {
         )}
         {botaoFrequenciaAtivo === 3 && (
           <View>
-            {datasSelecionadas.map((item) => (
-              <View key={item.id} style={[styles.dividir, styles.cimaMetade]}>
-                <TouchableOpacity
-                  style={styles.botao_horario}
-                  onPress={() => escolherData(item.id)}
-                >
-                  <CalendarioMiniIcon width={16} height={16} color="#FFFFFF" />
-                  <Text style={styles.botao_horario_texto}>Escolher Data</Text>
-                </TouchableOpacity>
-                <View style={styles.horario}>
-                  <Text style={styles.horario_texto}>Atual:</Text>
-                  <Text style={styles.roxo}>
-                    {item.data
-                      ? item.data.toLocaleDateString("pt-BR", {
-                          day: "2-digit",
-                          month: "2-digit",
-                        })
-                      : "Nenhum"}
-                  </Text>
-                </View>
+          {datasSelecionadas.map((item, index) => (
+            <View key={item.id} style={[styles.dividir, styles.cimaMetade]}>
+              <TouchableOpacity
+                style={styles.botao_horario}
+                onPress={() => escolherData(item.id)}
+              >
+                <CalendarioMiniIcon width={16} height={16} color="#FFFFFF" />
+                <Text style={styles.botao_horario_texto}>Escolher Data</Text>
+              </TouchableOpacity>
+              <View style={index === 0 ? styles.horario_primeiro : styles.horario}>
+                <Text style={styles.horario_texto}>Atual:</Text>
+                <Text style={styles.horario_texto_roxo}>
+                  {item.data
+                    ? item.data.toLocaleDateString("pt-BR", {
+                        day: "2-digit",
+                        month: "2-digit",
+                      })
+                    : "N/A"}
+                </Text>
               </View>
-            ))}
+              {/* Botão de excluir a partir da segunda data */}
+              {index > 0 && (
+                <TouchableOpacity
+                  onPress={() => removerData(item.id)}
+                  style={styles.botao_remover_data}
+                >
+                  <FecharIcon width={16} height={16} color="#808080" />
+                </TouchableOpacity>
+              )}
+            </View>
+          ))}
             <TouchableOpacity
               style={[styles.botao_add_data, { marginTop: 12 }]}
               onPress={adicionarNovaData}
@@ -492,20 +581,7 @@ const PaginaCriarTarefa = () => {
             </TouchableOpacity>
           </View>
         )}
-        {erroFrequencia && (
-          <Text style={styles.erro_texto}>
-            {botaoFrequenciaAtivo === null
-              ? "Selecione uma opção de frequência."
-              : botaoFrequenciaAtivo === 1 && diasSelecionados.length === 0
-              ? "Escolha pelo menos um dia da semana."
-              : botaoFrequenciaAtivo === 2 && (!intervalo || Number(intervalo) <= 0)
-              ? "Defina um intervalo válido de dias."
-              : botaoFrequenciaAtivo === 3 &&
-                datasSelecionadas.every((item) => item.data === null)
-              ? "Escolha pelo menos uma data."
-              : ""}
-          </Text>
-        )}
+        {erroFrequencia && <Text style={styles.erro_texto}>{erroFrequenciaMessage}</Text>}
       </ScrollView>
       <View style={styles.nav_bottom}>
         {loading ? (
