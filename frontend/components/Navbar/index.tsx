@@ -17,12 +17,16 @@ export function Navbar() {
     const navigation = useNavigation<NavbarProps>();
     const route = useRoute();
 
-    const opcoes = [
+    type RoutesSemParams = {
+        [K in keyof RootStackParamList]: RootStackParamList[K] extends undefined ? K : never
+      }[keyof RootStackParamList];
+
+    const opcoes: { key: RoutesSemParams; label: string; icon: React.FC<any> }[] = [
         { key: 'Início', label: 'Início', icon: InicioIcon },
         { key: 'Calendário', label: 'Calendário', icon: CalendarioIcon },
         { key: 'Tarefas', label: 'Tarefas', icon: TarefasIcon },
         { key: 'Perfil', label: 'Perfil', icon: PerfilIcon },
-    ]; 
+    ];
 
     return (
         <View style={styles.container}>
@@ -35,7 +39,7 @@ export function Navbar() {
                     <TouchableOpacity 
                         key={opcao.key} 
                         style={styles.botao}
-                        onPress={() => navigation.navigate(opcao.key as keyof RootStackParamList)}
+                        onPress={() => navigation.navigate(opcao.key)}
                     >
                         <opcao.icon width={24} height={24} color={iconColor} />
                         <Text style={[styles.texto, { color: textColor }]}>{opcao.label}</Text>
