@@ -231,7 +231,7 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
               } else {
                 console.error("DataKey não foi importado.");
               }}}>
-                <EditarIcon width={24} height={24} />
+                <EditarIcon width={24} height={24} color={"#5A189A"}/>
                 <Text style={styles.detalhe_botao_editar_texto}>Editar</Text>
               </TouchableOpacity>
             </View>

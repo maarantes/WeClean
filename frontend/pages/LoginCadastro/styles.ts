@@ -65,22 +65,6 @@ export const styles = StyleSheet.create({
         fontFamily: "Inter-Medium"
     },
 
-    botao_login: {
-        flexDirection: "row",
-        gap: 16,
-        paddingVertical: 8,
-        justifyContent: "center",
-        alignItems: "center",
-        width: "48%",
-        backgroundColor: "#5A189A",
-        borderRadius: 4
-    },
-
-    botao_login_texto: {
-        color: "white",
-        fontFamily: "Inter-Medium"
-    },
-
     parte_baixo: {
         position: "fixed",
         top: 32,

@@ -14,8 +14,7 @@ export const styles = StyleSheet.create({
     zIndex: 1000,
     paddingTop: 60,
     paddingHorizontal: 20,
-    paddingBottom: 12,
-    elevation: 2
+    paddingBottom: 12
   },
 
   containerBotoes: {

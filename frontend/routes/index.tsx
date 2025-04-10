@@ -6,6 +6,7 @@ import PaginaTarefas from "../pages/Tarefas/index";
 import PaginaCriarTarefa from "../pages/CriarTarefa/index";
 import PaginaCalendario from "../pages/Calendario";
 import PaginaLoginCadastro from "../pages/LoginCadastro";
+import PaginaPerfil from "../pages/Perfil";
 
 export type RootStackParamList = {
     Login: undefined
@@ -29,7 +30,7 @@ export default function Routes() {
             <Stack.Screen name="Início" component={PaginaInicio} />
             <Stack.Screen name="Calendário" component={PaginaCalendario} />
             <Stack.Screen name="Tarefas" component={PaginaTarefas} />
-            <Stack.Screen name="Perfil" component={PaginaTarefas} />
+            <Stack.Screen name="Perfil" component={PaginaPerfil} />
             <Stack.Screen name="CriarTarefa" component={PaginaCriarTarefa} />
         </Stack.Navigator>
   );

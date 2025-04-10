@@ -1,13 +1,6 @@
 import React, { useState, useRef } from "react";
 import {
-  SafeAreaView,
-  Text,
-  View,
-  TouchableOpacity,
-  TextInput,
-  Platform,
-  UIManager,
-} from "react-native";
+  SafeAreaView, Text, View, TouchableOpacity, TextInput, Platform, UIManager } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation, } from '@react-navigation/native';
@@ -19,6 +12,7 @@ import Carrossel from "@/frontend/components/Carrossel/Carrossel";
 
 import LoginIcon from "../../../assets/images/login.svg";
 import { RootStackParamList } from "@/frontend/routes";
+import { globalStyles } from "@/frontend/globalStyles";
 
 if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -137,9 +131,9 @@ type NavigationProps = StackNavigationProp<RootStackParamList>;
         </View>
 
         <View style={styles.parte_baixo}>
-        <TouchableOpacity style={styles.botao_login} onPress={() => navigation.navigate('Início')}>
+        <TouchableOpacity style={globalStyles.botao_primario} onPress={() => navigation.navigate('Início')}>
           <LoginIcon width={28} height={28} color="#FFFFFF" />
-          <Text style={styles.botao_login_texto}>{abaSelecionada === "login" ? "Entrar" : "Criar conta"}</Text>
+          <Text style={globalStyles.botao_primario_texto}>{abaSelecionada === "login" ? "Entrar" : "Criar conta"}</Text>
         </TouchableOpacity>
       </View>
 
