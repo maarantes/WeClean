@@ -13,11 +13,13 @@ import FecharIcon from "../../../assets/images/fechar.svg";
 import EncaminharIcon from "../../../assets/images/encaminhar.svg";
 import MaisAdicaoIcon from "../../../assets/images/mais_adicao.svg";
 import SairIcon from "../../../assets/images/sair.svg";
+import LogoutModal from "@/frontend/components/LogoutModal";
 
 const PaginaPerfil = () => {
 
   const [isCardModalVisible, setCardModalVisible] = useState(false);
   const [temaSelecionado, setTemaSelecionado] = useState<TemaCardProps | null>(null);
+  const [LogoutModalActive, setLogoutModalActive] = useState(false);
 
 
     type TemaCor =
@@ -98,12 +100,12 @@ const PaginaPerfil = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <ScrollView contentContainerStyle={{ paddingTop: 45, paddingBottom: 140 }}>
+      <ScrollView contentContainerStyle={{ paddingTop: 35, paddingBottom: 140 }}>
         <View style={styles.cima_logout}>
-          <TouchableOpacity style={styles.botao_logout}>
-            <Text style={styles.botao_logout_texto}>Logout</Text>
-            <SairIcon width={16} height={16} />
-          </TouchableOpacity>
+        <TouchableOpacity style={styles.botao_logout} onPress={() => setLogoutModalActive(true)}>
+          <SairIcon width={20} height={20} />
+          <Text style={styles.botao_logout_texto}>Logout</Text>
+        </TouchableOpacity>
         </View>
 
         <View style={[styles.capa, globalStyles.tema_bg_azul_primario]}>
@@ -234,6 +236,11 @@ const PaginaPerfil = () => {
 
         </View>
       </Modal>
+
+      <LogoutModal
+        LogoutModalActive={LogoutModalActive}
+        setLogoutModalActive={setLogoutModalActive}
+      />
 
       <Navbar />
     </SafeAreaView>

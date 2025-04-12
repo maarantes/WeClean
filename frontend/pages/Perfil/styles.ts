@@ -2,9 +2,6 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
 
-    parte_cima: {
-    },
-
     capa: {
         width: "100%",
         height: 140,
