@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { View, Text, ScrollView, SafeAreaView, ActivityIndicator, TouchableOpacity } from "react-native";
-import { obterTarefasCalendario, updateTarefaConcluido } from "@/backend/services/tarefaService";
+import { obterTarefasCalendario } from "../../../backend/services/calendario/obterTarefasCalendario";
+import { updateTarefaConcluido } from "../../../backend/services/tarefas/updateTarefaConcluido";
 import { useFonts } from "../../hooks/UsarFontes";
 
 import { styles } from "./styles";

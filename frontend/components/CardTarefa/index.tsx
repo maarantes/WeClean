@@ -13,7 +13,7 @@ import EditarIcon from "../../../assets/images/editar.svg";
 import ExcluirIcon from "../../../assets/images/excluir.svg";
 
 import Badge from "../Badge";
-import { excluirTarefa } from "@/backend/services/tarefaService";
+import { excluirTarefa } from "../../../backend/services/tarefas/excluirTarefa";
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 interface Integrante {

@@ -14,7 +14,7 @@ import { Navbar } from "@/frontend/components/Navbar";
 import CardTarefa, { FrequenciaModalTexto } from "@/frontend/components/CardTarefa";
 
 // Importa a função que busca as tarefas da coleção "Tarefas"
-import { obterTarefas } from "@/backend/services/tarefaService";
+import { obterTarefas } from "../../../backend/services/tarefas/obterTarefas";
 
 const PaginaTarefas = () => {
   const fontLoaded = useFonts();
