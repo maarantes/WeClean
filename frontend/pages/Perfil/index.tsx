@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, TextInput, ViewStyle, TextStyle } from "react-native";
 import Modal from "react-native-modal";
 
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from '@/frontend/routes';
+
 import { styles } from "./styles";
 import { globalStyles } from "@/frontend/globalStyles";
 
@@ -21,89 +25,92 @@ const PaginaPerfil = () => {
   const [temaSelecionado, setTemaSelecionado] = useState<TemaCardProps | null>(null);
   const [LogoutModalActive, setLogoutModalActive] = useState(false);
 
+  type NavigationProps = StackNavigationProp<RootStackParamList, "Grupo">;
+  const navigation = useNavigation<NavigationProps>();
 
-    type TemaCor =
-    | "azul"
-    | "vinho"
-    | "rosa"
-    | "amarelo"
-    | "laranja"
-    | "verde"
-    | "turquesa"
-    | "coral"
-    | "roxo"
-    | "marrom";
 
-    type TemaCardProps = {
-        nome: string;
-        cor: TemaCor;
-        botao?: boolean;
-        onPress?: () => void;
-        ativo?: boolean; // <- novo!
-      };
-      
+  type TemaCor =
+  | "azul"
+  | "vinho"
+  | "rosa"
+  | "amarelo"
+  | "laranja"
+  | "verde"
+  | "turquesa"
+  | "coral"
+  | "roxo"
+  | "marrom";
 
-      const TemaCard = ({ nome, cor, botao = false, onPress, ativo = true }: TemaCardProps) => {
-        // Aplica as cores normais ou as "apagadas"
-        const textColor = ativo
-          ? (globalStyles[`tema_color_${cor}_primario`] as TextStyle)
-          : { color: "#606060" };
-      
-        const textBg = ativo
-          ? (globalStyles[`tema_bg_${cor}_secundario`] as TextStyle)
-          : { backgroundColor: "#F5F5F5" };
-      
-        const blockBg = ativo
-          ? (globalStyles[`tema_bg_${cor}_primario`] as ViewStyle)
-          : { backgroundColor: "#E8E8E8" };
-      
-        const Conteudo = () => (
-          <>
-            <Text style={[styles.retangulo_tema_escrito, textBg, textColor]}>
-              {nome}
-            </Text>
-            <View style={[styles.retangulo_tema, blockBg]} />
-          </>
-        );
-      
-        if (botao) {
-          return (
-            <TouchableOpacity
-              style={styles.retangulo_container}
-              onPress={onPress}
-            >
-              <Conteudo />
-            </TouchableOpacity>
-          );
-        }
-      
+  type TemaCardProps = {
+      nome: string;
+      cor: TemaCor;
+      botao?: boolean;
+      onPress?: () => void;
+      ativo?: boolean; // <- novo!
+    };
+    
+
+    const TemaCard = ({ nome, cor, botao = false, onPress, ativo = true }: TemaCardProps) => {
+      // Aplica as cores normais ou as "apagadas"
+      const textColor = ativo
+        ? (globalStyles[`tema_color_${cor}_primario`] as TextStyle)
+        : { color: "#606060" };
+    
+      const textBg = ativo
+        ? (globalStyles[`tema_bg_${cor}_secundario`] as TextStyle)
+        : { backgroundColor: "#F5F5F5" };
+    
+      const blockBg = ativo
+        ? (globalStyles[`tema_bg_${cor}_primario`] as ViewStyle)
+        : { backgroundColor: "#E8E8E8" };
+    
+      const Conteudo = () => (
+        <>
+          <Text style={[styles.retangulo_tema_escrito, textBg, textColor]}>
+            {nome}
+          </Text>
+          <View style={[styles.retangulo_tema, blockBg]} />
+        </>
+      );
+    
+      if (botao) {
         return (
-          <View style={styles.retangulo_container}>
+          <TouchableOpacity
+            style={styles.retangulo_container}
+            onPress={onPress}
+          >
             <Conteudo />
-          </View>
+          </TouchableOpacity>
         );
-      };
-      
+      }
+    
+      return (
+        <View style={styles.retangulo_container}>
+          <Conteudo />
+        </View>
+      );
+    };
+    
 
-    const temas: TemaCardProps[] = [
-    { nome: "Azul", cor: "azul" },
-    { nome: "Vinho", cor: "vinho" },
-    { nome: "Rosa", cor: "rosa" },
-    { nome: "Amarelo", cor: "amarelo" },
-    { nome: "Laranja", cor: "laranja" },
-    { nome: "Verde", cor: "verde" },
-    { nome: "Turquesa", cor: "turquesa" },
-    { nome: "Coral", cor: "coral" },
-    { nome: "Roxo", cor: "roxo" },
-    { nome: "Marrom", cor: "marrom" },
-    ];
+  const temas: TemaCardProps[] = [
+  { nome: "Azul", cor: "azul" },
+  { nome: "Vinho", cor: "vinho" },
+  { nome: "Rosa", cor: "rosa" },
+  { nome: "Amarelo", cor: "amarelo" },
+  { nome: "Laranja", cor: "laranja" },
+  { nome: "Verde", cor: "verde" },
+  { nome: "Turquesa", cor: "turquesa" },
+  { nome: "Coral", cor: "coral" },
+  { nome: "Roxo", cor: "roxo" },
+  { nome: "Marrom", cor: "marrom" },
+  ];
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView contentContainerStyle={{ paddingTop: 35, paddingBottom: 140 }}>
         <View style={styles.cima_logout}>
         <TouchableOpacity style={styles.botao_logout} onPress={() => setLogoutModalActive(true)}>
-          <SairIcon width={20} height={20} />
+          <SairIcon width={20} height={20} color={"#808080"}/>
           <Text style={styles.botao_logout_texto}>Logout</Text>
         </TouchableOpacity>
         </View>
@@ -156,7 +163,7 @@ const PaginaPerfil = () => {
             <Text style={styles.input_label}>Seu Grupo</Text>
             <View style={styles.tema_wrapper}>
               <Text style={styles.grupo_texto}>Família Arantes</Text>
-              <TouchableOpacity style={styles.botao_editar}>
+              <TouchableOpacity style={styles.botao_editar} onPress={() => { navigation.navigate("Grupo")}}>
                 <Text style={styles.botao_editar_texto}>Gerenciar</Text>
                 <EncaminharIcon width={18} height={18} color={"#808080"} />
               </TouchableOpacity>
@@ -191,7 +198,7 @@ const PaginaPerfil = () => {
                 Cor Tema da Conta
               </Text>
               <TouchableOpacity onPress={() => setCardModalVisible(false)}>
-                <FecharIcon width={32} height={32} />
+                <FecharIcon width={32} height={32} color={"#404040"}/>
               </TouchableOpacity>
             </View>
           </View>

@@ -568,7 +568,7 @@ const PaginaCriarTarefa = () => {
                   onPress={() => removerData(item.id)}
                   style={styles.botao_remover_data}
                 >
-                  <FecharIcon width={16} height={16} color="#808080" />
+                  <FecharIcon width={16} height={16} color={"#404040"}/>
                 </TouchableOpacity>
               )}
             </View>

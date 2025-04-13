@@ -214,7 +214,7 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
                 Detalhes da Tarefa
               </Text>
               <TouchableOpacity onPress={() => setCardModalVisible(false)}>
-                <FecharIcon width={32} height={32} />
+                <FecharIcon width={32} height={32} color={"#404040"}/>
               </TouchableOpacity>
               </View>
             </View>

@@ -237,7 +237,7 @@ export const styles = StyleSheet.create({
   },
 
   detalhe_botao_excluir_texto: {
-    color: "#E7516E",
+    color: "#C22E63",
     fontFamily: "Inter-SemiBold"
   },
 

@@ -17,6 +17,7 @@ const LogoutModal: React.FC<LogoutModalProps> = ({
   LogoutModalActive,
   setLogoutModalActive,
 }) => {
+  
   const navigation = useNavigation<NavigationProps>();
 
   return (
