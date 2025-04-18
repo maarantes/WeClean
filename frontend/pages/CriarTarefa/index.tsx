@@ -20,7 +20,6 @@ const Frequencias = [
   "A cada intervalo de tempo",
   "Anualmente em datas específicas",
 ];
-const IntegrantesFixos = ["Marco", "Bruna", "Mãe", "Pai"];
 
 const PaginaCriarTarefa = () => {
   const {

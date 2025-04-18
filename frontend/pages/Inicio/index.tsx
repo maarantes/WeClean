@@ -54,18 +54,19 @@ const PaginaInicio = () => {
       const tarefasFiltradasPorGrupo: { [data: string]: any[] } = {};
 
       for (const [data, tarefas] of Object.entries(tarefasDoCalendario)) {
-        const doGrupo = tarefas.filter((t: any) => t.grupoId === uid);
-
+        const doUsuario = tarefas.filter((t: any) => t.integrantes?.includes(uid));
+      
         const tarefasComCores = await Promise.all(
-          doGrupo.map(async (t: any) => {
+          doUsuario.map(async (t: any) => {
             const integrantesComTema = await Promise.all(
               t.integrantes?.map(async (userId: string) => {
                 const userRef = doc(db, "Usuarios", userId);
                 const userSnap = await getDoc(userRef);
                 const userData = userSnap.exists() ? userSnap.data() : { apelido: "Desconhecido", tema: "azul" };
                 const { cor_primaria, cor_secundaria } = getCoresDoTema(userData.tema);
-
+      
                 return {
+                  uid: userId,
                   nome: userData.apelido,
                   tema: userData.tema,
                   cor_primaria,
@@ -73,14 +74,14 @@ const PaginaInicio = () => {
                 };
               }) || []
             );
-
+      
             return {
               ...t,
               integrantes: integrantesComTema
             };
           })
         );
-
+      
         if (tarefasComCores.length > 0) {
           tarefasFiltradasPorGrupo[data] = tarefasComCores;
         }

@@ -35,10 +35,24 @@ const PaginaTarefas = () => {
         return;
       }
   
-      const tarefasFirestore = await obterTarefas();
-      const tarefasDoGrupo = tarefasFirestore.filter((t: any) => t.grupoId === uid);
+      // Buscar o GrupoID do usuário
+      const userRef = doc(db, "Usuarios", uid);
+      const userSnap = await getDoc(userRef);
   
-      // Aqui enriquecemos os dados com nome e cores de cada integrante
+      if (!userSnap.exists()) {
+        console.warn("Usuário não encontrado");
+        return;
+      }
+  
+      const userData = userSnap.data();
+      const grupoId = userData.grupoId || uid;
+  
+      // Buscar todas as tarefas
+      const tarefasFirestore = await obterTarefas();
+  
+      // Agora filtrar somente pelas tarefas que são do mesmo grupo
+      const tarefasDoGrupo = tarefasFirestore.filter((t: any) => t.grupoId === grupoId);
+  
       const tarefasComIntegrantesCompletos = await Promise.all(
         tarefasDoGrupo.map(async (t: any) => {
           const integrantesCompletos = await Promise.all(
@@ -49,6 +63,7 @@ const PaginaTarefas = () => {
               const { cor_primaria, cor_secundaria } = getCoresDoTema(userData.tema);
   
               return {
+                uid: userId,
                 nome: userData.apelido,
                 cor_primaria,
                 cor_secundaria,
@@ -68,10 +83,10 @@ const PaginaTarefas = () => {
     } catch (error) {
       console.error("Erro ao carregar tarefas:", error);
     } finally {
-
       setLoading(false);
     }
   };
+  
   
   useEffect(() => {
     carregarTarefas();

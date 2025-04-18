@@ -50,37 +50,47 @@ export const useCriarTarefa = () => {
   };
 
   useEffect(() => {
+    
     const carregarIntegrantesDoGrupo = async () => {
       const uid = auth.currentUser?.uid;
       if (!uid) return;
-
-      const grupoRef = doc(db, "Grupos", uid);
+    
+      const userRef = doc(db, "Usuarios", uid);
+      const userSnap = await getDoc(userRef);
+    
+      if (!userSnap.exists()) return;
+    
+      const userData = userSnap.data();
+      const grupoId = userData.grupoId || uid; // Se não tiver grupoId, usa o próprio UID como fallback
+    
+      // Agora buscar o GRUPO correto
+      const grupoRef = doc(db, "Grupos", grupoId);
       const grupoSnap = await getDoc(grupoRef);
-
+    
       if (!grupoSnap.exists()) return;
-
+    
       const grupoData = grupoSnap.data();
       const integrantes: { uid: string; tipo: string }[] = grupoData.integrantes || [];
-
+    
       const promessas = integrantes.map(async (i) => {
         const userRef = doc(db, "Usuarios", i.uid);
         const userSnap = await getDoc(userRef);
         if (!userSnap.exists()) return null;
-
+    
         const userData = userSnap.data();
-
+    
         const tema = userData.tema || "azul";
         return {
           uid: i.uid,
           nome: userData.apelido || "Desconhecido",
           ...getCoresDoTema(tema),
         };
-        
       });
-
+    
       const resultados = await Promise.all(promessas);
       setIntegrantesGrupo(resultados.filter(Boolean) as any[]);
     };
+    
 
     carregarIntegrantesDoGrupo();
   }, []);
@@ -201,11 +211,23 @@ export const useCriarTarefa = () => {
       .toString()
       .padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}`;
 
-    const grupoId = auth.currentUser?.uid;
-    if (!grupoId) {
-      Alert.alert("Erro", "Usuário não autenticado.");
-      return;
-    }
+      const uid = auth.currentUser?.uid;
+      if (!uid) {
+        Alert.alert("Erro", "Usuário não autenticado.");
+        return;
+      }
+      
+      const userRef = doc(db, "Usuarios", uid);
+      const userSnap = await getDoc(userRef);
+      
+      if (!userSnap.exists()) {
+        Alert.alert("Erro", "Usuário não encontrado.");
+        return;
+      }
+      
+      const userData = userSnap.data();
+      const grupoId = userData.grupoId || uid;
+      
 
     const integrantesFinal = integrantesSelecionados
     .map(i => typeof i === "string" ? i : i.uid)
