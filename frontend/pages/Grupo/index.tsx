@@ -1,20 +1,16 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  SafeAreaView,
-  TouchableOpacity,
-  ActivityIndicator,
-} from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, ActivityIndicator } from "react-native";
 
 import { styles } from "./styles";
 import { globalStyles } from "../../globalStyles";
 
 import { Navbar } from "../../components/Navbar";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../routes";
+
+import ConvidarModal from "../../components/ConvidarModal";
+import EntrarGrupoModal from "../../components/EntrarGrupoModal";
 
 import SetaBackIcon from "../../../assets/images/setaBack.svg";
 import GrupoPessoaIcon from "../../../assets/images/grupo_pessoa.svg";
@@ -32,9 +28,10 @@ import { doc, getDoc } from "firebase/firestore";
 type NavigationProps = StackNavigationProp<RootStackParamList, "Grupo">;
 
 const PaginaGrupo = () => {
+
   const navigation = useNavigation<NavigationProps>();
 
-  const [grupoNome, setGrupoNome] = useState("Carregando...");
+  const [grupoNome, setGrupoNome] = useState("");
   const [integrantes, setIntegrantes] = useState<
     { nome: string; tipo: string; tema: string }[]
   >([]);
@@ -42,49 +39,101 @@ const PaginaGrupo = () => {
 
   const totalVagas = 10;
 
-  useEffect(() => {
-    const carregarGrupo = async () => {
-      const uid = auth.currentUser?.uid;
-      if (!uid) return;
+  const [convidarModalActive, setConvidarModalActive] = useState(false);
+  const [entrarGrupoModalActive, setEntrarGrupoModalActive] = useState(false);
 
-      try {
-        // 1. Buscar o grupo
-        const grupoRef = doc(db, "Grupos", uid);
-        const grupoSnap = await getDoc(grupoRef);
+  const carregarGrupo = async () => {
+    const uid = auth.currentUser?.uid;
+    if (!uid) return;
 
-        if (grupoSnap.exists()) {
-          const grupoData = grupoSnap.data();
-          setGrupoNome(grupoData.nome || "Grupo");
+    try {
+      const userRef = doc(db, "Usuarios", uid);
+      const userSnap = await getDoc(userRef);
 
-          // 2. Buscar os integrantes (nome + tema de cada um)
-          const integrantesData: { uid: string; tipo: string }[] = grupoData.integrantes || [];
-
-          const promises = integrantesData.map(async ({ uid: membroUid, tipo }) => {
-            const userRef = doc(db, "Usuarios", membroUid);
-            const userSnap = await getDoc(userRef);
-            const userData = userSnap.exists() ? userSnap.data() : {};
-            return {
-              nome: userData.apelido || "Desconhecido",
-              tema: userData.tema || "azul",
-              tipo
-            };
-          });
-
-          const integrantesCompletos = await Promise.all(promises);
-          setIntegrantes(integrantesCompletos);
-        }
-      } catch (e) {
-        console.error("Erro ao carregar grupo:", e);
-      } finally {
-        setLoading(false);
+      if (!userSnap.exists()) {
+        console.log("Usuário não encontrado.");
+        return;
       }
-    };
 
-    carregarGrupo();
-  }, []);
+      const userData = userSnap.data();
+      const grupoId = userData.grupoId || uid;
+
+      const grupoRef = doc(db, "Grupos", grupoId);
+      const grupoSnap = await getDoc(grupoRef);
+
+      if (grupoSnap.exists()) {
+        const grupoData = grupoSnap.data();
+        setGrupoNome(grupoData.nome || "Grupo");
+
+        const integrantesData: { uid: string; tipo: string }[] = grupoData.integrantes || [];
+
+        const promises = integrantesData.map(async ({ uid: membroUid, tipo }) => {
+          const userRef = doc(db, "Usuarios", membroUid);
+          const userSnap = await getDoc(userRef);
+          const userData = userSnap.exists() ? userSnap.data() : {};
+          return {
+            nome: userData.apelido || "Desconhecido",
+            tema: userData.tema || "azul",
+            tipo,
+          };
+        });
+
+        const integrantesCompletos = await Promise.all(promises);
+        setIntegrantes(integrantesCompletos);
+      }
+    } catch (e) {
+      console.error("Erro ao carregar grupo:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      carregarGrupo();
+    }, [])
+  );
 
   const integrantesCount = integrantes.length;
   const vagasRestantes = totalVagas - integrantesCount;
+
+  const renderizarBotoes = () => {
+    return (
+      <View style={styles.container_botoes_acao}>
+        <TouchableOpacity style={[styles.botao_base, styles.botao_convidar, integrantesCount === 1 && styles.botao_menor]} onPress={() => setConvidarModalActive(true)}>
+          <ConvidarIcon width={20} height={20} />
+          <Text style={[styles.botao_base_texto, styles.botao_convidar_texto]}>
+            Convidar
+          </Text>
+        </TouchableOpacity>
+  
+        {integrantesCount === 1 ? (
+          <TouchableOpacity style={[styles.botao_base, styles.botao_entrar]} onPress={() => setEntrarGrupoModalActive(true)}>
+            <SairIcon width={20} height={20} color={"#5A189A"} />
+            <Text style={[styles.botao_base_texto, styles.botao_entrar_texto]}>
+              Trocar de Grupo
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <>
+            <TouchableOpacity style={[styles.botao_base, styles.botao_sair]}>
+              <SairIcon width={20} height={20} color={"#5A189A"} />
+              <Text style={[styles.botao_base_texto, styles.botao_sair_texto]}>
+                Sair do Grupo
+              </Text>
+            </TouchableOpacity>
+  
+            <TouchableOpacity style={[styles.botao_base, styles.botao_excluir]}>
+              <ExcluirIcon width={20} height={20} />
+              <Text style={[styles.botao_base_texto, styles.botao_excluir_texto]}>
+                Excluir Grupo
+              </Text>
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
+    );
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -124,28 +173,7 @@ const PaginaGrupo = () => {
               </Text>
             </View>
 
-            <View style={styles.container_botoes_acao}>
-              <TouchableOpacity style={[styles.botao_base, styles.botao_convidar]}>
-                <ConvidarIcon width={20} height={20} />
-                <Text style={[styles.botao_base_texto, styles.botao_convidar_texto]}>
-                  Convidar
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={[styles.botao_base, styles.botao_sair]}>
-                <SairIcon width={20} height={20} color={"#5A189A"} />
-                <Text style={[styles.botao_base_texto, styles.botao_sair_texto]}>
-                  Sair do Grupo
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={[styles.botao_base, styles.botao_excluir]}>
-                <ExcluirIcon width={20} height={20} />
-                <Text style={[styles.botao_base_texto, styles.botao_excluir_texto]}>
-                  Excluir Grupo
-                </Text>
-              </TouchableOpacity>
-            </View>
+            {renderizarBotoes()}
 
             <View style={styles.container_integrantes}>
               <Text style={styles.texto_integrantes_titulo}>Integrantes</Text>
@@ -187,8 +215,20 @@ const PaginaGrupo = () => {
         )}
       </ScrollView>
 
+      <ConvidarModal
+        ConvidarModalActive={convidarModalActive}
+        setConvidarModalActive={setConvidarModalActive}
+      />
+
+      <EntrarGrupoModal
+        EntrarGrupoModalActive={entrarGrupoModalActive}
+        setEntrarGrupoModalActive={setEntrarGrupoModalActive}
+      />
+
       <Navbar />
+      
     </SafeAreaView>
+    
   );
 };
 

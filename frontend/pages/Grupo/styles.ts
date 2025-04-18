@@ -88,6 +88,10 @@ export const styles = StyleSheet.create({
     backgroundColor: "#5A189A",
   },
 
+  botao_menor: {
+    width: "49%"
+  },
+
   botao_convidar_texto: {
     color: "white"
   },
@@ -108,6 +112,15 @@ export const styles = StyleSheet.create({
 
   botao_excluir_texto: {
     color: "#C22E63"
+  },
+
+  botao_entrar: {
+    width: "49%",
+    backgroundColor: "#DACAFB",
+  },
+
+  botao_entrar_texto: {
+    color: "#5A189A"
   },
 
   container_integrantes: {
