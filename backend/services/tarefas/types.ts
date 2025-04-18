@@ -15,5 +15,6 @@ export interface Frequencia {
     frequencia: Frequencia;
     dataCriacao: string;
     concluido?: boolean;
+    grupoId: string;
   }
   

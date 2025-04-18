@@ -9,9 +9,13 @@ import { registrarTarefaNoCalendario } from "../calendario/registrarTarefaNoCale
 
 export const criarTarefa = async (tarefa: Tarefa): Promise<void> => {
   const tarefaRef = doc(collection(db, "Tarefas"));
-  const tarefaComId: Tarefa = { ...tarefa, id: tarefaRef.id };
+  const tarefaComId: Tarefa = {
+    ...tarefa,
+    id: tarefaRef.id
+  };
+
   await setDoc(tarefaRef, tarefaComId);
 
-  // Registra imediatamente as ocorrências para o mês atual
+  // E registra no calendário, como já fazia
   await registrarTarefaNoCalendario(tarefaComId);
 };
