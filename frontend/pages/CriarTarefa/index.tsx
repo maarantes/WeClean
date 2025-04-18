@@ -49,6 +49,7 @@ const PaginaCriarTarefa = () => {
     loading,
     erros,
     isEditMode,
+    integrantesGrupo
   } = useCriarTarefa();
 
   return (
@@ -112,14 +113,14 @@ const PaginaCriarTarefa = () => {
         {/* Integrantes */}
         <Text style={[styles.label, styles.cima]}>INTEGRANTES</Text>
         <View style={styles.lista_integrantes}>
-          {IntegrantesFixos.map((nome) => (
+          {integrantesGrupo.map((integrante: any) => (
             <Badge
-              key={nome}
-              backgroundColor="#CAEAFB"
-              iconColor="#144F70"
-              text={nome}
-              isSelected={integrantesSelecionados.includes(nome)}
-              onPress={() => toggleIntegrante(nome)}
+              key={integrante.nome}
+              backgroundColor={integrante.cor_primaria}
+              iconColor={integrante.cor_secundaria}
+              text={integrante.nome}
+              isSelected={integrantesSelecionados.includes(integrante.uid)}
+              onPress={() => toggleIntegrante(integrante.uid)}
               clicavel
             />
           ))}

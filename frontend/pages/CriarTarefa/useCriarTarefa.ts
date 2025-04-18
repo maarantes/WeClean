@@ -2,13 +2,19 @@ import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
+import { doc, getDoc } from "firebase/firestore";
+
 import { RootStackParamList } from "../../routes";
 import { criarTarefa, editarTarefa } from "../../../backend/services/tarefas/tarefas.service";
 import { Frequencia } from "../../../backend/services/tarefas/types";
 import { definirAlarme } from "../../services/CriarAlarme";
 import { validarFormulario } from "./validation";
 import { montarFrequencia } from "./frequenciaUtils";
-import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
+import { auth } from "@/backend/services/shared/firebaseConfig";
+import { db } from "@/backend/services/shared/firebase";
+import { globalStyles } from "@/frontend/globalStyles";
+import { getCoresDoTema } from "@/frontend/utils/temaStyles";
 
 const DiasDaSemana = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
 
@@ -24,7 +30,12 @@ export const useCriarTarefa = () => {
   const [descricao, setDescricao] = useState("");
   const [horario, setHorario] = useState("N/A");
   const [alarmeAtivado, setAlarmeAtivado] = useState(false);
-  const [integrantesSelecionados, setIntegrantesSelecionados] = useState<string[]>([]);
+  type IntegranteSelecionado = string | { uid: string; nome: string; cor_primaria: string; cor_secundaria: string };
+  const [integrantesSelecionados, setIntegrantesSelecionados] = useState<IntegranteSelecionado[]>([]);
+  const [integrantesGrupo, setIntegrantesGrupo] = useState<
+  { uid: string; nome: string; cor_primaria: string; cor_secundaria: string }[]
+>([]);
+
   const [botaoFrequenciaAtivo, setBotaoFrequenciaAtivo] = useState<number | null>(null);
   const [diasSelecionados, setDiasSelecionados] = useState<string[]>([]);
   const [intervalo, setIntervalo] = useState("");
@@ -39,16 +50,49 @@ export const useCriarTarefa = () => {
   };
 
   useEffect(() => {
+    const carregarIntegrantesDoGrupo = async () => {
+      const uid = auth.currentUser?.uid;
+      if (!uid) return;
+
+      const grupoRef = doc(db, "Grupos", uid);
+      const grupoSnap = await getDoc(grupoRef);
+
+      if (!grupoSnap.exists()) return;
+
+      const grupoData = grupoSnap.data();
+      const integrantes: { uid: string; tipo: string }[] = grupoData.integrantes || [];
+
+      const promessas = integrantes.map(async (i) => {
+        const userRef = doc(db, "Usuarios", i.uid);
+        const userSnap = await getDoc(userRef);
+        if (!userSnap.exists()) return null;
+
+        const userData = userSnap.data();
+
+        const tema = userData.tema || "azul";
+        return {
+          uid: i.uid,
+          nome: userData.apelido || "Desconhecido",
+          ...getCoresDoTema(tema),
+        };
+        
+      });
+
+      const resultados = await Promise.all(promessas);
+      setIntegrantesGrupo(resultados.filter(Boolean) as any[]);
+    };
+
+    carregarIntegrantesDoGrupo();
+  }, []);
+
+  useEffect(() => {
     if (isEditMode && taskToEdit) {
       setNome(taskToEdit.nome || "");
       setDescricao(taskToEdit.descricao === "Não há descrição para esta tarefa." ? "" : taskToEdit.descricao || "");
       setHorario(taskToEdit.horario || "N/A");
       setAlarmeAtivado(taskToEdit.alarme || false);
-      setIntegrantesSelecionados(
-        (taskToEdit.integrantes || []).map((i: any) =>
-          typeof i === "string" ? capitalize(i) : capitalize(i.nome)
-        )
-      );
+
+      setIntegrantesSelecionados(taskToEdit.integrantes || []);
 
       if (taskToEdit.frequencia) {
         const freqType = taskToEdit.frequencia.tipo.toLowerCase();
@@ -77,34 +121,17 @@ export const useCriarTarefa = () => {
             setDatasSelecionadas(datas);
           }
         }
-      } else if (taskToEdit.freq_texto) {
-        const text = taskToEdit.freq_texto.toLowerCase();
-        if (text.includes("diariamente")) {
-          setBotaoFrequenciaAtivo(0);
-          setDiasSelecionados(DiasDaSemana);
-        } else if (text.includes("semanalmente")) {
-          setBotaoFrequenciaAtivo(1);
-        } else if (text.includes("intervalo")) {
-          setBotaoFrequenciaAtivo(2);
-        } else if (text.includes("anualmente")) {
-          setBotaoFrequenciaAtivo(3);
-        }
       }
     }
   }, [isEditMode, taskToEdit]);
 
-  const toggleIntegrante = (nome: string) => {
-    const normalized = capitalize(nome);
-    setIntegrantesSelecionados((prevSelecionados) => {
-      const novoValor = prevSelecionados.includes(normalized)
-        ? prevSelecionados.filter((i) => i !== normalized)
-        : [...prevSelecionados, normalized];
-      if (novoValor.length > 0) {
-        setErros((prev: any) => ({ ...prev, integrantes: false }));
-      }
-      return novoValor;
-    });
+  const toggleIntegrante = (uid: string) => {
+    setIntegrantesSelecionados((prev) =>
+      prev.includes(uid) ? prev.filter((id) => id !== uid) : [...prev, uid]
+    );
+    setErros((prev: any) => ({ ...prev, integrantes: false }));
   };
+  
 
   const toggleDiaSemana = (dia: string) => {
     setDiasSelecionados((prevDias) =>
@@ -127,7 +154,6 @@ export const useCriarTarefa = () => {
       },
     });
   };
-  
 
   const escolherData = (id: number) => {
     const selectedDate = new Date();
@@ -175,16 +201,29 @@ export const useCriarTarefa = () => {
       .toString()
       .padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}`;
 
+    const grupoId = auth.currentUser?.uid;
+    if (!grupoId) {
+      Alert.alert("Erro", "Usuário não autenticado.");
+      return;
+    }
+
+    const integrantesFinal = integrantesSelecionados
+    .map(i => typeof i === "string" ? i : i.uid)
+    .filter(Boolean);
+
     const novaTarefa = {
       nome,
       descricao: descricao.trim() !== "" ? descricao : null,
       horario,
       alarme: alarmeAtivado,
-      integrantes: integrantesSelecionados,
+      integrantes: integrantesFinal,
       frequencia,
       dataCriacao,
       concluido: false,
+      grupoId,
     };
+
+    console.log("Dados a serem salvos:", JSON.stringify(novaTarefa, null, 2));
 
     try {
       setLoading(true);
@@ -239,5 +278,6 @@ export const useCriarTarefa = () => {
     loading,
     erros,
     isEditMode,
+    integrantesGrupo,
   };
 };

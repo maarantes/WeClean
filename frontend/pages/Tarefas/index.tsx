@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Text, ScrollView, SafeAreaView, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { useFonts } from "../../hooks/UsarFontes";
+import { doc, getDoc } from "firebase/firestore";
+import { getCoresDoTema } from "@/frontend/utils/temaStyles";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/frontend/routes";
@@ -11,10 +13,11 @@ import { globalStyles } from "@/frontend/globalStyles";
 import TarefaIcon from "../../../assets/images/tarefa.svg";
 import ParteCima from "@/frontend/components/ParteCima";
 import { Navbar } from "@/frontend/components/Navbar";
-import CardTarefa, { FrequenciaModalTexto } from "@/frontend/components/CardTarefa";
+import CardTarefa from "@/frontend/components/CardTarefa";
+import { formatarFrequenciaTexto } from "@/frontend/utils/formatarFrequencia";
 
-// Importa a função que busca as tarefas da coleção "Tarefas"
 import { obterTarefas } from "../../../backend/services/tarefas/obterTarefas";
+import { auth, db } from "../../../backend/services/shared/firebaseConfig";
 
 const PaginaTarefas = () => {
   const fontLoaded = useFonts();
@@ -26,13 +29,46 @@ const PaginaTarefas = () => {
   const carregarTarefas = async () => {
     setLoading(true);
     try {
-      // Obtém as tarefas da coleção "Tarefas"
+      const uid = auth.currentUser?.uid;
+      if (!uid) {
+        console.warn("Usuário não autenticado");
+        return;
+      }
+  
       const tarefasFirestore = await obterTarefas();
-      console.log("Tarefas carregadas:", tarefasFirestore);
-      setTarefas(tarefasFirestore);
+      const tarefasDoGrupo = tarefasFirestore.filter((t: any) => t.grupoId === uid);
+  
+      // Aqui enriquecemos os dados com nome e cores de cada integrante
+      const tarefasComIntegrantesCompletos = await Promise.all(
+        tarefasDoGrupo.map(async (t: any) => {
+          const integrantesCompletos = await Promise.all(
+            (t.integrantes || []).map(async (userId: string) => {
+              const userRef = doc(db, "Usuarios", userId);
+              const userSnap = await getDoc(userRef);
+              const userData = userSnap.exists() ? userSnap.data() : { apelido: "Desconhecido", tema: "azul" };
+              const { cor_primaria, cor_secundaria } = getCoresDoTema(userData.tema);
+  
+              return {
+                nome: userData.apelido,
+                cor_primaria,
+                cor_secundaria,
+              };
+            })
+          );
+  
+          return {
+            ...t,
+            integrantes: integrantesCompletos,
+          };
+        })
+      );
+  
+      setTarefas(tarefasComIntegrantesCompletos);
+      console.log("Tarefas carregadas:", tarefasComIntegrantesCompletos);
     } catch (error) {
       console.error("Erro ao carregar tarefas:", error);
     } finally {
+
       setLoading(false);
     }
   };
@@ -106,12 +142,8 @@ const PaginaTarefas = () => {
                   horario={tarefa.horario}
                   exibirBotao={false}
                   alarme={tarefa.alarme}
-                  freq_texto={FrequenciaModalTexto(tarefa.frequencia)}
-                  integrantes={tarefa.integrantes?.map((nome: string) => ({
-                    nome,
-                    cor_primaria: "#CAEAFB",
-                    cor_secundaria: "#144F70"
-                  })) || []}
+                  freq_texto={formatarFrequenciaTexto(tarefa.frequencia)}
+                  integrantes={tarefa.integrantes || []}
                   dataInstancia={tarefa.dataCriacao}
                   onTaskDeleted={carregarTarefas}
                 />
@@ -135,12 +167,8 @@ const PaginaTarefas = () => {
                   descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
                   horario={tarefa.horario}
                   exibirBotao={false}
-                  freq_texto={FrequenciaModalTexto(tarefa.frequencia)}
-                  integrantes={tarefa.integrantes?.map((nome: string) => ({
-                    nome,
-                    cor_primaria: "#CAEAFB",
-                    cor_secundaria: "#144F70"
-                  })) || []}
+                  freq_texto={formatarFrequenciaTexto(tarefa.frequencia)}
+                  integrantes={tarefa.integrantes || []}
                   dataInstancia={tarefa.dataCriacao}
                   onTaskDeleted={carregarTarefas}
                 />
@@ -165,12 +193,8 @@ const PaginaTarefas = () => {
                   horario={tarefa.horario}
                   exibirBotao={false}
                   alarme={tarefa.alarme}
-                  freq_texto={FrequenciaModalTexto(tarefa.frequencia)}
-                  integrantes={tarefa.integrantes?.map((nome: string) => ({
-                    nome,
-                    cor_primaria: "#CAEAFB",
-                    cor_secundaria: "#144F70"
-                  })) || []}
+                  freq_texto={formatarFrequenciaTexto(tarefa.frequencia)}
+                  integrantes={tarefa.integrantes || []}
                   dataInstancia={tarefa.dataCriacao}
                   onTaskDeleted={carregarTarefas}
                 />
@@ -194,13 +218,9 @@ const PaginaTarefas = () => {
                   descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
                   horario={tarefa.horario}
                   exibirBotao={false}
-                  freq_texto={FrequenciaModalTexto(tarefa.frequencia)}
+                  freq_texto={formatarFrequenciaTexto(tarefa.frequencia)}
                   alarme={tarefa.alarme}
-                  integrantes={tarefa.integrantes?.map((nome: string) => ({
-                    nome,
-                    cor_primaria: "#CAEAFB",
-                    cor_secundaria: "#144F70"
-                  })) || []}
+                  integrantes={tarefa.integrantes || []}
                   dataInstancia={tarefa.dataCriacao}
                   onTaskDeleted={carregarTarefas} 
                 />
