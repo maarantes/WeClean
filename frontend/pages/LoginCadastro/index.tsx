@@ -1,14 +1,6 @@
 import React, { useState, useRef } from "react";
-import {
-  SafeAreaView,
-  Text,
-  View,
-  TouchableOpacity,
-  TextInput,
-  Platform,
-  UIManager,
-  Alert,
-} from "react-native";
+import { SafeAreaView, Text, View, TouchableOpacity, TextInput, Platform, UIManager, Alert, ActivityIndicator } from "react-native";
+import Modal from "react-native-modal";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
@@ -33,6 +25,7 @@ const PaginaLoginCadastro = () => {
   const navigation = useNavigation<NavigationProps>();
   const [abaSelecionada, setAbaSelecionada] = useState<"login" | "cadastro">("login");
   const scrollRef = useRef<KeyboardAwareScrollView>(null);
+  const [loading, setLoading] = useState(false);
 
   // Estados dos inputs
   const [apelido, setApelido] = useState("");
@@ -52,6 +45,7 @@ const PaginaLoginCadastro = () => {
   };
 
   const handleLoginOuCadastro = async () => {
+    setLoading(true);
     try {
       if (abaSelecionada === "login") {
         if (!email || !senha) return Alert.alert("Erro", "Preencha todos os campos.");
@@ -72,8 +66,38 @@ const PaginaLoginCadastro = () => {
       else if (error.code === "auth/user-not-found") mensagem = "Usuário não encontrado.";
       else if (error.code === "auth/wrong-password") mensagem = "Senha incorreta.";
       Alert.alert("Erro", mensagem);
+    } finally {
+      setLoading(false);0
     }
   };
+
+  const ModalLoading = ({ visible }: { visible: boolean }) => (
+    <Modal
+      isVisible={visible}
+      animationIn="fadeIn"
+      animationOut="fadeOut"
+      backdropColor="#404040"
+      backdropOpacity={0.5}
+      useNativeDriver
+    >
+      <View style={{
+        backgroundColor: "white",
+        padding: 24,
+        borderRadius: 16,
+        alignItems: "center",
+        justifyContent: "center",
+      }}>
+        <Text style={{
+          fontFamily: "HeptaSlab-SemiBold",
+          fontSize: 18,
+          color: "#5A189A",
+        }}>
+          Realizando Login
+        </Text>
+        <ActivityIndicator size="large" color="#5A189A" style={{ marginTop: 20 }} />
+      </View>
+    </Modal>
+  );
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -163,6 +187,9 @@ const PaginaLoginCadastro = () => {
           </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
+
+      <ModalLoading visible={loading} />
+      
     </SafeAreaView>
   );
 };
