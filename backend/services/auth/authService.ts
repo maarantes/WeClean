@@ -2,29 +2,31 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "fire
 import { doc, setDoc } from "firebase/firestore";
 import { auth } from "../shared/firebaseConfig";
 import { db } from "../shared/firebase";
+import { gerarCodigoConvite } from "../grupos/gerarCodigoConvite";
 
 export const cadastrarUsuario = async (email: string, senha: string, apelido: string) => {
   const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
   const uid = userCredential.user.uid;
 
-    // 1. Criar documento do usuário
-    await setDoc(doc(db, "Usuarios", uid), {
-        apelido,
-        email,
-        tema: "azul",
-    });
+  await setDoc(doc(db, "Usuarios", uid), {
+    apelido,
+    email,
+    tema: "azul",
+    grupoId: uid,
+  });
 
-    // 2. Criar grupo pessoal
-    await setDoc(doc(db, "Grupos", uid), {
-        nome: "Grupo Pessoal",
-        integrantes: [
-          {
-            uid,
-            tipo: "admin"
-          }
-        ]
-      });
-      
+  const codigoConvite = await gerarCodigoConvite();
+
+  await setDoc(doc(db, "Grupos", uid), {
+    nome: "Grupo Pessoal",
+    integrantes: [
+      {
+        uid,
+        tipo: "admin"
+      }
+    ],
+    codigo_convite: codigoConvite,
+  }, { merge: true });
 
   return uid;
 };
