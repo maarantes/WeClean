@@ -109,7 +109,7 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
         {/* Baixo */}
         <View style={styles.container_baixo}>
           <View style={styles.container_info}>
-            {integrantesOrdenados.length > 0 && (
+            {integrantesOrdenados.length > 0 ? (
               <>
                 <Badge
                   backgroundColor={integrantesOrdenados[0].cor_primaria}
@@ -118,9 +118,13 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
                   isSelected={true}
                 />
                 {integrantesOrdenados.length > 1 && (
-                  <Text style={styles.texto_integrantes_extras}>+{integrantesOrdenados.length - 1}</Text>
+                  <Text style={styles.texto_integrantes_extras}>
+                    +{integrantesOrdenados.length - 1}
+                  </Text>
                 )}
               </>
+            ) : (
+              <Text style={styles.badge_ninguem}>Ninguém</Text>
             )}
           </View>
 
@@ -226,18 +230,22 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
               <View style={styles.detalhe_secao}>
                 <Text style={styles.detalhe_campo_titulo}>INTEGRANTES</Text>
                 <View style={styles.flex_wrap}>
-                  {integrantesOrdenados
-                    .slice()
-                    .sort((a, b) => a.nome.localeCompare(b.nome))
-                    .map((i, idx) => (
-                      <Badge
-                        key={idx}
-                        backgroundColor={i.cor_primaria}
-                        iconColor={i.cor_secundaria}
-                        text={i.nome}
-                        isSelected={true}
-                      />
-                  ))}
+                  {integrantesOrdenados.length > 0 ? (
+                    integrantesOrdenados
+                      .slice()
+                      .sort((a, b) => a.nome.localeCompare(b.nome))
+                      .map((i, idx) => (
+                        <Badge
+                          key={idx}
+                          backgroundColor={i.cor_primaria}
+                          iconColor={i.cor_secundaria}
+                          text={i.nome}
+                          isSelected={true}
+                        />
+                      ))
+                  ) : (
+                    <Text style={styles.detalhe_campo_texto_cinza}>Ninguém</Text>
+                  )}
                 </View>
               </View>
 

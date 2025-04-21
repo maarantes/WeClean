@@ -5,7 +5,7 @@ import { styles } from './styles';
 import LogoWeClean from "../../../assets/images/logoWeClean.svg";
 import GrupoIcon from "../../../assets/images/grupo.svg";
 import SairIcon from "../../../assets/images/sair.svg";
-import LogoutModal from "@/frontend/components/LogoutModal";
+import LogoutModal from "@/frontend/components/ModalLogout";
 
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";

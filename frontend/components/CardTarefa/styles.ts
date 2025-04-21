@@ -350,4 +350,12 @@ export const styles = StyleSheet.create({
     fontFamily: "Inter-SemiBold"
   },
 
+  badge_ninguem: {
+    backgroundColor: "#E8E8E8",
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 4,
+    color: "#808080"
+  }
+
 });

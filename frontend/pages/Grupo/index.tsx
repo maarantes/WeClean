@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, ActivityIndicator } from "react-native";
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 import { styles } from "./styles";
 import { globalStyles } from "../../globalStyles";
@@ -9,21 +10,25 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../routes";
 
-import ConvidarModal from "../../components/ConvidarModal";
-import EntrarGrupoModal from "../../components/EntrarGrupoModal";
+import ConvidarModal from "../../components/ModalConvidar";
+import EntrarGrupoModal from "../../components/ModalEntrarGrupo";
 
 import SetaBackIcon from "../../../assets/images/setaBack.svg";
 import GrupoPessoaIcon from "../../../assets/images/grupo_pessoa.svg";
 import GrupoSemPessoaIcon from "../../../assets/images/grupo_sem_pessoa.svg";
 import ConvidarIcon from "../../../assets/images/convidar.svg";
-import SairIcon from "../../../assets/images/sair.svg";
-import ExcluirIcon from "../../../assets/images/excluir.svg";
+import SairIcon from "../../../assets/images/sair.svg";1
 import AdminIcon from "../../../assets/images/admin.svg";
 import PerfilIcon from "../../../assets/images/user.svg";
 import FecharIcon from "../../../assets/images/fechar.svg";
 
 import { auth, db } from "../../../backend/services/shared/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
+import GrupoMenu from "@/frontend/components/GrupoMenu";
+import RenomearGrupoModal from "@/frontend/components/ModalRenomearGrupo";
+import AlertaSimples from "@/frontend/components/AlertaSimples";
+import KickIntegranteModal from "@/frontend/components/ModalTirarIntegrante";
+import { kickarIntegrante } from "@/backend/services/grupos/removerIntegrante";
 
 type NavigationProps = StackNavigationProp<RootStackParamList, "Grupo">;
 
@@ -33,51 +38,69 @@ const PaginaGrupo = () => {
 
   const [grupoNome, setGrupoNome] = useState("");
   const [integrantes, setIntegrantes] = useState<
-    { nome: string; tipo: string; tema: string }[]
+    { uid: string, nome: string; tipo: string; tema: string }[]
   >([]);
   const [loading, setLoading] = useState(true);
+
+  const [userAdmin, setUserAdmin] = useState(false);
+  const [grupoIdAtual, setGrupoIdAtual] = useState<string>("");
 
   const totalVagas = 10;
 
   const [convidarModalActive, setConvidarModalActive] = useState(false);
   const [entrarGrupoModalActive, setEntrarGrupoModalActive] = useState(false);
+  const [renameGroupModalActive, setRenameGroupModalActive] = useState(false);
+
+  const [kickModalVisible, setKickModalVisible] = useState(false);
+  const [integranteSelecionadoNome, setIntegranteSelecionadoNome] = useState<string | null>(null);
+  const [integranteSelecionadoUID, setIntegranteSelecionadoUID] = useState<string | null>(null);
+  
+
+  const [toastVisible, setToastVisible] = useState(false);
+  const [mensagemToast, setMensagemToast] = useState("");
 
   const carregarGrupo = async () => {
     const uid = auth.currentUser?.uid;
     if (!uid) return;
-
+  
     try {
       const userRef = doc(db, "Usuarios", uid);
       const userSnap = await getDoc(userRef);
-
+  
       if (!userSnap.exists()) {
         console.log("Usuário não encontrado.");
         return;
       }
-
+  
       const userData = userSnap.data();
       const grupoId = userData.grupoId || uid;
-
+      setGrupoIdAtual(grupoId);
+  
       const grupoRef = doc(db, "Grupos", grupoId);
       const grupoSnap = await getDoc(grupoRef);
-
+  
       if (grupoSnap.exists()) {
         const grupoData = grupoSnap.data();
         setGrupoNome(grupoData.nome || "Grupo");
-
+  
         const integrantesData: { uid: string; tipo: string }[] = grupoData.integrantes || [];
-
+  
+        // Aqui a gente verifica se o usuário atual é admin
+        const souAdminAtual = integrantesData.find((i) => i.uid === uid && i.tipo === "admin");
+        setUserAdmin(!!souAdminAtual);
+  
         const promises = integrantesData.map(async ({ uid: membroUid, tipo }) => {
           const userRef = doc(db, "Usuarios", membroUid);
           const userSnap = await getDoc(userRef);
           const userData = userSnap.exists() ? userSnap.data() : {};
           return {
+            uid: membroUid,
             nome: userData.apelido || "Desconhecido",
             tema: userData.tema || "azul",
             tipo,
           };
         });
-
+  
         const integrantesCompletos = await Promise.all(promises);
         setIntegrantes(integrantesCompletos);
       }
@@ -97,44 +120,6 @@ const PaginaGrupo = () => {
   const integrantesCount = integrantes.length;
   const vagasRestantes = totalVagas - integrantesCount;
 
-  const renderizarBotoes = () => {
-    return (
-      <View style={styles.container_botoes_acao}>
-        <TouchableOpacity style={[styles.botao_base, styles.botao_convidar, integrantesCount === 1 && styles.botao_menor]} onPress={() => setConvidarModalActive(true)}>
-          <ConvidarIcon width={20} height={20} />
-          <Text style={[styles.botao_base_texto, styles.botao_convidar_texto]}>
-            Convidar
-          </Text>
-        </TouchableOpacity>
-  
-        {integrantesCount === 1 ? (
-          <TouchableOpacity style={[styles.botao_base, styles.botao_entrar]} onPress={() => setEntrarGrupoModalActive(true)}>
-            <SairIcon width={20} height={20} color={"#5A189A"} />
-            <Text style={[styles.botao_base_texto, styles.botao_entrar_texto]}>
-              Trocar de Grupo
-            </Text>
-          </TouchableOpacity>
-        ) : (
-          <>
-            <TouchableOpacity style={[styles.botao_base, styles.botao_sair]}>
-              <SairIcon width={20} height={20} color={"#5A189A"} />
-              <Text style={[styles.botao_base_texto, styles.botao_sair_texto]}>
-                Sair do Grupo
-              </Text>
-            </TouchableOpacity>
-  
-            <TouchableOpacity style={[styles.botao_base, styles.botao_excluir]}>
-              <ExcluirIcon width={20} height={20} />
-              <Text style={[styles.botao_base_texto, styles.botao_excluir_texto]}>
-                Excluir Grupo
-              </Text>
-            </TouchableOpacity>
-          </>
-        )}
-      </View>
-    );
-  };
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <View style={styles.container_cima}>
@@ -153,6 +138,12 @@ const PaginaGrupo = () => {
       >
         <View style={styles.container_titulo}>
           <Text style={styles.grupo_titulo}>{grupoNome}</Text>
+          <GrupoMenu
+            isAdmin={userAdmin}
+            onSairGrupo={() => console.log("Sair do grupo")}
+            onRenomearGrupo={() => setRenameGroupModalActive(true)}
+            onExcluirGrupo={() => console.log("Excluir grupo")}
+          />
         </View>
 
         {loading ? (
@@ -172,8 +163,37 @@ const PaginaGrupo = () => {
                 {integrantesCount} integrantes
               </Text>
             </View>
+            
+            <View style={styles.botoes_container}>
+              {/* Botão Convidar */}
+              <TouchableOpacity
+                style={[
+                  styles.botao_base,
+                  styles.botao_convidar,
+                  integrantesCount === 1 && styles.botao_menor, // Se tiver só 1 integrante, aplica botao_menor
+                ]}
+                onPress={() => setConvidarModalActive(true)}
+              >
+                <ConvidarIcon width={20} height={20} />
+                <Text style={[styles.botao_base_texto, styles.botao_convidar_texto]}>
+                  Convidar
+                </Text>
+              </TouchableOpacity>
 
-            {renderizarBotoes()}
+              {/* Botão Trocar Grupo */}
+              {integrantesCount === 1 && (
+                <TouchableOpacity
+                  style={[styles.botao_base, styles.botao_sair, styles.botao_menor]}
+                  onPress={() => setEntrarGrupoModalActive(true)}
+                >
+                  <SairIcon width={20} height={20} color={"#5A189A"}/>
+                  <Text style={[styles.botao_base_texto, styles.botao_sair_texto]}>
+                    Trocar Grupo
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+
 
             <View style={styles.container_integrantes}>
               <Text style={styles.texto_integrantes_titulo}>Integrantes</Text>
@@ -204,9 +224,17 @@ const PaginaGrupo = () => {
                         {pessoa.nome}
                       </Text>
                     </View>
-                    <TouchableOpacity>
-                      <FecharIcon width={20} height={20} color={colorClass.color} />
-                    </TouchableOpacity>
+                    {userAdmin && (
+                      <TouchableOpacity
+                        onPress={() => {
+                          setIntegranteSelecionadoNome(pessoa.nome);
+                          setIntegranteSelecionadoUID(pessoa.uid);
+                          setKickModalVisible(true);
+                        }}
+                      >
+                        <FecharIcon width={20} height={20} color={colorClass.color} />
+                      </TouchableOpacity>
+                    )}
                   </View>
                 );
               })}
@@ -225,7 +253,43 @@ const PaginaGrupo = () => {
         setEntrarGrupoModalActive={setEntrarGrupoModalActive}
       />
 
-      <Navbar />
+    <RenomearGrupoModal
+      RenomearGrupoModalActive={renameGroupModalActive}
+      setRenomearGrupoModalActive={setRenameGroupModalActive}
+      onNomeGrupoAtualizado={(novoNome) => {
+        setGrupoNome(novoNome);
+        setMensagemToast("Nome do grupo alterado com sucesso!");
+        setToastVisible(true);
+      }}
+    />
+
+    <KickIntegranteModal
+      visible={kickModalVisible}
+      setVisible={setKickModalVisible}
+      nomeIntegrante={integranteSelecionadoNome || ""}
+      onConfirmKick={async () => {
+        try {
+          if (integranteSelecionadoUID) {
+            await kickarIntegrante(integranteSelecionadoUID, grupoIdAtual);
+            setMensagemToast(`"${integranteSelecionadoNome}" foi removido do grupo com sucesso!`);
+            setToastVisible(true);
+            carregarGrupo(); // Atualiza a lista de integrantes
+          }
+        } catch (error) {
+          console.error("Erro ao kickar integrante:", error);
+        }
+        
+      }}
+    />
+
+
+    <AlertaSimples 
+      visible={toastVisible}
+      message={mensagemToast}
+      onClose={() => setToastVisible(false)}
+    />
+
+    <Navbar />
       
     </SafeAreaView>
     

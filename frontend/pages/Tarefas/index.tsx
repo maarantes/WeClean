@@ -119,7 +119,18 @@ const PaginaTarefas = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ParteCima />
       {loading ? (
-        <ActivityIndicator size="large" color="#5A189A" style={{ marginTop: 20 }} />
+        <View style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "white",
+        }}>
+          <ActivityIndicator size="large" color="#5A189A" />
+        </View>
       ) : (
         <ScrollView
           style={globalStyles.containerPagina}

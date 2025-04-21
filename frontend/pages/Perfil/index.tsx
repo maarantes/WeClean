@@ -8,6 +8,7 @@ import {
   TextInput,
   ViewStyle,
   TextStyle,
+  ActivityIndicator,
 } from "react-native";
 import Modal from "react-native-modal";
 import { useNavigation } from "@react-navigation/native";
@@ -24,7 +25,7 @@ import FecharIcon from "../../../assets/images/fechar.svg";
 import EncaminharIcon from "../../../assets/images/encaminhar.svg";
 import MaisAdicaoIcon from "../../../assets/images/mais_adicao.svg";
 import SairIcon from "../../../assets/images/sair.svg";
-import LogoutModal from "@/frontend/components/LogoutModal";
+import LogoutModal from "@/frontend/components/ModalLogout";
 
 import { auth } from "@/backend/services/shared/firebaseConfig";
 import { db } from "@/backend/services/shared/firebase";
@@ -51,6 +52,7 @@ const PaginaPerfil = () => {
   const [LogoutModalActive, setLogoutModalActive] = useState(false);
   const [temaAtual, setTemaAtual] = useState<TemaCor>("azul");
   const [grupoNome, setGrupoNome] = useState("Grupo");
+  const [loading, setLoading] = useState(true);
 
   const temas: TemaCardProps[] = [
     { nome: "Azul", cor: "azul" },
@@ -102,16 +104,15 @@ const PaginaPerfil = () => {
     const carregarInfoUsuario = async () => {
       const uid = auth.currentUser?.uid;
       if (!uid) return;
-
+  
       try {
-        // Buscar usuário
         const userRef = doc(db, "Usuarios", uid);
         const userSnap = await getDoc(userRef);
         if (userSnap.exists()) {
           const data = userSnap.data();
           if (data.tema) setTemaAtual(data.tema as TemaCor);
         }
-
+  
         const grupoRef = doc(db, "Grupos", uid);
         const grupoSnap = await getDoc(grupoRef);
         if (grupoSnap.exists()) {
@@ -120,9 +121,11 @@ const PaginaPerfil = () => {
         }
       } catch (err) {
         console.error("Erro ao carregar informações:", err);
+      } finally {
+        setLoading(false); // ✅ termina o loading só no fim
       }
     };
-
+  
     carregarInfoUsuario();
   }, []);
 
@@ -144,63 +147,83 @@ const PaginaPerfil = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <ScrollView contentContainerStyle={{ paddingTop: 35, paddingBottom: 140 }}>
-        <View style={styles.cima_logout}>
-          <TouchableOpacity style={styles.botao_logout} onPress={() => setLogoutModalActive(true)}>
-            <SairIcon width={20} height={20} color={"#808080"} />
-            <Text style={styles.botao_logout_texto}>Logout</Text>
-          </TouchableOpacity>
+      {loading ? (
+        <View style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "white",
+        }}>
+          <ActivityIndicator size="large" color="#5A189A" />
         </View>
-
-        <View style={[styles.capa, getTemaBgStyle(temaAtual, "primario")]}>
-          <View style={[styles.moldura_perfil, getTemaBgStyle(temaAtual, "secundario")]}>
-            <PerfilIcon width={64} height={64} strokeWidth={0.75}
-              color={(globalStyles[`tema_color_${temaAtual}_primario`] as TextStyle)?.color}
-            />
+      ) : (
+        <ScrollView contentContainerStyle={{ paddingTop: 35, paddingBottom: 140 }}>
+          <View style={styles.cima_logout}>
+            <TouchableOpacity style={styles.botao_logout} onPress={() => setLogoutModalActive(true)}>
+              <SairIcon width={20} height={20} color={"#808080"} />
+              <Text style={styles.botao_logout_texto}>Logout</Text>
+            </TouchableOpacity>
           </View>
-        </View>
-
-        <View style={styles.informacoes}>
-          <View style={styles.parte_input}>
-            <Text style={styles.input_label}>Apelido</Text>
-            <View style={styles.alinhar_editar}>
-              <TextInput placeholder="Até 8 caracteres" style={styles.input} />
-              <EditarIcon width={24} height={24} color={"#808080"} />
+  
+          <View style={[styles.capa, getTemaBgStyle(temaAtual, "primario")]}>
+            <View style={[styles.moldura_perfil, getTemaBgStyle(temaAtual, "secundario")]}>
+              <PerfilIcon width={64} height={64} strokeWidth={0.75}
+                color={(globalStyles[`tema_color_${temaAtual}_primario`] as TextStyle)?.color}
+              />
             </View>
           </View>
-
-          <View style={styles.parte_input}>
-            <Text style={styles.input_label}>E-mail</Text>
-            <View style={styles.alinhar_editar}>
-              <TextInput placeholder="Digite aqui..." style={styles.input} />
-              <EditarIcon width={24} height={24} color={"#808080"} />
-            </View>
-          </View>
-
-          <View style={styles.parte_input}>
-            <Text style={styles.input_label}>Tema da Conta</Text>
-            <View style={styles.tema_wrapper}>
-              <TemaCard nome={capitalizar(temaAtual)} cor={temaAtual} />
-              <TouchableOpacity style={styles.botao_editar} onPress={() => setCardModalVisible(true)}>
-                <Text style={styles.botao_editar_texto}>Editar</Text>
+  
+          <View style={styles.informacoes}>
+            {/* Apelido */}
+            <View style={styles.parte_input}>
+              <Text style={styles.input_label}>Apelido</Text>
+              <View style={styles.alinhar_editar}>
+                <TextInput placeholder="Até 8 caracteres" style={styles.input} />
                 <EditarIcon width={24} height={24} color={"#808080"} />
-              </TouchableOpacity>
+              </View>
+            </View>
+  
+            {/* E-mail */}
+            <View style={styles.parte_input}>
+              <Text style={styles.input_label}>E-mail</Text>
+              <View style={styles.alinhar_editar}>
+                <TextInput placeholder="Digite aqui..." style={styles.input} />
+                <EditarIcon width={24} height={24} color={"#808080"} />
+              </View>
+            </View>
+  
+            {/* Tema Conta */}
+            <View style={styles.parte_input}>
+              <Text style={styles.input_label}>Tema da Conta</Text>
+              <View style={styles.tema_wrapper}>
+                <TemaCard nome={capitalizar(temaAtual)} cor={temaAtual} />
+                <TouchableOpacity style={styles.botao_editar} onPress={() => setCardModalVisible(true)}>
+                  <Text style={styles.botao_editar_texto}>Editar</Text>
+                  <EditarIcon width={24} height={24} color={"#808080"} />
+                </TouchableOpacity>
+              </View>
+            </View>
+  
+            {/* Grupo */}
+            <View style={styles.parte_input}>
+              <Text style={styles.input_label}>Seu Grupo</Text>
+              <View style={styles.tema_wrapper}>
+                <Text style={styles.grupo_texto}>{grupoNome}</Text>
+                <TouchableOpacity style={styles.botao_editar} onPress={() => navigation.navigate("Grupo")}>
+                  <Text style={styles.botao_editar_texto}>Gerenciar</Text>
+                  <EncaminharIcon width={18} height={18} color={"#808080"} />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-
-          <View style={styles.parte_input}>
-            <Text style={styles.input_label}>Seu Grupo</Text>
-            <View style={styles.tema_wrapper}>
-              <Text style={styles.grupo_texto}>{grupoNome}</Text>
-              <TouchableOpacity style={styles.botao_editar} onPress={() => navigation.navigate("Grupo")}>
-                <Text style={styles.botao_editar_texto}>Gerenciar</Text>
-                <EncaminharIcon width={18} height={18} color={"#808080"} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </ScrollView>
-
+        </ScrollView>
+      )}
+  
+      {/* Modais que ficam SEMPRE carregados (não dependem de loading) */}
       <Modal
         isVisible={isCardModalVisible}
         onBackdropPress={() => {
@@ -222,7 +245,7 @@ const PaginaPerfil = () => {
               <FecharIcon width={32} height={32} color={"#404040"} />
             </TouchableOpacity>
           </View>
-
+  
           <View style={styles.cor_opcoes_wrapper}>
             {temas.map((tema, index) => {
               const estaSelecionado = temaSelecionado?.nome === tema.nome;
@@ -233,26 +256,22 @@ const PaginaPerfil = () => {
                   cor={tema.cor}
                   botao
                   ativo={estaSelecionado || temaSelecionado === null}
-                  onPress={() =>
-                    setTemaSelecionado(estaSelecionado ? null : tema)
-                  }
+                  onPress={() => setTemaSelecionado(estaSelecionado ? null : tema)}
                 />
               );
             })}
           </View>
-
-          <Text
-            style={[
-              styles.cor_selecionada,
-              temaSelecionado
-                ? getTemaTextStyle(temaSelecionado.cor, "primario")
-                : { color: "#808080" },
-            ]}
-          >
+  
+          <Text style={[
+            styles.cor_selecionada,
+            temaSelecionado
+              ? getTemaTextStyle(temaSelecionado.cor, "primario")
+              : { color: "#808080" }
+          ]}>
             <Text style={{ color: "#404040" }}>Tema selecionado: </Text>
             {temaSelecionado?.nome ?? "Nenhum"}
           </Text>
-
+  
           <View style={styles.parte_baixo}>
             <TouchableOpacity style={globalStyles.botao_primario} onPress={salvarTema}>
               <MaisAdicaoIcon width={18} height={18} color={"#ffffff"} />
@@ -261,15 +280,15 @@ const PaginaPerfil = () => {
           </View>
         </View>
       </Modal>
-
+  
       <LogoutModal
         LogoutModalActive={LogoutModalActive}
         setLogoutModalActive={setLogoutModalActive}
       />
-
+  
       <Navbar />
     </SafeAreaView>
   );
-};
+}  
 
 export default PaginaPerfil;

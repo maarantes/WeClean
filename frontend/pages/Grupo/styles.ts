@@ -35,6 +35,9 @@ export const styles = StyleSheet.create({
   },
 
   container_titulo: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginTop: 20
   },
 
@@ -61,7 +64,7 @@ export const styles = StyleSheet.create({
     fontFamily: "Inter-Medium"
   },
 
-  container_botoes_acao: {
+  botoes_container: {
     flexDirection: "row",
     flexWrap: "wrap",
     marginTop: 12,

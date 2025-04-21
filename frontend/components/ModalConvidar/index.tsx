@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Clipboard } from "react-native";
+import { View, Text, TouchableOpacity, Clipboard, ActivityIndicator } from "react-native";
 import Modal from "react-native-modal";
 import { styles } from "./styles";
 
@@ -19,23 +19,37 @@ const ConvidarModal: React.FC<ConvidarModalProps> = ({
   setConvidarModalActive,
 }) => {
   const [codigoConvite, setCodigoConvite] = useState("");
-  const [copiado, setCopiado] = useState(false); // <- Novo estado!
+  const [copiado, setCopiado] = useState(false);
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (ConvidarModalActive) {
       carregarCodigoConvite();
-      setCopiado(false); // resetar quando abrir modal de novo
+      setCopiado(false);
     }
   }, [ConvidarModalActive]);
 
   const carregarCodigoConvite = async () => {
     const uid = auth.currentUser?.uid;
     if (!uid) return;
-
+  
     try {
-      const grupoRef = doc(db, "Grupos", uid);
+      setLoading(true); // <- começa carregando
+      const userRef = doc(db, "Usuarios", uid);
+      const userSnap = await getDoc(userRef);
+  
+      if (!userSnap.exists()) {
+        console.log("Usuário não encontrado");
+        return;
+      }
+  
+      const userData = userSnap.data();
+      const grupoId = userData.grupoId || uid;
+  
+      const grupoRef = doc(db, "Grupos", grupoId);
       const grupoSnap = await getDoc(grupoRef);
-
+  
       if (grupoSnap.exists()) {
         const grupoData = grupoSnap.data();
         setCodigoConvite(grupoData.codigo_convite || "------");
@@ -44,6 +58,8 @@ const ConvidarModal: React.FC<ConvidarModalProps> = ({
       }
     } catch (error) {
       console.error("Erro ao carregar código de convite:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -68,9 +84,13 @@ const ConvidarModal: React.FC<ConvidarModalProps> = ({
         </Text>
 
         <View style={styles.modal_codigo_container}>
-          <Text style={styles.modal_codigo_texto}>
-            {codigoConvite}
-          </Text>
+          {loading ? (
+            <ActivityIndicator size="large" color="#5A189A" />
+          ) : (
+            <Text style={styles.modal_codigo_texto}>
+              {codigoConvite}
+            </Text>
+          )}
         </View>
 
         <View style={styles.modal_botoes}>
