@@ -27,7 +27,7 @@ import MaisAdicaoIcon from "../../../assets/images/mais_adicao.svg";
 import SairIcon from "../../../assets/images/sair.svg";
 import LogoutModal from "@/frontend/components/ModalLogout";
 
-import { auth } from "@/backend/services/shared/firebaseConfig";
+import { auth } from "@/backend/services/shared/firebaseConfigApp";
 import { db } from "@/backend/services/shared/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { getTemaBgStyle, getTemaTextStyle } from "../../utils/temaStyles";

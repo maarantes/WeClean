@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Clipboard, ActivityIndicator } from "reac
 import Modal from "react-native-modal";
 import { styles } from "./styles";
 
-import { auth, db } from "../../../backend/services/shared/firebaseConfig";
+import { auth, db } from "../../../backend/services/shared/firebaseConfigApp";
 import { doc, getDoc } from "firebase/firestore";
 
 import CopiarIcon from "../../../assets/images/copiar.svg";

@@ -1,4 +1,4 @@
-import { auth, db } from "../shared/firebaseConfig";
+import { auth, db } from "../shared/firebaseConfigApp";
 import { collection, query, where, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
 
 export const entrarNoGrupoPorCodigo = async (codigoConvite: string, grupoAtualId: string): Promise<{ success: boolean; message: string }> => {

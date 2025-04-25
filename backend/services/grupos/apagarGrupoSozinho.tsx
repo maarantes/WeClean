@@ -1,4 +1,4 @@
-import { auth, db } from "../shared/firebaseConfig";
+import { auth, db } from "../shared/firebaseConfigApp";
 import { doc, getDoc, collection, query, where, getDocs, deleteDoc } from "firebase/firestore";
 import { excluirTarefa } from "../tarefas/excluirTarefa";
 

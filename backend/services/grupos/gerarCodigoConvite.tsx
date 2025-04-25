@@ -1,4 +1,4 @@
-import { db } from "../shared/firebaseConfig";
+import { db } from "../shared/firebaseConfigApp";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
 export const gerarCodigoConvite = async (): Promise<string> => {

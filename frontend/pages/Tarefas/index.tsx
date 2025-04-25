@@ -17,7 +17,7 @@ import CardTarefa from "@/frontend/components/CardTarefa";
 import { formatarFrequenciaTexto } from "@/frontend/utils/formatarFrequencia";
 
 import { obterTarefas } from "../../../backend/services/tarefas/obterTarefas";
-import { auth, db } from "../../../backend/services/shared/firebaseConfig";
+import { auth, db } from "../../../backend/services/shared/firebaseConfigApp";
 
 const PaginaTarefas = () => {
   const fontLoaded = useFonts();

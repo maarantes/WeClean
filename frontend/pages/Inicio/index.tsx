@@ -13,7 +13,7 @@ import ParteCima from "../../components/ParteCima/index";
 import CardTarefa from "../../components/CardTarefa";
 import { formatarFrequenciaTexto } from "@/frontend/utils/formatarFrequencia";
 import AlertaConcluido from "@/frontend/components/AlertaConcluido";
-import { auth } from "../../../backend/services/shared/firebaseConfig";
+import { auth } from "../../../backend/services/shared/firebaseConfigApp";
 import { db } from "@/backend/services/shared/firebase";
 import { getCoresDoTema } from "@/frontend/utils/temaStyles";
 

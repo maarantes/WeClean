@@ -11,7 +11,7 @@ import { Frequencia } from "../../../backend/services/tarefas/types";
 import { definirAlarme } from "../../services/CriarAlarme";
 import { validarFormulario } from "./validation";
 import { montarFrequencia } from "./frequenciaUtils";
-import { auth } from "@/backend/services/shared/firebaseConfig";
+import { auth } from "@/backend/services/shared/firebaseConfigApp";
 import { db } from "@/backend/services/shared/firebase";
 import { globalStyles } from "@/frontend/globalStyles";
 import { getCoresDoTema } from "@/frontend/utils/temaStyles";

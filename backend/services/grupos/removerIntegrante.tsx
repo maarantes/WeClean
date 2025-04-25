@@ -1,4 +1,4 @@
-import { db } from "../shared/firebaseConfig";
+import { db } from "../shared/firebaseConfigApp";
 import { collection, getDocs, updateDoc, doc, writeBatch, arrayRemove, setDoc } from "firebase/firestore";
 
 export const kickarIntegrante = async (uidIntegrante: string, grupoIdAtual: string) => {

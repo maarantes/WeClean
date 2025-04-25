@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, TextInput, Alert, ActivityIndicator, Pres
 import Modal from "react-native-modal";
 import { styles } from "./styles";
 
-import { auth, db } from "../../../backend/services/shared/firebaseConfig";
+import { auth, db } from "../../../backend/services/shared/firebaseConfigApp";
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import { entrarNoGrupoPorCodigo } from "../../../backend/services/grupos/entrarGrupo";
 import { apagarGrupoSozinho } from "../../../backend/services/grupos/apagarGrupoSozinho";

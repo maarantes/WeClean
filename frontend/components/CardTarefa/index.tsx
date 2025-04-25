@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import Modal from "react-native-modal";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
-import { auth } from "@/backend/services/shared/firebaseConfig";
+import { auth } from "@/backend/services/shared/firebaseConfigApp";
 
 import { styles } from "./styles";
 import { globalStyles } from "../../globalStyles";

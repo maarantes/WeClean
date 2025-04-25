@@ -9,7 +9,7 @@ import CardTarefa from "@/frontend/components/CardTarefa";
 
 import SetaDiaIcon from "../../../assets/images/setaDia.svg";
 import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "@/backend/services/shared/firebaseConfig";
+import { auth, db } from "@/backend/services/shared/firebaseConfigApp";
 import { getCoresDoTema } from "@/frontend/utils/temaStyles";
 import { formatarFrequenciaTexto } from "@/frontend/utils/formatarFrequencia";
 

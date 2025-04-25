@@ -1,4 +1,4 @@
-import { auth, db } from "../shared/firebaseConfig";
+import { auth, db } from "../shared/firebaseConfigApp";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 export const renomearGrupo = async (novoNome: string): Promise<void> => {

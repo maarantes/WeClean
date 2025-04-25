@@ -22,13 +22,14 @@ import AdminIcon from "../../../assets/images/admin.svg";
 import PerfilIcon from "../../../assets/images/user.svg";
 import FecharIcon from "../../../assets/images/fechar.svg";
 
-import { auth, db } from "../../../backend/services/shared/firebaseConfig";
+import { auth, db } from "../../../backend/services/shared/firebaseConfigApp";
 import { doc, getDoc } from "firebase/firestore";
 import GrupoMenu from "@/frontend/components/GrupoMenu";
 import RenomearGrupoModal from "@/frontend/components/ModalRenomearGrupo";
 import AlertaSimples from "@/frontend/components/AlertaSimples";
 import KickIntegranteModal from "@/frontend/components/ModalTirarIntegrante";
 import { kickarIntegrante } from "@/backend/services/grupos/removerIntegrante";
+import ModalSairGrupo from "@/frontend/components/ModalSairGrupo";
 
 type NavigationProps = StackNavigationProp<RootStackParamList, "Grupo">;
 
@@ -54,7 +55,8 @@ const PaginaGrupo = () => {
   const [kickModalVisible, setKickModalVisible] = useState(false);
   const [integranteSelecionadoNome, setIntegranteSelecionadoNome] = useState<string | null>(null);
   const [integranteSelecionadoUID, setIntegranteSelecionadoUID] = useState<string | null>(null);
-  
+
+  const [sairGrupoModalVisible, setSairGrupoModalVisible] = useState(false);  
 
   const [toastVisible, setToastVisible] = useState(false);
   const [mensagemToast, setMensagemToast] = useState("");
@@ -140,7 +142,7 @@ const PaginaGrupo = () => {
           <Text style={styles.grupo_titulo}>{grupoNome}</Text>
           <GrupoMenu
             isAdmin={userAdmin}
-            onSairGrupo={() => console.log("Sair do grupo")}
+            onSairGrupo={() => setSairGrupoModalVisible(true)}
             onRenomearGrupo={() => setRenameGroupModalActive(true)}
             onExcluirGrupo={() => console.log("Excluir grupo")}
           />
@@ -281,6 +283,12 @@ const PaginaGrupo = () => {
         
       }}
     />
+
+    <ModalSairGrupo
+      visible={sairGrupoModalVisible}
+      setVisible={setSairGrupoModalVisible}
+    />
+
 
 
     <AlertaSimples 

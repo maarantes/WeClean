@@ -1,6 +1,6 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { auth } from "../shared/firebaseConfig";
+import { auth } from "../shared/firebaseConfigApp";
 import { db } from "../shared/firebase";
 import { gerarCodigoConvite } from "../grupos/gerarCodigoConvite";
 

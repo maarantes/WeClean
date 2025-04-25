@@ -7,7 +7,7 @@ import { styles } from "./styles";
 import { RootStackParamList } from '@/frontend/routes';
 
 import { signOut } from "firebase/auth";
-import { auth } from "../../../backend/services/shared/firebaseConfig";
+import { auth } from "../../../backend/services/shared/firebaseConfigApp";
 
 interface LogoutModalProps {
   LogoutModalActive: boolean;
