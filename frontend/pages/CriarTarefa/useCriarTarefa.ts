@@ -136,11 +136,17 @@ export const useCriarTarefa = () => {
   }, [isEditMode, taskToEdit]);
 
   const toggleIntegrante = (uid: string) => {
-    setIntegrantesSelecionados((prev) =>
-      prev.includes(uid) ? prev.filter((id) => id !== uid) : [...prev, uid]
-    );
+    setIntegrantesSelecionados((prev) => {
+      // Se o integrante já estiver na lista, remove ele, senão, adiciona ele
+      if (prev.includes(uid)) {
+        return prev.filter((id) => id !== uid); // Remove o integrante
+      } else {
+        return [...prev, uid]; // Adiciona o integrante
+      }
+    });
     setErros((prev: any) => ({ ...prev, integrantes: false }));
   };
+  
   
 
   const toggleDiaSemana = (dia: string) => {
@@ -166,12 +172,21 @@ export const useCriarTarefa = () => {
   };
 
   const escolherData = (id: number) => {
-    const selectedDate = new Date();
-    setDatasSelecionadas((prevDatas) =>
-      prevDatas.map((item) =>
-        item.id === id ? { ...item, data: selectedDate } : item
-      )
-    );
+    DateTimePickerAndroid.open({
+      mode: "date",  // Modo para selecionar uma data
+      value: new Date(),  // Inicia com a data atual
+      is24Hour: true,  // Exibe em formato 24 horas
+      onChange: (_, selectedDate) => {
+        if (selectedDate) {
+          const dataSelecionada = new Date(selectedDate);
+          setDatasSelecionadas((prevDatas) =>
+            prevDatas.map((item) =>
+              item.id === id ? { ...item, data: dataSelecionada } : item
+            )
+          );
+        }
+      },
+    });
   };
 
   const adicionarNovaData = () => {
@@ -230,8 +245,8 @@ export const useCriarTarefa = () => {
       
 
     const integrantesFinal = integrantesSelecionados
-    .map(i => typeof i === "string" ? i : i.uid)
-    .filter(Boolean);
+    .map(i => typeof i === "string" ? i : i.uid) // Obtenha o uid
+    .filter((value, index, self) => self.indexOf(value) === index); // Filtra os duplicados
 
     const novaTarefa = {
       nome,
