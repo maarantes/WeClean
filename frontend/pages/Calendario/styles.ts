@@ -102,6 +102,10 @@ export const styles = StyleSheet.create({
     gap: 4
   },
 
+  align_start: {
+    alignItems: "flex-start"
+  },
+
   container_escolher: {
     flexDirection: "row",
     marginTop: 32,
@@ -143,10 +147,22 @@ export const styles = StyleSheet.create({
 
   cards: {
     flexDirection: "row",
-    columnGap: "2%",
-    rowGap: "4%",
+    rowGap: 16,
     marginTop: 16,
-    flexWrap: "wrap"
+    flexWrap: "wrap",
+    justifyContent: "center"
+  },
+
+  nenhuma_tarefa: {
+    width: "100%",
+    textAlign: "center",
+    borderWidth: 1, 
+    borderColor: "#C4C4C4", 
+    borderStyle: "solid",
+    paddingVertical: 12,
+    alignItems: "center",
+    borderRadius: 4,
+    color: "#C4C4C4"
   }
 
 });

@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
   },
 
   menor: {
-    width: "49%"
+    width: "100%"
   },
 
   texto_menor: {
@@ -356,6 +356,11 @@ export const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 4,
     color: "#808080"
+  },
+
+  botao_concluir_menor: {
+    width: 28,
+    height: 28
   }
 
 });

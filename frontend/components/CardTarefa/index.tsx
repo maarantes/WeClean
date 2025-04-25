@@ -18,7 +18,7 @@ import ExcluirIcon from "../../../assets/images/excluir.svg";
 import { excluirTarefa } from "../../../backend/services/tarefas/excluirTarefa";
 
 interface Integrante {
-  uid: string; // ADICIONADO aqui
+  uid: string;
   nome: string;
   cor_primaria: string;
   cor_secundaria: string;
@@ -129,22 +129,23 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
           </View>
 
           <View style={styles.container_info_dir}>
-            {!menor && (
-              <View style={styles.container_info_relogio}>
-                <RelogioIcon width={16} height={16} color="#606060" />
-                <Text style={styles.cor_80_normal}>{horario}</Text>
-              </View>
-            )}
+
+            <View style={styles.container_info_relogio}>
+              <RelogioIcon width={16} height={16} color="#606060" />
+              <Text style={styles.cor_80_normal}>{horario}</Text>
+            </View>
 
             {exibirBotao && (
               <TouchableOpacity
-                style={[styles.botao_concluir, concluido ? styles.botao_concluido : null]}
+                style={[styles.botao_concluir, concluido ? styles.botao_concluido : null, menor ? styles.botao_concluir_menor : null]}
                 onPress={handleConcluirPress}
               >
                 <ConcluirIcon width={12} height={12} color={concluido ? "#FFFFFF" : "#606060"} />
-                <Text style={[styles.cor_80, concluido && styles.cor_white]}>
-                  {concluido ? "Concluído" : "Concluir"}
-                </Text>
+              {!menor && (
+                  <Text style={[styles.cor_80, concluido && styles.cor_white]}>
+                    {concluido ? "Concluído" : "Concluir"}
+                  </Text>
+                )}
               </TouchableOpacity>
             )}
           </View>
@@ -186,6 +187,9 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
                 style={styles.detalhe_botao_editar}
                 onPress={() => {
                   if (dataKey) {
+                    const taskData = { id, nome, descricao, horario, alarme, freq_texto, integrantes };
+                    console.log("Dados da tarefa ao editar:", JSON.stringify(taskData, null, 2));
+                    console.log("Data de referência ao editar:", dataKey);
                     navigation.navigate("CriarTarefa", { task: { id, nome, descricao, horario, alarme, freq_texto, integrantes }, dataReferencia: dataKey });
                     setCardModalVisible(false);
                   }
