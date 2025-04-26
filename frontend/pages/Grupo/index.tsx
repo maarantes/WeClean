@@ -142,6 +142,7 @@ const PaginaGrupo = () => {
           <Text style={styles.grupo_titulo}>{grupoNome}</Text>
           <GrupoMenu
             isAdmin={userAdmin}
+            sozinho={integrantes.length === 1}
             onSairGrupo={() => setSairGrupoModalVisible(true)}
             onRenomearGrupo={() => setRenameGroupModalActive(true)}
             onExcluirGrupo={() => console.log("Excluir grupo")}
@@ -198,10 +199,16 @@ const PaginaGrupo = () => {
 
 
             <View style={styles.container_integrantes}>
-              <Text style={styles.texto_integrantes_titulo}>Integrantes</Text>
+            <Text style={styles.texto_integrantes_titulo}>Integrantes</Text>
 
-              {integrantes.map((pessoa, index) => {
-                const bgClass = globalStyles[`tema_bg_${pessoa.tema}_secundario` as keyof typeof globalStyles] as { backgroundColor: string };;
+            {integrantes
+            .sort((a, b) => {
+              if (a.tipo === "admin" && b.tipo !== "admin") return -1;
+              if (a.tipo !== "admin" && b.tipo === "admin") return 1;
+              return a.nome.localeCompare(b.nome);
+            })
+              .map((pessoa, index) => {
+                const bgClass = globalStyles[`tema_bg_${pessoa.tema}_secundario` as keyof typeof globalStyles] as { backgroundColor: string };
                 const colorClass = globalStyles[`tema_color_${pessoa.tema}_primario` as keyof typeof globalStyles] as { color: string };
 
                 if (pessoa.tipo === "admin") {
@@ -240,7 +247,7 @@ const PaginaGrupo = () => {
                   </View>
                 );
               })}
-            </View>
+          </View>
           </>
         )}
       </ScrollView>
