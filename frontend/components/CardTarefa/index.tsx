@@ -179,7 +179,7 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
                   setCardModalVisible(false);
                 }}
               >
-                <ExcluirIcon width={24} height={24} />
+                <ExcluirIcon width={24} height={24} color={"#C22E63"}/>
                 <Text style={styles.detalhe_botao_excluir_texto}>Excluir</Text>
               </TouchableOpacity>
 

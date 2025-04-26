@@ -78,6 +78,10 @@ modal_container: {
     fontFamily: "Inter-Medium",
     marginBottom: -12,
     color: "#404040"
+  },
+
+  desativado: {
+    backgroundColor: "#C4C4C4"
   }
 
 });

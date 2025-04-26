@@ -32,6 +32,11 @@ const ModalSairGrupo: React.FC<ModalSairGrupoProps> = ({ visible, setVisible }) 
     if (visible) carregarDados();
   }, [visible]);
 
+  const fecharModal = () => {
+    setNovoAdminUID(null);
+    setVisible(false);
+  };
+
   const carregarDados = async () => {
     setLoading(true);
     const uid = auth.currentUser?.uid;
@@ -68,7 +73,12 @@ const ModalSairGrupo: React.FC<ModalSairGrupoProps> = ({ visible, setVisible }) 
         })
       );
 
-    setIntegrantes(detalhes);
+      const detalhesOrdenados = detalhes.sort((a, b) => a.nome.localeCompare(b.nome));
+      setIntegrantes(detalhesOrdenados);
+      
+      if (detalhesOrdenados.length > 0) {
+        setNovoAdminUID(detalhesOrdenados[0].uid);
+      }
     setLoading(false);
   };
 
@@ -88,7 +98,7 @@ const ModalSairGrupo: React.FC<ModalSairGrupoProps> = ({ visible, setVisible }) 
   return (
     <Modal
       isVisible={visible}
-      onBackdropPress={() => setVisible(false)}
+      onBackdropPress={fecharModal}
       backdropColor="#404040"
       backdropOpacity={0.5}
       animationIn="slideInUp"
@@ -101,11 +111,13 @@ const ModalSairGrupo: React.FC<ModalSairGrupoProps> = ({ visible, setVisible }) 
           <>
             <Text style={styles.modal_titulo}>Sair do Grupo</Text>
             <Text style={styles.modal_texto}>
-              Antes de sair do grupo, escolha uma nova pessoa para ser o administrador.
+              Antes de sair do grupo, escolha uma pessoa para ser o novo administrador.
             </Text>
 
             <View style={styles.lista_integrantes}>
-              {integrantes.map((integrante) => (
+            {integrantes
+            .sort((a, b) => a.nome.localeCompare(b.nome))
+            .map((integrante) => (
                 <Badge
                     key={integrante.uid}
                     text={integrante.nome}
@@ -146,7 +158,7 @@ const ModalSairGrupo: React.FC<ModalSairGrupoProps> = ({ visible, setVisible }) 
             )}
             </TouchableOpacity>
 
-              <TouchableOpacity style={styles.modal_botao_cancelar} onPress={() => setVisible(false)}>
+              <TouchableOpacity style={styles.modal_botao_cancelar} onPress={fecharModal}>
                 <Text style={styles.modal_botao_cancelar_texto}>Cancelar</Text>
               </TouchableOpacity>
             </View>
@@ -159,7 +171,7 @@ const ModalSairGrupo: React.FC<ModalSairGrupoProps> = ({ visible, setVisible }) 
             </Text>
             <View style={styles.modal_botoes}>
             <TouchableOpacity
-            style={[styles.modal_botao_sair, saindo && { opacity: 0.5 }]}
+            style={[styles.modal_botao_sair]}
             onPress={handleSairDoGrupo}
             disabled={saindo}
             >
