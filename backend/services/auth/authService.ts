@@ -1,32 +1,42 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, } from "firebase/auth";
+import { doc, setDoc, collection } from "firebase/firestore";
 import { auth } from "../shared/firebaseConfigApp";
 import { db } from "../shared/firebase";
 import { gerarCodigoConvite } from "../grupos/gerarCodigoConvite";
 
-export const cadastrarUsuario = async (email: string, senha: string, apelido: string) => {
-  const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+export const cadastrarUsuario = async (
+  email: string,
+  senha: string,
+  apelido: string
+) => {
+
+  const userCredential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    senha
+  );
   const uid = userCredential.user.uid;
+
+  // Gera um novo grupo com auto-ID
+  const gruposCol = collection(db, "Grupos");
+  const grupoPessoalRef = doc(gruposCol);
+  const grupoId = grupoPessoalRef.id;
+
+  const codigoConvite = gerarCodigoConvite();
+
+  // Cria o grupo pessoal
+  await setDoc(grupoPessoalRef, {
+    nome: "Grupo Pessoal",
+    integrantes: [{ uid, tipo: "admin" }],
+    codigo_convite: codigoConvite,
+  });
 
   await setDoc(doc(db, "Usuarios", uid), {
     apelido,
     email,
     tema: "azul",
-    grupoId: uid,
+    grupoId,
   });
-
-  const codigoConvite = await gerarCodigoConvite();
-
-  await setDoc(doc(db, "Grupos", uid), {
-    nome: "Grupo Pessoal",
-    integrantes: [
-      {
-        uid,
-        tipo: "admin"
-      }
-    ],
-    codigo_convite: codigoConvite,
-  }, { merge: true });
 
   return uid;
 };

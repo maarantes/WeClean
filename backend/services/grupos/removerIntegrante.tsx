@@ -1,5 +1,6 @@
 import { db } from "../shared/firebaseConfigApp";
 import { collection, getDocs, updateDoc, doc, writeBatch, arrayRemove, setDoc } from "firebase/firestore";
+import { gerarCodigoConvite } from "./gerarCodigoConvite";
 
 export const kickarIntegrante = async (uidIntegrante: string, grupoIdAtual: string) => {
   try {
@@ -64,7 +65,7 @@ export const kickarIntegrante = async (uidIntegrante: string, grupoIdAtual: stri
     const novoGrupoRef = doc(collection(db, "Grupos"));
     const criarNovoGrupo = setDoc(novoGrupoRef, {
       nome: "Grupo Pessoal",
-      codigo_convite: Math.random().toString(36).substring(2, 8).toUpperCase(),
+      codigo_convite: gerarCodigoConvite(),
       integrantes: [{ uid: uidIntegrante, tipo: "admin" }],
     });
 

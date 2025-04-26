@@ -1,65 +1,65 @@
+
 import { auth, db } from "@/backend/services/shared/firebaseConfigApp";
-import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, setDoc, collection } from "firebase/firestore";
 import { removerUsuarioDasTarefasDoGrupo } from "./removerUsuariosTarefas";
 
-// novoAdminUid é opcional – só é necessário se o usuário for admin
+// Gera um código de convite aleatório de 6 dígitos
+const gerarCodigoConvite = (): string =>
+  Math.floor(100000 + Math.random() * 900000).toString();
+
 export const sairDoGrupo = async (novoAdminUid?: string) => {
   const uid = auth.currentUser?.uid;
   if (!uid) throw new Error("Usuário não autenticado.");
 
+  // 1) Pega dados do usuário atual
   const userRef = doc(db, "Usuarios", uid);
   const userSnap = await getDoc(userRef);
   if (!userSnap.exists()) throw new Error("Usuário não encontrado.");
+  const { grupoId } = userSnap.data();
 
-  const userData = userSnap.data();
-  const grupoId = userData.grupoId;
-
+  // 2) Pega o grupo atual
   const grupoRef = doc(db, "Grupos", grupoId);
   const grupoSnap = await getDoc(grupoRef);
   if (!grupoSnap.exists()) throw new Error("Grupo não encontrado.");
+  const integrantes: { uid: string; tipo: string }[] =
+    grupoSnap.data().integrantes || [];
 
-  const grupoData = grupoSnap.data();
-  const integrantes = grupoData.integrantes || [];
+  // 3) Verifica se é admin
+  const souAdmin = integrantes.some((i) => i.uid === uid && i.tipo === "admin");
 
-  // Verifica se o usuário atual é admin
-  const souAdmin = integrantes.find((i: any) => i.uid === uid && i.tipo === "admin");
-
+  // 4) Se for admin e forneceu novoAdminUid, promove e remove o antigo
   if (souAdmin && novoAdminUid) {
-    const novoAdminExiste = integrantes.some((i: any) => i.uid === novoAdminUid);
-    if (!novoAdminExiste) {
-      throw new Error("Novo admin selecionado não é integrante do grupo.");
+    if (!integrantes.some((i) => i.uid === novoAdminUid)) {
+      throw new Error("Novo admin não faz parte do grupo.");
     }
-
-    // Atualiza o grupo: promove novo admin e remove o antigo
-    const novosIntegrantes = integrantes.map((i: any) => {
-      if (i.uid === novoAdminUid) return { ...i, tipo: "admin" };
-      return i;
-    }).filter((i: any) => i.uid !== uid);
-
-    await updateDoc(grupoRef, {
-      integrantes: novosIntegrantes,
-    });
+    const atualizados = integrantes
+      .map((i) =>
+        i.uid === novoAdminUid ? { ...i, tipo: "admin" } : i
+      )
+      .filter((i) => i.uid !== uid);
+    await updateDoc(grupoRef, { integrantes: atualizados });
 
   } else {
-    // Usuário comum: apenas remove do grupo
-    const novosIntegrantes = integrantes.filter((i: any) => i.uid !== uid);
-    await updateDoc(grupoRef, {
-      integrantes: novosIntegrantes,
-    });
+    // 5) Caso contrário (não admin), só remove o usuário
+    const restantes = integrantes.filter((i) => i.uid !== uid);
+    await updateDoc(grupoRef, { integrantes: restantes });
   }
 
-  // Remove da lista de tarefas do grupo
+  // 6) Remove das tarefas do grupo (coleções Tarefas e Calendário)
   await removerUsuarioDasTarefasDoGrupo(grupoId, uid);
 
-  // Cria grupo pessoal (usando UID do usuário como ID)
-  const grupoPessoalRef = doc(db, "Grupos", uid);
-  await setDoc(grupoPessoalRef, {
+  // 7) Cria novo grupo pessoal com auto ID
+  const gruposCol = collection(db, "Grupos");
+  const pessoalRef = doc(gruposCol); 
+  const pessoalId = pessoalRef.id;
+  await setDoc(pessoalRef, {
     nome: "Grupo Pessoal",
+    codigo_convite: gerarCodigoConvite(),
     integrantes: [{ uid, tipo: "admin" }],
   });
 
-  // Atualiza grupoId do usuário
+  // 8) Atualiza o campo GrupoID do usuário para apontar ao novo grupo pessoal
   await updateDoc(userRef, {
-    grupoId: uid,
+    grupoId: pessoalId,
   });
 };
