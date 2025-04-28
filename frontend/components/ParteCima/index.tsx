@@ -48,7 +48,6 @@ const ParteCima = () => {
             setNomeUsuario(nome);
             setTemaUsuario(tema);
   
-            // Atualiza o cache para as próximas vezes serem instantâneas
             await AsyncStorage.setItem('@userNome', nome);
             await AsyncStorage.setItem('@userTema', tema);
           }
@@ -69,7 +68,7 @@ const ParteCima = () => {
     <View style={styles.container}>
       <View style={styles.usuario_container}>
         <View style={[styles.bolinha, bgClass]}>
-          <PerfilIcon width={20} height={20} color={colorClass.color} />
+          <PerfilIcon width={24} height={24} color={colorClass.color} />
         </View>
         <Text style={[styles.usuario_nome, colorClass]}>{nomeUsuario}</Text>
       </View>

@@ -16,6 +16,8 @@ import EncaminharIcon from "../../../assets/images/encaminhar.svg";
 import MaisAdicaoIcon from "../../../assets/images/mais_adicao.svg";
 import SairIcon from "../../../assets/images/sair.svg";
 import LogoutModal from "@/frontend/components/ModalLogout";
+import EditarInfoModal from "@/frontend/components/ModalEditarInfo";
+
 
 import { auth, db } from "@/backend/services/shared/firebaseConfigApp";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -44,6 +46,10 @@ const PaginaPerfil = () => {
   const [loading, setLoading] = useState(true);
   const [apelido, setApelido] = useState("Carregando...");
   const [email, setEmail] = useState("Carregando...");
+
+  const [editarModalVisible, setEditarModalVisible] = useState(false);
+  const [tipoEdicao, setTipoEdicao] = useState<"apelido" | "email">("apelido");
+
 
   const temas: TemaCardProps[] = [
     { nome: "Azul", cor: "azul" },
@@ -181,28 +187,20 @@ const PaginaPerfil = () => {
             {/* Apelido */}
             <View style={styles.parte_input}>
               <Text style={styles.input_label}>Apelido</Text>
-              <View style={styles.alinhar_editar}>
-                <TextInput
-                  placeholder="Até 8 caracteres"
-                  style={styles.input}
-                  value={apelido}
-                  editable={false}
-                />
+              <TouchableOpacity style={styles.alinhar_editar} onPress={() => {
+                setTipoEdicao("apelido");
+                setEditarModalVisible(true);
+              }}>
+                <Text style={styles.input}>{apelido}</Text>
                 <EditarIcon width={24} height={24} color={"#808080"} />
-              </View>
+              </TouchableOpacity>
             </View>
 
             {/* E-mail */}
             <View style={styles.parte_input}>
               <Text style={styles.input_label}>E-mail</Text>
               <View style={styles.alinhar_editar}>
-                <TextInput
-                  placeholder="Digite aqui..."
-                  style={styles.input}
-                  value={email}
-                  editable={false}
-                />
-                <EditarIcon width={24} height={24} color={"#808080"} />
+                <Text style={styles.input}>{email}</Text>
               </View>
             </View>
 
@@ -290,6 +288,15 @@ const PaginaPerfil = () => {
           </View>
         </View>
       </Modal>
+
+      <EditarInfoModal
+        visible={editarModalVisible}
+        setVisible={setEditarModalVisible}
+        valorAtual={apelido}
+        onSalvar={(novoValor) => {
+          setApelido(novoValor);
+        }}
+      />
 
       <LogoutModal
         LogoutModalActive={LogoutModalActive}

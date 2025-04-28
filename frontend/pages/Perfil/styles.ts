@@ -48,6 +48,7 @@ export const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#F5F5F5",
         borderRadius: 4,
+        paddingVertical: 8
     },
 
     retangulo_container: {
@@ -178,5 +179,4 @@ export const styles = StyleSheet.create({
         zIndex: 10
     }
     
-
 });

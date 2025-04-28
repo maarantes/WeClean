@@ -35,15 +35,15 @@ export const styles = StyleSheet.create({
   },
   
   bolinha: {
-    width: 32,
-    height: 32,
+    width: 40,
+    height: 40,
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
   },
   
   usuario_nome: {
-    fontSize: 14,
+    fontSize: 16,
     fontFamily: "Inter-SemiBold",
   },
   

@@ -127,14 +127,16 @@ export const styles = StyleSheet.create({
   },
 
   container_integrantes: {
-    marginTop: 32,
+    marginTop: 40,
     gap: 12,
+    marginBottom: 40
   },
 
   texto_integrantes_titulo: {
     color: "#404040",
-    fontSize: 18,
-    fontFamily: "Inter-Medium"
+    fontSize: 16,
+    fontFamily: "Inter-Medium",
+    marginBottom: 4
   },
 
   container_pessoa_admin: {

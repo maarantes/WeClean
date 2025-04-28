@@ -14,8 +14,7 @@ export const styles = StyleSheet.create({
         paddingTop: 60,
         paddingBottom: 20,
         paddingHorizontal: 20,
-        zIndex: 1,
-        elevation: 2
+        zIndex: 1
     },
   
     titulo_cima: {

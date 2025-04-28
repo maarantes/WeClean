@@ -18,6 +18,7 @@ modal_container: {
   modal_texto: {
     fontFamily: "Inter-Medium",
     color: "#606060",
+    textAlign: "center",
     fontSize: 14
   },
 
@@ -58,6 +59,22 @@ modal_container: {
     fontFamily: "Inter-SemiBold"
   },
 
+  codigo_input_area: {
+    flexDirection: "row",
+    gap: 16,
+    marginBottom: 24
+  },
+
+  codigo_input_text: {
+    fontFamily: "HeptaSlab-SemiBold",
+    fontSize: 32
+  },
+
+  sem_nada: {
+    fontFamily: "none",
+    marginTop: 6
+  },
+
   input_modal: {
     backgroundColor: "#F5F5F5",
     borderRadius: 8,
@@ -69,5 +86,5 @@ modal_container: {
     marginBottom: 16,
     width: "100%"
   }
-  
+
 });
