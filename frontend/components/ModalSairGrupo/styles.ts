@@ -30,7 +30,7 @@ modal_container: {
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
-    width: "100%"
+    width: "48%"
   },
 
   modal_botao_sair_texto: {
@@ -40,7 +40,8 @@ modal_container: {
 
   modal_botoes: {
     width: "100%",
-    gap: 12
+    flexDirection: "row",
+    gap: "4%"
   },
 
   modal_botao_cancelar: {
@@ -51,7 +52,7 @@ modal_container: {
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
-    width: "100%"
+    width: "48%"
   },
 
   modal_botao_cancelar_texto: {

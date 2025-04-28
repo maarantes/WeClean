@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from "react";
 import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, ActivityIndicator } from "react-native";
-import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 import { styles } from "./styles";
 import { globalStyles } from "../../globalStyles";
@@ -133,6 +132,20 @@ const PaginaGrupo = () => {
         </TouchableOpacity>
         <Text style={styles.titulo_cima}>Seu Grupo</Text>
       </View>
+      {loading ? (
+        <View style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "white",
+        }}>
+          <ActivityIndicator size="large" color="#5A189A" />
+        </View>
+            ) : (
 
       <ScrollView
         style={globalStyles.containerPagina}
@@ -148,109 +161,102 @@ const PaginaGrupo = () => {
             onExcluirGrupo={() => console.log("Excluir grupo")}
           />
         </View>
-
-        {loading ? (
-          <ActivityIndicator size="large" color="#5A189A" />
-        ) : (
-          <>
-            <View style={styles.card_grupo}>
-              <View style={styles.card_grupo_icones}>
-                {Array.from({ length: integrantesCount }).map((_, i) => (
-                  <GrupoPessoaIcon key={`pessoa_${i}`} width={26} height={26} />
-                ))}
-                {Array.from({ length: vagasRestantes }).map((_, i) => (
-                  <GrupoSemPessoaIcon key={`vazio_${i}`} width={26} height={26} />
-                ))}
-              </View>
-              <Text style={styles.texto_integrantes}>
-                {integrantesCount} integrantes
-              </Text>
+          <View style={styles.card_grupo}>
+            <View style={styles.card_grupo_icones}>
+              {Array.from({ length: integrantesCount }).map((_, i) => (
+                <GrupoPessoaIcon key={`pessoa_${i}`} width={26} height={26} />
+              ))}
+              {Array.from({ length: vagasRestantes }).map((_, i) => (
+                <GrupoSemPessoaIcon key={`vazio_${i}`} width={26} height={26} />
+              ))}
             </View>
-            
-            <View style={styles.botoes_container}>
-              {/* Botão Convidar */}
+            <Text style={styles.texto_integrantes}>
+              {integrantesCount} integrantes
+            </Text>
+          </View>
+          
+          <View style={styles.botoes_container}>
+            {/* Botão Convidar */}
+            <TouchableOpacity
+              style={[
+                styles.botao_base,
+                styles.botao_convidar,
+                integrantesCount === 1 && styles.botao_menor, // Se tiver só 1 integrante, aplica botao_menor
+              ]}
+              onPress={() => setConvidarModalActive(true)}
+            >
+              <ConvidarIcon width={20} height={20} />
+              <Text style={[styles.botao_base_texto, styles.botao_convidar_texto]}>
+                Convidar
+              </Text>
+            </TouchableOpacity>
+
+            {/* Botão Trocar Grupo */}
+            {integrantesCount === 1 && (
               <TouchableOpacity
-                style={[
-                  styles.botao_base,
-                  styles.botao_convidar,
-                  integrantesCount === 1 && styles.botao_menor, // Se tiver só 1 integrante, aplica botao_menor
-                ]}
-                onPress={() => setConvidarModalActive(true)}
+                style={[styles.botao_base, styles.botao_sair, styles.botao_menor]}
+                onPress={() => setEntrarGrupoModalActive(true)}
               >
-                <ConvidarIcon width={20} height={20} />
-                <Text style={[styles.botao_base_texto, styles.botao_convidar_texto]}>
-                  Convidar
+                <SairIcon width={20} height={20} color={"#5A189A"}/>
+                <Text style={[styles.botao_base_texto, styles.botao_sair_texto]}>
+                  Trocar Grupo
                 </Text>
               </TouchableOpacity>
+            )}
+          </View>
 
-              {/* Botão Trocar Grupo */}
-              {integrantesCount === 1 && (
-                <TouchableOpacity
-                  style={[styles.botao_base, styles.botao_sair, styles.botao_menor]}
-                  onPress={() => setEntrarGrupoModalActive(true)}
-                >
-                  <SairIcon width={20} height={20} color={"#5A189A"}/>
-                  <Text style={[styles.botao_base_texto, styles.botao_sair_texto]}>
-                    Trocar Grupo
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
+          <View style={styles.container_integrantes}>
+          <Text style={styles.texto_integrantes_titulo}>Integrantes</Text>
 
+          {integrantes
+          .sort((a, b) => {
+            if (a.tipo === "admin" && b.tipo !== "admin") return -1;
+            if (a.tipo !== "admin" && b.tipo === "admin") return 1;
+            return a.nome.localeCompare(b.nome);
+          })
+            .map((pessoa, index) => {
+              const bgClass = globalStyles[`tema_bg_${pessoa.tema}_secundario` as keyof typeof globalStyles] as { backgroundColor: string };
+              const colorClass = globalStyles[`tema_color_${pessoa.tema}_primario` as keyof typeof globalStyles] as { color: string };
 
-            <View style={styles.container_integrantes}>
-            <Text style={styles.texto_integrantes_titulo}>Integrantes</Text>
-
-            {integrantes
-            .sort((a, b) => {
-              if (a.tipo === "admin" && b.tipo !== "admin") return -1;
-              if (a.tipo !== "admin" && b.tipo === "admin") return 1;
-              return a.nome.localeCompare(b.nome);
-            })
-              .map((pessoa, index) => {
-                const bgClass = globalStyles[`tema_bg_${pessoa.tema}_secundario` as keyof typeof globalStyles] as { backgroundColor: string };
-                const colorClass = globalStyles[`tema_color_${pessoa.tema}_primario` as keyof typeof globalStyles] as { color: string };
-
-                if (pessoa.tipo === "admin") {
-                  return (
-                    <View
-                      key={index}
-                      style={[styles.container_pessoa_admin, bgClass]}
-                    >
-                      <AdminIcon width={20} height={20} color={colorClass.color} />
-                      <Text style={[styles.container_pessoa_nome, colorClass]}>
-                        {pessoa.nome}
-                      </Text>
-                    </View>
-                  );
-                }
-
+              if (pessoa.tipo === "admin") {
                 return (
-                  <View key={index} style={[styles.container_pessoa_normal, bgClass]}>
-                    <View style={styles.pessoa_normal_esq}>
-                      <PerfilIcon width={20} height={20} color={colorClass.color} />
-                      <Text style={[styles.container_pessoa_nome, colorClass]}>
-                        {pessoa.nome}
-                      </Text>
-                    </View>
-                    {userAdmin && (
-                      <TouchableOpacity
-                        onPress={() => {
-                          setIntegranteSelecionadoNome(pessoa.nome);
-                          setIntegranteSelecionadoUID(pessoa.uid);
-                          setKickModalVisible(true);
-                        }}
-                      >
-                        <FecharIcon width={20} height={20} color={colorClass.color} />
-                      </TouchableOpacity>
-                    )}
+                  <View
+                    key={index}
+                    style={[styles.container_pessoa_admin, bgClass]}
+                  >
+                    <AdminIcon width={20} height={20} color={colorClass.color} />
+                    <Text style={[styles.container_pessoa_nome, colorClass]}>
+                      {pessoa.nome}
+                    </Text>
                   </View>
                 );
-              })}
-          </View>
-          </>
-        )}
+              }
+
+              return (
+                <View key={index} style={[styles.container_pessoa_normal, bgClass]}>
+                  <View style={styles.pessoa_normal_esq}>
+                    <PerfilIcon width={20} height={20} color={colorClass.color} />
+                    <Text style={[styles.container_pessoa_nome, colorClass]}>
+                      {pessoa.nome}
+                    </Text>
+                  </View>
+                  {userAdmin && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setIntegranteSelecionadoNome(pessoa.nome);
+                        setIntegranteSelecionadoUID(pessoa.uid);
+                        setKickModalVisible(true);
+                      }}
+                    >
+                      <FecharIcon width={20} height={20} color={colorClass.color} />
+                    </TouchableOpacity>
+                  )}
+                </View>
+              );
+            })}
+        </View>
       </ScrollView>
+      )}
 
       <ConvidarModal
         ConvidarModalActive={convidarModalActive}
@@ -282,7 +288,7 @@ const PaginaGrupo = () => {
             await kickarIntegrante(integranteSelecionadoUID, grupoIdAtual);
             setMensagemToast(`"${integranteSelecionadoNome}" foi removido do grupo com sucesso!`);
             setToastVisible(true);
-            carregarGrupo(); // Atualiza a lista de integrantes
+            carregarGrupo();
           }
         } catch (error) {
           console.error("Erro ao kickar integrante:", error);

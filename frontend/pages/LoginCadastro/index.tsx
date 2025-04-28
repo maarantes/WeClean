@@ -14,6 +14,10 @@ import Carrossel from "../../components/Carrossel/Carrossel";
 import LoginIcon from "../../../assets/images/login.svg";
 
 import { cadastrarUsuario, loginUsuario } from "../../../backend/services/auth/authService";
+import { auth, db } from "@/backend/services/shared/firebaseConfigApp";
+import { doc, getDoc } from "firebase/firestore";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -44,17 +48,46 @@ const PaginaLoginCadastro = () => {
     scrollRef.current?.scrollToFocusedInput(ref);
   };
 
+  const salvarInfoUsuarioLocal = async () => {
+    const uid = auth.currentUser?.uid;
+    if (!uid) return;
+
+    try {
+      const userRef = doc(db, "Usuarios", uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const data = userSnap.data();
+        if (data.tema) {
+          await AsyncStorage.setItem("@userTema", data.tema);
+        }
+        if (data.apelido) {
+          await AsyncStorage.setItem("@userNome", data.apelido);
+        }
+        if (data.email) {
+          await AsyncStorage.setItem("@userEmail", data.email);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao salvar informações locais:", error);
+    }
+  };
+
   const handleLoginOuCadastro = async () => {
     setLoading(true);
     try {
       if (abaSelecionada === "login") {
         if (!email || !senha) return Alert.alert("Erro", "Preencha todos os campos.");
         await loginUsuario(email, senha);
+        await salvarInfoUsuarioLocal();
         navigation.navigate("Início");
       } else {
         if (!apelido || apelido.length > 8) return Alert.alert("Erro", "Apelido deve ter até 8 caracteres.");
         if (!email || !senha) return Alert.alert("Erro", "Preencha todos os campos.");
         await cadastrarUsuario(email, senha, apelido);
+        await AsyncStorage.setItem("@userTema", "azul"); // Cadastro novo = tema azul
+        await AsyncStorage.setItem("@userNome", apelido);
+        await AsyncStorage.setItem('@userEmail', email);
         navigation.navigate("Início");
       }
     } catch (error: any) {
@@ -67,7 +100,7 @@ const PaginaLoginCadastro = () => {
       else if (error.code === "auth/wrong-password") mensagem = "Senha incorreta.";
       Alert.alert("Erro", mensagem);
     } finally {
-      setLoading(false);0
+      setLoading(false);
     }
   };
 
@@ -189,7 +222,6 @@ const PaginaLoginCadastro = () => {
       </KeyboardAwareScrollView>
 
       <ModalLoading visible={loading} />
-      
     </SafeAreaView>
   );
 };

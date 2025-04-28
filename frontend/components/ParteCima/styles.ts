@@ -26,6 +26,26 @@ export const styles = StyleSheet.create({
     padding: 8,
     backgroundColor: "#F5F5F5",
     borderRadius: 4
-  }
+  },
+
+  usuario_container: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  
+  bolinha: {
+    width: 32,
+    height: 32,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  
+  usuario_nome: {
+    fontSize: 14,
+    fontFamily: "Inter-SemiBold",
+  },
+  
 
 });

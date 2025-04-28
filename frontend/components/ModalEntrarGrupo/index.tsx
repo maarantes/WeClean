@@ -3,6 +3,10 @@ import { View, Text, TouchableOpacity, TextInput, Alert, ActivityIndicator, Pres
 import Modal from "react-native-modal";
 import { styles } from "./styles";
 
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "@/frontend/routes";
+
 import { auth, db } from "../../../backend/services/shared/firebaseConfigApp";
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import { entrarNoGrupoPorCodigo } from "../../../backend/services/grupos/entrarGrupo";
@@ -13,15 +17,20 @@ interface EntrarGrupoModalProps {
   setEntrarGrupoModalActive: (visible: boolean) => void;
 }
 
+type NavigationProps = StackNavigationProp<RootStackParamList, "Grupo">;
+
 const EntrarGrupoModal: React.FC<EntrarGrupoModalProps> = ({
   EntrarGrupoModalActive,
-  setEntrarGrupoModalActive,
+  setEntrarGrupoModalActive
 }) => {
   const [codigoInserido, setCodigoInserido] = useState("");
   const [loading, setLoading] = useState(false);
   const [confirmarTrocaSozinho, setConfirmarTrocaSozinho] = useState(false);
+  const [grupoAtualId, setGrupoAtualId] = useState<string | null>(null);
 
   const inputRef = useRef<TextInput>(null);
+
+  const navigation = useNavigation<NavigationProps>();
 
   const handleInputChange = (text: string) => {
     const numericText = text.replace(/[^0-9]/g, "");
@@ -45,7 +54,13 @@ const EntrarGrupoModal: React.FC<EntrarGrupoModalProps> = ({
       const uid = auth.currentUser?.uid;
       if (!uid) throw new Error("Usuário não autenticado.");
 
-      const grupoAtualRef = doc(db, "Grupos", uid);
+      const userSnap = await getDoc(doc(db, "Usuarios", uid));
+      if (!userSnap.exists()) throw new Error("Usuário não encontrado.");
+
+      const { grupoId } = userSnap.data();
+      setGrupoAtualId(grupoId);
+
+      const grupoAtualRef = doc(db, "Grupos", grupoId);
       const grupoAtualSnap = await getDoc(grupoAtualRef);
 
       if (grupoAtualSnap.exists()) {
@@ -69,57 +84,61 @@ const EntrarGrupoModal: React.FC<EntrarGrupoModalProps> = ({
   const entrarContinuando = async () => {
     const uid = auth.currentUser?.uid;
     if (!uid) return;
-
+  
     const resultado = await entrarNoGrupoPorCodigo(codigoInserido, uid);
     setLoading(false);
-
+  
     if (resultado.success) {
       Alert.alert("Sucesso", resultado.message);
       setEntrarGrupoModalActive(false);
       setCodigoInserido("");
       setConfirmarTrocaSozinho(false);
+      
+      navigation.reset({ index: 0, routes: [{ name: "Grupo" }] });
     } else {
       Alert.alert("Erro", resultado.message);
     }
   };
+  
 
   const confirmarTrocaEEntrar = async () => {
     try {
       setLoading(true);
-  
+
       const uid = auth.currentUser?.uid;
       if (!uid) throw new Error("Usuário não autenticado.");
-  
+
+      if (!grupoAtualId) throw new Error("Grupo atual não encontrado.");
+
       // Primeiro: Verificar o grupo do código
       const gruposRef = collection(db, "Grupos");
       const q = query(gruposRef, where("codigo_convite", "==", codigoInserido));
       const querySnapshot = await getDocs(q);
-  
+
       if (querySnapshot.empty) {
         setLoading(false);
         Alert.alert("Erro", "Código inválido ou grupo não encontrado.");
         return;
       }
-  
+
       const grupoDoc = querySnapshot.docs[0];
       const grupoId = grupoDoc.id;
-  
-      if (grupoId === uid) {
+
+      if (grupoId === grupoAtualId) {
         setLoading(false);
         Alert.alert("Erro", "Você já está neste grupo.");
         return;
       }
-  
-      await apagarGrupoSozinho();
+
+      await apagarGrupoSozinho(grupoAtualId); // Agora passa o grupo certo
       await entrarContinuando();
-  
+
     } catch (error) {
       console.error(error);
       setLoading(false);
       Alert.alert("Erro", "Não foi possível entrar no grupo.");
     }
   };
-  
 
   return (
     <Modal
@@ -127,6 +146,7 @@ const EntrarGrupoModal: React.FC<EntrarGrupoModalProps> = ({
       onBackdropPress={() => {
         setEntrarGrupoModalActive(false);
         setConfirmarTrocaSozinho(false);
+        setCodigoInserido("");
       }}
       backdropColor="#404040"
       backdropOpacity={0.5}

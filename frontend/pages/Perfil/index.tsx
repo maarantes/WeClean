@@ -1,15 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  SafeAreaView,
-  TouchableOpacity,
-  TextInput,
-  ViewStyle,
-  TextStyle,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, TextInput, ViewStyle, TextStyle, ActivityIndicator } from "react-native";
 import Modal from "react-native-modal";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -27,14 +17,13 @@ import MaisAdicaoIcon from "../../../assets/images/mais_adicao.svg";
 import SairIcon from "../../../assets/images/sair.svg";
 import LogoutModal from "@/frontend/components/ModalLogout";
 
-import { auth } from "@/backend/services/shared/firebaseConfigApp";
-import { db } from "@/backend/services/shared/firebase";
+import { auth, db } from "@/backend/services/shared/firebaseConfigApp";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { getTemaBgStyle, getTemaTextStyle } from "../../utils/temaStyles";
 
-type TemaCor =
-  | "azul" | "vinho" | "rosa" | "amarelo" | "laranja"
-  | "verde" | "turquesa" | "coral" | "roxo" | "marrom";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+type TemaCor = "azul" | "vinho" | "rosa" | "amarelo" | "laranja" | "verde" | "turquesa" | "coral" | "roxo" | "marrom";
 
 type TemaCardProps = {
   nome: string;
@@ -51,8 +40,10 @@ const PaginaPerfil = () => {
   const [temaSelecionado, setTemaSelecionado] = useState<TemaCardProps | null>(null);
   const [LogoutModalActive, setLogoutModalActive] = useState(false);
   const [temaAtual, setTemaAtual] = useState<TemaCor>("azul");
-  const [grupoNome, setGrupoNome] = useState("Grupo");
+  const [grupoNome, setGrupoNome] = useState("Carregando...");
   const [loading, setLoading] = useState(true);
+  const [apelido, setApelido] = useState("Carregando...");
+  const [email, setEmail] = useState("Carregando...");
 
   const temas: TemaCardProps[] = [
     { nome: "Azul", cor: "azul" },
@@ -102,19 +93,25 @@ const PaginaPerfil = () => {
 
   useEffect(() => {
     const carregarInfoUsuario = async () => {
-      const uid = auth.currentUser?.uid;
-      if (!uid) return;
-  
       try {
+        const temaCache = await AsyncStorage.getItem('@userTema');
+        const nomeCache = await AsyncStorage.getItem('@userNome');
+        const emailCache = await AsyncStorage.getItem('@userEmail');
+        if (temaCache) setTemaAtual(temaCache as TemaCor);
+        if (nomeCache) setApelido(nomeCache);
+        if (emailCache) setEmail(emailCache);
+
+        const uid = auth.currentUser?.uid;
+        if (!uid) return;
+
         const userRef = doc(db, "Usuarios", uid);
         const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          const data = userSnap.data();
-          if (data.tema) setTemaAtual(data.tema as TemaCor);
-        }
-  
-        const grupoRef = doc(db, "Grupos", uid);
-        const grupoSnap = await getDoc(grupoRef);
+        if (!userSnap.exists()) return;
+
+        const userData = userSnap.data();
+        const grupoId = userData.grupoId || uid;
+        const grupoSnap = await getDoc(doc(db, "Grupos", grupoId));
+
         if (grupoSnap.exists()) {
           const grupoData = grupoSnap.data();
           setGrupoNome(grupoData.nome || "Grupo");
@@ -122,10 +119,10 @@ const PaginaPerfil = () => {
       } catch (err) {
         console.error("Erro ao carregar informações:", err);
       } finally {
-        setLoading(false); // ✅ termina o loading só no fim
+        setLoading(false);
       }
     };
-  
+
     carregarInfoUsuario();
   }, []);
 
@@ -136,6 +133,8 @@ const PaginaPerfil = () => {
     await updateDoc(doc(db, "Usuarios", uid), {
       tema: temaSelecionado.cor,
     });
+
+    await AsyncStorage.setItem('@userTema', temaSelecionado.cor); // Atualizar o cache
 
     setTemaAtual(temaSelecionado.cor);
     setCardModalVisible(false);
@@ -168,7 +167,7 @@ const PaginaPerfil = () => {
               <Text style={styles.botao_logout_texto}>Logout</Text>
             </TouchableOpacity>
           </View>
-  
+
           <View style={[styles.capa, getTemaBgStyle(temaAtual, "primario")]}>
             <View style={[styles.moldura_perfil, getTemaBgStyle(temaAtual, "secundario")]}>
               <PerfilIcon width={64} height={64} strokeWidth={0.75}
@@ -176,26 +175,37 @@ const PaginaPerfil = () => {
               />
             </View>
           </View>
-  
+
           <View style={styles.informacoes}>
+            
             {/* Apelido */}
             <View style={styles.parte_input}>
               <Text style={styles.input_label}>Apelido</Text>
               <View style={styles.alinhar_editar}>
-                <TextInput placeholder="Até 8 caracteres" style={styles.input} />
+                <TextInput
+                  placeholder="Até 8 caracteres"
+                  style={styles.input}
+                  value={apelido}
+                  editable={false}
+                />
                 <EditarIcon width={24} height={24} color={"#808080"} />
               </View>
             </View>
-  
+
             {/* E-mail */}
             <View style={styles.parte_input}>
               <Text style={styles.input_label}>E-mail</Text>
               <View style={styles.alinhar_editar}>
-                <TextInput placeholder="Digite aqui..." style={styles.input} />
+                <TextInput
+                  placeholder="Digite aqui..."
+                  style={styles.input}
+                  value={email}
+                  editable={false}
+                />
                 <EditarIcon width={24} height={24} color={"#808080"} />
               </View>
             </View>
-  
+
             {/* Tema Conta */}
             <View style={styles.parte_input}>
               <Text style={styles.input_label}>Tema da Conta</Text>
@@ -207,7 +217,7 @@ const PaginaPerfil = () => {
                 </TouchableOpacity>
               </View>
             </View>
-  
+
             {/* Grupo */}
             <View style={styles.parte_input}>
               <Text style={styles.input_label}>Seu Grupo</Text>
@@ -222,8 +232,8 @@ const PaginaPerfil = () => {
           </View>
         </ScrollView>
       )}
-  
-      {/* Modais que ficam SEMPRE carregados (não dependem de loading) */}
+
+      {/* Modal para mudar o tema */}
       <Modal
         isVisible={isCardModalVisible}
         onBackdropPress={() => {
@@ -245,7 +255,7 @@ const PaginaPerfil = () => {
               <FecharIcon width={32} height={32} color={"#404040"} />
             </TouchableOpacity>
           </View>
-  
+
           <View style={styles.cor_opcoes_wrapper}>
             {temas.map((tema, index) => {
               const estaSelecionado = temaSelecionado?.nome === tema.nome;
@@ -261,7 +271,7 @@ const PaginaPerfil = () => {
               );
             })}
           </View>
-  
+
           <Text style={[
             styles.cor_selecionada,
             temaSelecionado
@@ -271,7 +281,7 @@ const PaginaPerfil = () => {
             <Text style={{ color: "#404040" }}>Tema selecionado: </Text>
             {temaSelecionado?.nome ?? "Nenhum"}
           </Text>
-  
+
           <View style={styles.parte_baixo}>
             <TouchableOpacity style={globalStyles.botao_primario} onPress={salvarTema}>
               <MaisAdicaoIcon width={18} height={18} color={"#ffffff"} />
@@ -280,15 +290,15 @@ const PaginaPerfil = () => {
           </View>
         </View>
       </Modal>
-  
+
       <LogoutModal
         LogoutModalActive={LogoutModalActive}
         setLogoutModalActive={setLogoutModalActive}
       />
-  
+
       <Navbar />
     </SafeAreaView>
   );
-}  
+}
 
 export default PaginaPerfil;

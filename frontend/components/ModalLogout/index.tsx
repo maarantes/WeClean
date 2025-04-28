@@ -8,6 +8,7 @@ import { RootStackParamList } from '@/frontend/routes';
 
 import { signOut } from "firebase/auth";
 import { auth } from "../../../backend/services/shared/firebaseConfigApp";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface LogoutModalProps {
   LogoutModalActive: boolean;
@@ -25,6 +26,7 @@ const LogoutModal: React.FC<LogoutModalProps> = ({
   const handleLogout = async () => {
     try {
       await signOut(auth);
+      await AsyncStorage.multiRemove(['@userNome', '@userTema', '@userEmail']);
       setLogoutModalActive(false);
       navigation.reset({
         index: 0,
