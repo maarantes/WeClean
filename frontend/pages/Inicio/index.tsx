@@ -145,7 +145,18 @@ const PaginaInicio = () => {
       <ParteCima />
 
       {loading ? (
-        <ActivityIndicator size="large" color="#5A189A" style={{ marginTop: 20 }} />
+        <View style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "white",
+        }}>
+          <ActivityIndicator size="large" color="#5A189A" />
+        </View>
       ) : (
         <ScrollView style={globalStyles.containerPagina} contentContainerStyle={{ paddingBottom: 140, paddingTop: 80 }}>
           <Text style={[globalStyles.titulo, globalStyles.mbottom32]}>Tarefas da Semana</Text>
