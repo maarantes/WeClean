@@ -8,9 +8,11 @@ import PaginaCalendario from "../pages/Calendario";
 import PaginaLoginCadastro from "../pages/LoginCadastro";
 import PaginaPerfil from "../pages/Perfil";
 import PaginaGrupo from "../pages/Grupo";
+import PaginaSplash from "../pages/SplashScreen";
 
 export type RootStackParamList = {
-    Login: undefined
+    Splash: undefined;
+    Login: undefined;
     Início: undefined;
     Tarefas: undefined;
     Calendário: undefined;
@@ -26,8 +28,9 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 export default function Routes() {
     return (
-        <Stack.Navigator initialRouteName="Login"
+        <Stack.Navigator initialRouteName="Splash"
         screenOptions={{headerShown: false, animation: "none", presentation: "transparentModal" }}>
+            <Stack.Screen name="Splash" component={PaginaSplash} />
             <Stack.Screen name="Login" component={PaginaLoginCadastro} />
             <Stack.Screen name="Início" component={PaginaInicio} />
             <Stack.Screen name="Calendário" component={PaginaCalendario} />

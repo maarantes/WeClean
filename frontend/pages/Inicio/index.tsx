@@ -4,7 +4,6 @@ import { useFocusEffect } from "@react-navigation/native";
 import { doc, getDoc } from "firebase/firestore";
 import { obterTarefasCalendario } from "../../../backend/services/calendario/obterTarefasCalendario";
 import { updateTarefaConcluido } from "../../../backend/services/tarefas/updateTarefaConcluido";
-import { useFonts } from "../../hooks/UsarFontes";
 
 import { styles } from "./styles";
 import { globalStyles } from "@/frontend/globalStyles";
@@ -31,7 +30,6 @@ const parseLocalDate = (dateStr: string): Date => {
 };
 
 const PaginaInicio = () => {
-  const fontLoaded = useFonts();
   const [tarefasSemana, setTarefasSemana] = useState<{ [data: string]: any[] }>({});
   const [loading, setLoading] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
@@ -112,8 +110,6 @@ const PaginaInicio = () => {
       setShowAlert(false);
     }
   };
-
-  if (!fontLoaded) return <Text>Carregando fontes...</Text>;
 
   const today = new Date();
   const startDate = new Date(today);

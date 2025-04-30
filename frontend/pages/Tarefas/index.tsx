@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Text, ScrollView, SafeAreaView, TouchableOpacity, View, ActivityIndicator } from "react-native";
-import { useFonts } from "../../hooks/UsarFontes";
 import { doc, getDoc } from "firebase/firestore";
 import { getCoresDoTema } from "@/frontend/utils/temaStyles";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -20,7 +19,6 @@ import { obterTarefas } from "../../../backend/services/tarefas/obterTarefas";
 import { auth, db } from "../../../backend/services/shared/firebaseConfigApp";
 
 const PaginaTarefas = () => {
-  const fontLoaded = useFonts();
   const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const [tarefas, setTarefas] = useState<any[]>([]);
@@ -112,8 +110,6 @@ const PaginaTarefas = () => {
   const tarefasAnuais = tarefas.filter(
     (t) => t.frequencia?.tipo === "anualmente"
   );
-
-  if (!fontLoaded) return <Text>Carregando fontes...</Text>;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
