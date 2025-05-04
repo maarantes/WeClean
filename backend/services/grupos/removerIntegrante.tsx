@@ -62,10 +62,12 @@ export const kickarIntegrante = async (uidIntegrante: string, grupoIdAtual: stri
     const commitCalendario = batchCalendario.commit();
 
     // 4. Criar novo grupo pessoal
+    const codigoConvite = await gerarCodigoConvite();
+
     const novoGrupoRef = doc(collection(db, "Grupos"));
     const criarNovoGrupo = setDoc(novoGrupoRef, {
       nome: "Grupo Pessoal",
-      codigo_convite: gerarCodigoConvite(),
+      codigo_convite: codigoConvite,
       integrantes: [{ uid: uidIntegrante, tipo: "admin" }],
     });
 
@@ -83,9 +85,9 @@ export const kickarIntegrante = async (uidIntegrante: string, grupoIdAtual: stri
       removerDoGrupo
     ]);
 
-    console.log("Integrante kickado, tarefas/calendário atualizados e novo grupo criado!");
+    console.log("Integrante kickado!");
   } catch (error) {
-    console.error("rro ao kickar integrante:", error);
+    console.error("Erro ao kickar integrante:", error);
     throw error;
   }
 };
