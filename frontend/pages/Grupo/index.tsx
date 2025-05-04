@@ -29,6 +29,8 @@ import AlertaSimples from "@/frontend/components/AlertaSimples";
 import KickIntegranteModal from "@/frontend/components/ModalTirarIntegrante";
 import { kickarIntegrante } from "@/backend/services/grupos/removerIntegrante";
 import ModalSairGrupo from "@/frontend/components/ModalSairGrupo";
+import ModalExcluirGrupo from "@/frontend/components/ModalExcluirGrupo";
+import { excluirGrupo } from "@/backend/services/grupos/excluirGrupo";
 
 type NavigationProps = StackNavigationProp<RootStackParamList, "Grupo">;
 
@@ -56,6 +58,7 @@ const PaginaGrupo = () => {
   const [integranteSelecionadoUID, setIntegranteSelecionadoUID] = useState<string | null>(null);
 
   const [sairGrupoModalVisible, setSairGrupoModalVisible] = useState(false);  
+  const [excluirGrupoModalVisible, setExcluirGrupoModalVisible] = useState(false);
 
   const [toastVisible, setToastVisible] = useState(false);
   const [mensagemToast, setMensagemToast] = useState("");
@@ -155,7 +158,7 @@ const PaginaGrupo = () => {
             sozinho={integrantes.length === 1}
             onSairGrupo={() => setSairGrupoModalVisible(true)}
             onRenomearGrupo={() => setRenameGroupModalActive(true)}
-            onExcluirGrupo={() => console.log("Excluir grupo")}
+            onExcluirGrupo={() => setExcluirGrupoModalVisible(true)}
           />
         </View>
           <View style={styles.card_grupo}>
@@ -299,7 +302,26 @@ const PaginaGrupo = () => {
       setVisible={setSairGrupoModalVisible}
     />
 
-
+    <ModalExcluirGrupo
+      visible={excluirGrupoModalVisible}
+      setVisible={setExcluirGrupoModalVisible}
+      onConfirmarExclusao={async () => {
+        try {
+          setExcluirGrupoModalVisible(false);
+          await excluirGrupo(grupoIdAtual);
+          setMensagemToast("Grupo excluído com sucesso.");
+          setToastVisible(true);
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Grupo" }],
+          });
+        } catch (error) {
+          console.error("Erro ao excluir grupo:", error);
+          setMensagemToast("Erro ao excluir grupo.");
+          setToastVisible(true);
+        }
+      }}
+    />
 
     <AlertaSimples 
       visible={toastVisible}
