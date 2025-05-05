@@ -3,6 +3,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "esnext",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -19,5 +20,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "index.js"  ]
+, "index.js", "backend/services/scripts/PopularFirebase.ts"  ]
 }

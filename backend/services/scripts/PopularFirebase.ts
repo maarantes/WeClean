@@ -1,15 +1,15 @@
-import { collection, deleteDoc, doc, getDocs, setDoc, addDoc } from "firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { db, auth } from "../shared/firebaseConfigScript";
+import * as dotenv from "dotenv";
+import admin from "firebase-admin";
 
-import admin, { ServiceAccount } from "firebase-admin";
+dotenv.config({ path: "../../.env" });
+
+// Inicializa o Admin SDK usando as credenciais de serviço
 const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n");
-
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert({
       projectId: process.env.FIREBASE_PROJECT_ID,
-      privateKey: privateKey,
+      privateKey,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
     }),
   });
@@ -18,37 +18,46 @@ if (!admin.apps.length) {
 export const authAdmin = admin.auth();
 export const firestoreAdmin = admin.firestore();
 
-// Deletar todos documentos de uma coleção
+// Deleta todos documentos de uma coleção
 const clearCollection = async (collectionName: string) => {
-  const snapshot = await getDocs(collection(db, collectionName));
-  const deletions = snapshot.docs.map((d) => deleteDoc(doc(db, collectionName, d.id)));
-  await Promise.all(deletions);
+  const docs = await firestoreAdmin.collection(collectionName).listDocuments();
+  await Promise.all(docs.map((docRef) => docRef.delete()));
   console.log(`🧹 Coleção ${collectionName} limpa.`);
 };
 
-// Deletar todos usuários do Authentication
+// Deleta todos usuários do Authentication
 const clearAuthUsers = async () => {
   const listUsersResult = await authAdmin.listUsers(1000);
-  const deletions = listUsersResult.users.map((userRecord) => authAdmin.deleteUser(userRecord.uid));
-  await Promise.all(deletions);
+  await Promise.all(listUsersResult.users.map((u) => authAdmin.deleteUser(u.uid)));
   console.log(`🧹 Authentication: usuários deletados.`);
 };
 
-// Cria um novo usuário
-const criarUsuario = async (nome: string, email: string, senha: string, tema: string): Promise<string> => {
-  const cred = await createUserWithEmailAndPassword(auth, email, senha);
-  const uid = cred.user.uid;
+// Cria um novo usuário via Admin SDK
+const criarUsuario = async (
+  nome: string,
+  email: string,
+  senha: string,
+  tema: string
+): Promise<string> => {
+  const userRecord = await authAdmin.createUser({
+    email,
+    password: senha,
+    displayName: nome,
+  });
+  const uid = userRecord.uid;
 
-  await setDoc(doc(db, "Usuarios", uid), {
+  await firestoreAdmin.doc(`Usuarios/${uid}`).set({
     apelido: nome,
     email,
     tema,
     grupoId: "",
   });
-  console.log(`✅ Usuário criado: ${nome}`);
+
+  console.log(`✅ Usuário criado via Admin SDK: ${nome}`);
   return uid;
 };
 
+// Gera código de convite aleatório
 const gerarCodigoConvite = (): string => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
@@ -67,19 +76,26 @@ const seed = async () => {
     console.log("👤 Criando usuários...");
     const temas = ["azul", "vinho", "rosa", "amarelo", "laranja", "verde", "turquesa", "coral"];
     const nomes = ["Marco", "Geovana", "Maria", "Joana", "Bruno", "Ana", "Carlos", "Daisy"];
-    const emails = ["marco@aa.com", "geovana@aa.com", "maria@aa.com", "joana@aa.com", "bruno@aa.com", "ana@aa.com", "carlos@aa.com", "daisy@aa.com"];
+    const emails = [
+      "marco@aa.com",
+      "geovana@aa.com",
+      "maria@aa.com",
+      "joana@aa.com",
+      "bruno@aa.com",
+      "ana@aa.com",
+      "carlos@aa.com",
+      "daisy@aa.com",
+    ];
 
     const usuariosCriados: { uid: string; nome: string }[] = [];
-
     for (let i = 0; i < nomes.length; i++) {
       const uid = await criarUsuario(nomes[i], emails[i], "123456", temas[i]);
       usuariosCriados.push({ uid, nome: nomes[i] });
     }
 
-    // Cria o Grupo com Auto ID
     console.log("👥 Criando grupo...");
     const codigoConvite = gerarCodigoConvite();
-    const grupoRef = await addDoc(collection(db, "Grupos"), {
+    const grupoRef = await firestoreAdmin.collection("Grupos").add({
       nome: "Grupo Legal",
       codigo_convite: codigoConvite,
       integrantes: usuariosCriados.map((u, idx) => ({
@@ -87,20 +103,24 @@ const seed = async () => {
         tipo: idx === 0 ? "admin" : "normal",
       })),
     });
-    const grupoId = grupoRef.id; // pega o ID gerado automaticamente!
+    const grupoId = grupoRef.id;
 
-    // Atualizar grupoId dos usuários
+    // Atualiza grupoId de cada usuário
     await Promise.all(
       usuariosCriados.map(({ uid }) =>
-        setDoc(doc(db, "Usuarios", uid), { grupoId }, { merge: true })
+        firestoreAdmin.doc(`Usuarios/${uid}`).set({ grupoId }, { merge: true })
       )
     );
 
     console.log("✅ Grupo e usuários atualizados!");
 
-    // 📆 Criar Tarefa
     console.log("📝 Criando tarefa...");
     const tarefaId = `tarefa-${Date.now()}`;
+    const hoje = new Date();
+    const diaFormatado = `${hoje.getFullYear()}-${(hoje.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${hoje.getDate().toString().padStart(2, "0")}`;
+
     const tarefa = {
       id: tarefaId,
       nome: "Teste",
@@ -110,7 +130,7 @@ const seed = async () => {
       grupoId,
       integrantes: usuariosCriados.map((u) => u.uid),
       concluido: false,
-      dataCriacao: new Date().toISOString().split("T")[0],
+      dataCriacao: diaFormatado,
       frequencia: {
         tipo: "diariamente",
         diasSemana: [0, 1, 2, 3, 4, 5, 6],
@@ -119,16 +139,8 @@ const seed = async () => {
       },
     };
 
-    await setDoc(doc(db, "Tarefas", tarefaId), tarefa);
-
-    const hoje = new Date();
-    const diaFormatado = `${hoje.getFullYear()}-${(hoje.getMonth() + 1)
-      .toString()
-      .padStart(2, "0")}-${hoje.getDate().toString().padStart(2, "0")}`;
-
-    await setDoc(doc(db, "Calendário", diaFormatado), {
-      tarefas: [tarefa],
-    });
+    await firestoreAdmin.doc(`Tarefas/${tarefaId}`).set(tarefa);
+    await firestoreAdmin.doc(`Calendário/${diaFormatado}`).set({ tarefas: [tarefa] });
 
     console.log("🚀 Seed finalizada com sucesso!");
   } catch (err) {

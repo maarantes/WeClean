@@ -1,5 +1,3 @@
-import Alarm from "react-native-alarm-manager";
-
 export const definirAlarme = async (horario: string) => {
   const [horas, minutos] = horario.split(":").map(Number);
 
@@ -17,10 +15,4 @@ export const definirAlarme = async (horario: string) => {
     alarm_noti_removable: true,
     alarm_activate: true,
   };
-
-  Alarm.schedule(
-    alarme,
-    (sucesso) => console.log("Alarme agendado com sucesso:", sucesso),
-    (erro) => console.error("Erro ao agendar o alarme:", erro)
-  );
 };
