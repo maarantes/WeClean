@@ -10,7 +10,7 @@ export const globalStyles = StyleSheet.create({
   titulo: {
     fontFamily: "HeptaSlab-SemiBold",
     fontSize: 24,
-    color: "#5A189A",
+    color: "#404040",
   },
 
   textoNormal: {
@@ -34,7 +34,7 @@ export const globalStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
-    backgroundColor: "#5A189A",
+    backgroundColor: "black",
     borderRadius: 4,
 },
 

@@ -89,7 +89,7 @@ export const styles = StyleSheet.create({
   },
 
   roxo: {
-    color: "#5A189A"
+    color: "black"
   },
 
   // Modal
@@ -139,7 +139,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "48%",
-    backgroundColor: "#5A189A",
+    backgroundColor: "black",
     borderRadius: 4
 },
 
@@ -212,7 +212,7 @@ export const styles = StyleSheet.create({
     gap: 12,
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: "#DACAFB",
+    backgroundColor: "black",
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
@@ -220,7 +220,7 @@ export const styles = StyleSheet.create({
   },
 
   detalhe_botao_editar_texto: {
-    color: "#5A189A",
+    color: "white",
     fontFamily: "Inter-SemiBold"
   },
 
@@ -243,7 +243,7 @@ export const styles = StyleSheet.create({
 
   detalhe_campo_titulo: {
     color: "#606060",
-    marginBottom: 8,
+    marginBottom: 12,
     fontFamily: "Inter-SemiBold"
   },
 
@@ -262,7 +262,7 @@ export const styles = StyleSheet.create({
   flex_row_between: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
 
   flex_row: {
@@ -346,7 +346,7 @@ export const styles = StyleSheet.create({
   },
 
   modal_botao_cancelar_texto: {
-    color: "#5A189A",
+    color: "black",
     fontFamily: "Inter-SemiBold"
   },
 

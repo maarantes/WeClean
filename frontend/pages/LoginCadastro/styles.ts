@@ -29,11 +29,11 @@ export const styles = StyleSheet.create({
         paddingBottom: 8,
         alignItems: "center",
         borderBottomWidth: 4,
-        borderBottomColor: "#5A189A"
+        borderBottomColor: "black"
     },
 
     aba_opcao_texto: {
-        color: "#5A189A",
+        color: "black",
         fontFamily: "Inter-SemiBold",
         fontSize: 14
     },

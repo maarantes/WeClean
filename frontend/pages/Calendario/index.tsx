@@ -12,6 +12,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/backend/services/shared/firebaseConfigApp";
 import { getCoresDoTema } from "@/frontend/utils/temaStyles";
 import { formatarFrequenciaTexto } from "@/frontend/utils/formatarFrequencia";
+import { useTema } from "@/frontend/hooks/useTema";
 
 const nomesDosMeses = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -33,18 +34,6 @@ type SemanaItemProps = {
   onPress: () => void;
 };
 
-const SemanaItem: React.FC<SemanaItemProps> = ({ semana, inicio, fim, ativa, onPress }) => (
-  <View style={styles.linha_semana}>
-    <TouchableOpacity
-      style={[styles.botao_semana, ativa ? "" : styles.desativado]}
-      onPress={onPress}
-    >
-      <Text style={[styles.botao_semana_texto, ativa ? "" : styles.desativado_texto]}>{`Sem. ${semana}`}</Text>
-    </TouchableOpacity>
-    <Text style={styles.dias_semana_texto}>{`Dias ${inicio} - ${fim}`}</Text>
-  </View>
-);
-
 const PaginaCalendario = () => {
   const dataAtual = new Date();
   const mesAtual = dataAtual.getMonth();
@@ -61,6 +50,9 @@ const PaginaCalendario = () => {
   const [loadingSemanas, setLoadingSemanas] = useState(true);
   const [loadingTarefas, setLoadingTarefas] = useState(true);
   const [semanaAtiva, setSemanaAtiva] = useState<string>("1");
+
+  const { temaUsuario, getTemaStyle } = useTema();
+  const { bgClass, colorClass } = getTemaStyle(temaUsuario);
 
   // Calcular as semanas e preparar os dados
   useEffect(() => {
@@ -246,6 +238,24 @@ const PaginaCalendario = () => {
     }
   };
 
+  const SemanaItem: React.FC<SemanaItemProps> = ({ semana, inicio, fim, ativa, onPress }) => (
+    <View style={styles.linha_semana}>
+      <TouchableOpacity
+        style={[
+          styles.botao_semana,
+          { backgroundColor: ativa ? bgClass.backgroundColor : "#F5F5F5" },
+          !ativa && styles.desativado 
+        ]}
+        onPress={onPress}
+        >
+        <Text style={[{ color: colorClass.color, fontFamily: "Inter-Medium" }, ativa ? "" : styles.desativado_texto]}>
+          {`Sem. ${semana}`}
+        </Text>
+      </TouchableOpacity>
+      <Text style={styles.dias_semana_texto}>{`Dias ${inicio} - ${fim}`}</Text>
+    </View>
+  );
+
   const diasDaSemana = [
     "Domingo", "Segunda-Feira", "Terça-Feira", "Quarta-Feira", "Quinta-Feira", "Sexta-Feira", "Sábado"
   ];
@@ -317,7 +327,7 @@ const PaginaCalendario = () => {
 
       {loadingSemanas ? (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-          <ActivityIndicator size="large" color="#5A189A" />
+          <ActivityIndicator size="large" color="#808080" />
         </View>
       ) : (
         <ScrollView style={globalStyles.containerPagina} contentContainerStyle={{ paddingBottom: 140, paddingTop: 80 }}>
@@ -340,11 +350,13 @@ const PaginaCalendario = () => {
             <View style={styles.container_cima_dir}>
               <View>
                 <Text style={styles.mes}>MÊS</Text>
-                <Text style={globalStyles.titulo}>{nomesDosMeses[mesAtual]}</Text>
+                <Text style={[globalStyles.titulo, { color: colorClass.color }]}>
+                  {nomesDosMeses[mesAtual]}
+                </Text>
               </View>
               <View style={[styles.container_baixo, loadingMetrica && styles.align_start]}>
                 {loadingMetrica ? (
-                  <ActivityIndicator size="large" color="#5A189A" />
+                  <ActivityIndicator size="large" color="#808080" />
                 ) : (
                   <>
                     <View style={styles.semana_info}>
@@ -362,8 +374,8 @@ const PaginaCalendario = () => {
           </View>
 
           <View style={styles.container_escolher}>
-            <TouchableOpacity style={styles.dia_botao} onPress={handleDataAnterior}>
-              <SetaDiaIcon width={44} color="#FFFFFF" style={styles.rotate} />
+            <TouchableOpacity style={[styles.dia_botao, { backgroundColor: colorClass.color }]} onPress={handleDataAnterior}>
+            <SetaDiaIcon width={44} color={bgClass.backgroundColor} style={styles.rotate} />
             </TouchableOpacity>
 
             <View style={styles.dia_atual}>
@@ -371,14 +383,14 @@ const PaginaCalendario = () => {
               <Text style={styles.dia_atual_dir}>{formatarData(dataSelecionada)}</Text>
             </View>
 
-            <TouchableOpacity style={styles.dia_botao} onPress={handleDataProximo}>
-              <SetaDiaIcon width={44} color="#FFFFFF" />
+            <TouchableOpacity style={[styles.dia_botao, { backgroundColor: colorClass.color }]} onPress={handleDataProximo}>
+              <SetaDiaIcon width={44} color={bgClass.backgroundColor} />
             </TouchableOpacity>
           </View>
 
           <View style={styles.cards}>
           {loadingTarefas ? (
-            <ActivityIndicator size="large" color="#5A189A" />
+            <ActivityIndicator size="large" color="#808080" />
           ) : tarefasDoDia.length > 0 ? (
               tarefasDoDia.map((tarefa, index) => {
                 return (

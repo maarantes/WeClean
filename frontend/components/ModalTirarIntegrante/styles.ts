@@ -26,7 +26,7 @@ modal_container: {
     flexDirection: "row",
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: "#5A189A",
+    backgroundColor: "black",
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
@@ -47,7 +47,7 @@ modal_container: {
     flexDirection: "row",
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: "#DACAFB",
+    backgroundColor: "#F5F5F5",
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
@@ -55,7 +55,7 @@ modal_container: {
   },
 
   modal_botao_cancelar_texto: {
-    color: "#5A189A",
+    color: "#808080",
     fontFamily: "Inter-SemiBold"
   }
 

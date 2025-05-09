@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
     },
   
     titulo_cima: {
-        color: "#5A189A",
+        color: "black",
         fontSize: 16,
         fontFamily: "HeptaSlab-SemiBold"
     },
@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         width: "48%",
-        backgroundColor: "#5A189A",
+        backgroundColor: "black",
         borderRadius: 4
     },
 
@@ -104,14 +104,14 @@ export const styles = StyleSheet.create({
         fontSize: 14
     },
 
-    horario_texto_roxo: {
-        color: "#5A189A",
+    horario_texto_preto: {
+        color: "black",
         fontFamily: "Inter-SemiBold",
         fontSize: 14
     },
 
-    roxo: {
-        color: "#5A189A",
+    preto: {
+        color: "black",
         fontFamily: "Inter-SemiBold",
     },
 
@@ -137,7 +137,7 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 8,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#5A189A",
+        backgroundColor: "black",
         borderRadius: 4,
         marginRight: 8
     },
@@ -148,8 +148,8 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 8,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#EAE3FA",
-        color: "#5A189A",
+        backgroundColor: "#F5F5F5",
+        color: "black",
         borderRadius: 4,
         marginRight: 8
     },
@@ -169,7 +169,6 @@ export const styles = StyleSheet.create({
         paddingVertical: 8,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#5A189A",
         borderRadius: 4,
         width: "12.5714%"
     },
@@ -179,9 +178,7 @@ export const styles = StyleSheet.create({
         paddingVertical: 8,
         justifyContent: "center",
         alignItems: "center",
-        borderWidth: 1,
-        borderColor: "#5A189A",
-        color: "#5A189A",
+        backgroundColor: "#F5F5F5",
         borderRadius: 4,
         width: "12.5714%"
     },
@@ -208,16 +205,17 @@ export const styles = StyleSheet.create({
     botao_add_data: {
         flexDirection: "row",
         paddingVertical: 8,
+        marginTop: 12,
+        gap: 12,
         justifyContent: "center",
         alignItems: "center",
-        borderWidth: 1.25,
-        borderColor: "#5A189A",
+        backgroundColor: "#F5F5F5",
         borderRadius: 4
     },
 
     botao_add_data_texto: {
         fontFamily: "Inter-Medium",
-        color: "#5A189A",
+        color: "black",
     },
 
     nav_bottom: {
@@ -241,5 +239,10 @@ export const styles = StyleSheet.create({
         justifyContent: "center",
         backgroundColor: "#F5F5F5",
         borderRadius: 2
-    }
+    },
+
+    cor_cinza: {
+        color: "#808080",
+        fontFamily: "Inter-SemiBold"
+    },
 });

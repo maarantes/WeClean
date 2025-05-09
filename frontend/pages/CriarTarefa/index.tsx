@@ -11,8 +11,10 @@ import RelogioIcon from "../../../assets/images/relogio.svg";
 import TarefaIcon from "../../../assets/images/tarefa.svg";
 import FecharIcon from "../../../assets/images/fechar.svg";
 import CalendarioMiniIcon from "../../../assets/images/calendario_mini.svg";
+import MaisAdicaoIcon from "../../../assets/images/mais_adicao.svg";
 
 import { useCriarTarefa } from "./useCriarTarefa";
+import { useTema } from "@/frontend/hooks/useTema";
 
 const DiasDaSemana = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
 const Frequencias = [
@@ -52,6 +54,9 @@ const PaginaCriarTarefa = () => {
     integrantesGrupo
   } = useCriarTarefa();
 
+  const { temaUsuario, getTemaStyle } = useTema();
+  const { bgClass, colorClass } = getTemaStyle(temaUsuario);
+
   const navigation = useNavigation();
 
   return (
@@ -66,6 +71,7 @@ const PaginaCriarTarefa = () => {
       </View>
 
       <ScrollView style={globalStyles.containerPagina} contentContainerStyle={{ paddingBottom: 80, paddingTop: 80 }}>
+
         {/* Nome */}
         <Text style={styles.label}>NOME</Text>
         <TextInput
@@ -93,13 +99,13 @@ const PaginaCriarTarefa = () => {
         {/* Horário */}
         <Text style={[styles.label, styles.cima]}>HORÁRIO</Text>
         <View style={styles.dividir}>
-          <TouchableOpacity style={styles.botao_horario} onPress={escolherHorario}>
-            <RelogioIcon width={16} height={16} color="#FFFFFF" />
-            <Text style={styles.botao_horario_texto}>Escolher Horário</Text>
+          <TouchableOpacity style={[styles.botao_horario, { backgroundColor: bgClass.backgroundColor }]} onPress={escolherHorario}>
+            <RelogioIcon width={16} height={16} color={colorClass.color} strokeWidth={1.5} />
+            <Text style={[styles.botao_horario_texto, {color: colorClass.color}]}>Escolher Horário</Text>
           </TouchableOpacity>
           <View style={styles.horario_primeiro}>
             <Text style={styles.horario_texto}>Atual:</Text>
-            <Text style={styles.roxo}>{horario}</Text>
+            <Text style={styles.horario_texto}>{horario}</Text>
           </View>
         </View>
         {erros.horario && <Text style={styles.erro_texto}>Este campo é obrigatório!</Text>}
@@ -139,12 +145,20 @@ const PaginaCriarTarefa = () => {
             <TouchableOpacity
               key={index}
               style={[
-                botaoFrequenciaAtivo === index ? styles.botao_frequencia : styles.botao_frequencia_normal,
+                botaoFrequenciaAtivo === index
+                  ? [styles.botao_frequencia, { backgroundColor: bgClass.backgroundColor }]
+                  : styles.botao_frequencia_normal,
                 index === Frequencias.length - 1 && styles.ultimo,
               ]}
               onPress={() => setBotaoFrequenciaAtivo(index)}
             >
-              <Text style={botaoFrequenciaAtivo === index ? styles.branco : styles.roxo}>{texto}</Text>
+            <Text
+              style={[
+                botaoFrequenciaAtivo === index ? styles.branco : styles.cor_cinza,
+                botaoFrequenciaAtivo === index && { color: colorClass.color }
+              ]}>
+              {texto}
+            </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -155,14 +169,18 @@ const PaginaCriarTarefa = () => {
             {DiasDaSemana.map((dia) => (
               <TouchableOpacity
                 key={dia}
-                style={
+                style={[
                   diasSelecionados.includes(dia)
-                    ? styles.botao_frequencia_semanal
+                    ? [styles.botao_frequencia_semanal, { backgroundColor: bgClass.backgroundColor }]
                     : styles.botao_frequencia_semanal_normal
-                }
-                onPress={() => toggleDiaSemana(dia)}
-              >
-                <Text style={diasSelecionados.includes(dia) ? styles.branco : styles.roxo}>{dia}</Text>
+                ]}
+                onPress={() => toggleDiaSemana(dia)}>
+                <Text
+                style={[
+                  diasSelecionados.includes(dia) 
+                    ? [styles.branco, { color: colorClass.color }] : styles.cor_cinza]}>
+                  {dia}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -188,13 +206,13 @@ const PaginaCriarTarefa = () => {
           <View>
             {datasSelecionadas.map((item, index) => (
               <View key={item.id} style={[styles.dividir, styles.cimaMetade]}>
-                <TouchableOpacity style={styles.botao_horario} onPress={() => escolherData(item.id)}>
-                  <CalendarioMiniIcon width={16} height={16} color="#FFFFFF" />
-                  <Text style={styles.botao_horario_texto}>Escolher Data</Text>
+                <TouchableOpacity style={[styles.botao_horario, { backgroundColor: bgClass.backgroundColor }]} onPress={() => escolherData(item.id)}>
+                  <CalendarioMiniIcon width={16} height={16} color={colorClass.color} />
+                  <Text style={[styles.botao_horario_texto, {color: colorClass.color}]}>Escolher Data</Text>
                 </TouchableOpacity>
                 <View style={index === 0 ? styles.horario_primeiro : styles.horario}>
                   <Text style={styles.horario_texto}>Atual:</Text>
-                  <Text style={styles.horario_texto_roxo}>
+                  <Text style={styles.horario_texto}>
                     {item.data
                       ? item.data.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })
                       : "N/A"}
@@ -207,8 +225,9 @@ const PaginaCriarTarefa = () => {
                 )}
               </View>
             ))}
-            <TouchableOpacity style={[styles.botao_add_data, { marginTop: 12 }]} onPress={adicionarNovaData}>
-              <Text style={styles.botao_add_data_texto}>Adicionar Outra Data</Text>
+            <TouchableOpacity style={styles.botao_add_data} onPress={adicionarNovaData}>
+              <MaisAdicaoIcon width={18} height={18} color="#808080" />
+              <Text style={styles.cor_cinza}>Adicionar Outra Data</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -217,11 +236,11 @@ const PaginaCriarTarefa = () => {
 
       <View style={styles.nav_bottom}>
         {loading ? (
-          <ActivityIndicator size="large" color="#5A189A" />
+          <ActivityIndicator size="large" color="#808080" />
         ) : (
-          <TouchableOpacity style={styles.botao_horario} onPress={handleSalvar}>
-            <TarefaIcon width={16} height={16} color="#FFFFFF" />
-            <Text style={styles.botao_horario_texto}>
+          <TouchableOpacity style={[styles.botao_horario, { backgroundColor: bgClass.backgroundColor }]} onPress={handleSalvar}>
+            <TarefaIcon width={16} height={16} color={colorClass.color} />
+            <Text style={[styles.botao_horario_texto, {color: colorClass.color}]}>
               {isEditMode ? "Salvar Alterações" : "Criar Tarefa"}
             </Text>
           </TouchableOpacity>

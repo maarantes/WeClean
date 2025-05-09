@@ -17,12 +17,16 @@ import { formatarFrequenciaTexto } from "@/frontend/utils/formatarFrequencia";
 
 import { obterTarefas } from "../../../backend/services/tarefas/obterTarefas";
 import { auth, db } from "../../../backend/services/shared/firebaseConfigApp";
+import { useTema } from "@/frontend/hooks/useTema";
 
 const PaginaTarefas = () => {
   const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const [tarefas, setTarefas] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  const { temaUsuario, getTemaStyle } = useTema();
+  const { bgClass, colorClass } = getTemaStyle(temaUsuario);
 
   const carregarTarefas = async () => {
     setLoading(true);
@@ -125,7 +129,7 @@ const PaginaTarefas = () => {
           alignItems: "center",
           backgroundColor: "white",
         }}>
-          <ActivityIndicator size="large" color="#5A189A" />
+          <ActivityIndicator size="large" color="#808080" />
         </View>
       ) : (
         <ScrollView
@@ -141,10 +145,11 @@ const PaginaTarefas = () => {
           </Text>
 
           <TouchableOpacity
-            style={styles.botao_adicionar}
-            onPress={() => navigate('CriarTarefa', {})}>
-            <TarefaIcon width={20} height={20} color={"#5A189A"} />
-            <Text style={styles.botao_adicionar_texto}>
+            style={[styles.botao_adicionar, { backgroundColor: bgClass.backgroundColor }]}
+            onPress={() => navigate('CriarTarefa', {})}
+          >
+            <TarefaIcon width={20} height={20} color={colorClass.color} />
+            <Text style={[styles.botao_adicionar_texto, { color: colorClass.color }]}>
               Criar Nova Tarefa
             </Text>
           </TouchableOpacity>

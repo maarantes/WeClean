@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
       },
     
       alerta_desfazer: {
-        color: "#5A189A",
+        color: "black",
         fontFamily: "Inter-SemiBold",
         fontSize: 14
       }

@@ -14,12 +14,11 @@ export const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 20,
     paddingHorizontal: 20,
-    zIndex: 1,
-    elevation: 2
+    zIndex: 1
   },
   
   titulo_cima: {
-    color: "#5A189A",
+    color: "black",
     fontSize: 16,
     fontFamily: "HeptaSlab-SemiBold"
   },
@@ -88,7 +87,7 @@ export const styles = StyleSheet.create({
 
   botao_convidar: {
     width: "100%",
-    backgroundColor: "#5A189A",
+    backgroundColor: "black",
   },
 
   botao_menor: {
@@ -101,11 +100,11 @@ export const styles = StyleSheet.create({
 
   botao_sair: {
     width: "49%",
-    backgroundColor: "#DACAFB",
+    backgroundColor: "#F5F5F5",
   },
 
   botao_sair_texto: {
-    color: "#5A189A"
+    color: "#606060"
   },
 
   botao_excluir: {
@@ -123,7 +122,7 @@ export const styles = StyleSheet.create({
   },
 
   botao_entrar_texto: {
-    color: "#5A189A"
+    color: "black"
   },
 
   container_integrantes: {

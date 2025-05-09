@@ -177,6 +177,10 @@ export const styles = StyleSheet.create({
         top: 65,
         right: 20,
         zIndex: 10
+    },
+
+    mesma_largura: {
+        width: 200
     }
     
 });

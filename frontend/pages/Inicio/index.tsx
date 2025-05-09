@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, ScrollView, SafeAreaView, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { doc, getDoc } from "firebase/firestore";
@@ -14,6 +14,8 @@ import { formatarFrequenciaTexto } from "@/frontend/utils/formatarFrequencia";
 import AlertaConcluido from "@/frontend/components/AlertaConcluido";
 import { auth } from "../../../backend/services/shared/firebaseConfigApp";
 import { db } from "@/backend/services/shared/firebase";
+import { useTema } from "@/frontend/hooks/useTema";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getCoresDoTema } from "@/frontend/utils/temaStyles";
 
 const DiasDaSemana = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
@@ -35,6 +37,8 @@ const PaginaInicio = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [filtro, setFiltro] = useState<"tudo" | "pendente" | "concluido">("tudo");
+
+  const { temaUsuario, getTemaStyle } = useTema();
 
   const [lastTaskUpdate, setLastTaskUpdate] = useState<{
     id: string;
@@ -151,23 +155,37 @@ const PaginaInicio = () => {
           alignItems: "center",
           backgroundColor: "white",
         }}>
-          <ActivityIndicator size="large" color="#5A189A" />
+          <ActivityIndicator size="large" color="#808080" />
         </View>
       ) : (
         <ScrollView style={globalStyles.containerPagina} contentContainerStyle={{ paddingBottom: 140, paddingTop: 80 }}>
           <Text style={[globalStyles.titulo, globalStyles.mbottom32]}>Tarefas da Semana</Text>
 
           <View style={styles.wrapper_botao_tipo}>
-            {["tudo", "pendente", "concluido"].map((tipo) => (
-              <TouchableOpacity
-                key={tipo}
-                style={[styles.botao_tipo, filtro === tipo && styles.botao_tipo_ativo]}
-                onPress={() => setFiltro(tipo as any)}>
-                <Text style={[styles.botao_tipo_texto, filtro === tipo && styles.botao_tipo_texto_ativo]}>
-                  {tipo === "tudo" ? "Tudo" : tipo.charAt(0).toUpperCase() + tipo.slice(1)}
-                </Text>
-              </TouchableOpacity>
-            ))}
+            {["tudo", "pendente", "concluido"].map((tipo) => {
+              const { bgClass, colorClass } = getTemaStyle(temaUsuario);
+
+              return (
+                <TouchableOpacity
+                  key={tipo}
+                  style={[
+                    styles.botao_tipo,
+                    filtro === tipo && styles.botao_tipo_ativo,
+                    filtro === tipo && { backgroundColor: bgClass.backgroundColor },
+                  ]}
+                  onPress={() => setFiltro(tipo as any)}
+                >
+                  <Text
+                    style={[
+                      styles.botao_tipo_texto,
+                      filtro === tipo && { color: colorClass.color },
+                    ]}
+                  >
+                    {tipo === "tudo" ? "Tudo" : tipo.charAt(0).toUpperCase() + tipo.slice(1)}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
 
           {weekDates.map((dataKey) => {

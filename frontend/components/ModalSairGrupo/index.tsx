@@ -110,7 +110,7 @@ const ModalSairGrupo: React.FC<ModalSairGrupoProps> = ({ visible, setVisible, on
     >
       <View style={styles.modal_container}>
         {loading ? (
-          <ActivityIndicator size="large" color="#5A189A" />
+          <ActivityIndicator size="large" color="#808080" />
         ) : isAdmin ? (
           <>
             <Text style={styles.modal_titulo}>Sair do Grupo</Text>

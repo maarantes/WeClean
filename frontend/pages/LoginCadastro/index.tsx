@@ -123,11 +123,11 @@ const PaginaLoginCadastro = () => {
         <Text style={{
           fontFamily: "HeptaSlab-SemiBold",
           fontSize: 18,
-          color: "#5A189A",
+          color: "black",
         }}>
           Realizando Login
         </Text>
-        <ActivityIndicator size="large" color="#5A189A" style={{ marginTop: 20 }} />
+        <ActivityIndicator size="large" color="#808080" style={{ marginTop: 20 }} />
       </View>
     </Modal>
   );

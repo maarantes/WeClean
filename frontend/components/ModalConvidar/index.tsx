@@ -85,7 +85,7 @@ const ConvidarModal: React.FC<ConvidarModalProps> = ({
 
         <View style={styles.modal_codigo_container}>
           {loading ? (
-            <ActivityIndicator size="large" color="#5A189A" />
+            <ActivityIndicator size="large" color="#808080" />
           ) : (
             <Text style={styles.modal_codigo_texto}>
               {codigoConvite}

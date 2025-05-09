@@ -8,17 +8,15 @@ export const styles = StyleSheet.create({
         justifyContent: "center",
         gap: 12,
         paddingVertical: 12,
-        borderWidth: 1, 
-        borderColor: "#5A189A",
-        borderStyle: "solid",
+        backgroundColor: "#F5F5F5",
         borderRadius: 4,
         marginBottom: 40
     },
 
     botao_adicionar_texto: {
-        color: "#5A189A",
-        fontWeight: 600,
-        fontSize: 16
+        color: "#606060",
+        fontFamily: "Inter-SemiBold",
+        fontSize: 14
     },
 
     container_cards: {

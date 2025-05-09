@@ -143,7 +143,7 @@ const PaginaGrupo = () => {
           alignItems: "center",
           backgroundColor: "white",
         }}>
-          <ActivityIndicator size="large" color="#5A189A" />
+          <ActivityIndicator size="large" color="black" />
         </View>
             ) : (
 
@@ -197,7 +197,7 @@ const PaginaGrupo = () => {
                 style={[styles.botao_base, styles.botao_sair, styles.botao_menor]}
                 onPress={() => setEntrarGrupoModalActive(true)}
               >
-                <SairIcon width={20} height={20} color={"#5A189A"}/>
+                <SairIcon width={20} height={20} color={"#606060"}/>
                 <Text style={[styles.botao_base_texto, styles.botao_sair_texto]}>
                   Trocar Grupo
                 </Text>

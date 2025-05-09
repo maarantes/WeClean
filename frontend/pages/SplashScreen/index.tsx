@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { View, Animated, Dimensions, StyleSheet } from "react-native";
+import Svg, { Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/frontend/routes";
@@ -83,6 +84,18 @@ const PaginaSplash = () => {
 
   return (
     <View style={styles.container}>
+      {/* Gradiente usando SVG */}
+      <Svg height="100%" width="100%" style={styles.gradient}>
+        <Defs>
+          <LinearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+            <Stop offset="0%" stopColor="#FFBF00" stopOpacity="1" />
+            <Stop offset="50%" stopColor="#E83F6F" stopOpacity="1" />
+            <Stop offset="100%" stopColor="#2274A5" stopOpacity="1" />
+          </LinearGradient>
+        </Defs>
+        <Rect x="0" y="0" width="100%" height="100%" fill="url(#grad1)" />
+      </Svg>
+
       {/* Bolinha branca expandindo */}
       <Animated.View
         style={[
@@ -94,22 +107,20 @@ const PaginaSplash = () => {
             height: 100, // Tamanho base para o SVG
             top: "50%",
             left: "50%",
-          }
+          },
         ]}
       >
         {/* Bolinha SVG */}
         <BolaBranca width="100%" height="100%" />
       </Animated.View>
 
-      <Animated.View style={{
-        transform: [
-          { scale: logoScale },
-          { translateY: logoTranslateY }
-        ],
-        width: 200,
-        height: 150,
-      }}>
-
+      <Animated.View
+        style={{
+          transform: [{ scale: logoScale }, { translateY: logoTranslateY }],
+          width: 200,
+          height: 150,
+        }}
+      >
         {/* Logo branco */}
         <Animated.View style={[styles.logoOverlay, { opacity: logoBrancoOpacity }]}>
           <LogoWeCleanBranco width={200} height={150} />
@@ -127,18 +138,24 @@ const PaginaSplash = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#5A189A", // Cor roxa fixa no fundo
     alignItems: "center",
     justifyContent: "center",
   },
+  gradient: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
   circle: {
     position: "absolute",
-    backgroundColor: "white", // Garante que a cor de fundo seja branca inicialmente
-    borderRadius: 50, // Para torná-la redonda
-    width: 0, // Inicialmente com largura zero (será controlado pela escala)
-    height: 0, // Inicialmente com altura zero (será controlado pela escala)
-    marginLeft: -50, // Centraliza horizontalmente para um width de 100
-    marginTop: -50, // Centraliza verticalmente para um height de 100
+    backgroundColor: "white",
+    borderRadius: 50,
+    width: 0,
+    height: 0,
+    marginLeft: -50,
+    marginTop: -50,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -146,7 +163,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     justifyContent: "center",
-  }
+  },
 });
 
 export default PaginaSplash;

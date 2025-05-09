@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
 
   botao_semana: {
     alignItems: "center",
-    backgroundColor: "#5A189A",
+    backgroundColor: "black",
     padding: 8,
     width: "50%",
     borderTopLeftRadius: 4,
@@ -29,11 +29,11 @@ export const styles = StyleSheet.create({
   },
 
   desativado: {
-    backgroundColor: "#EAE3FA",
+    backgroundColor: "#F5F5F5",
   },
 
   desativado_texto: {
-    color: "#5A189A",
+    color: "#808080",
   },
 
   botao_semana_texto: {
@@ -42,14 +42,17 @@ export const styles = StyleSheet.create({
   },
 
   dias_semana_texto: {
-    backgroundColor: "#F5F5F5",
+    borderWidth: 1.25,
+    borderLeftWidth: 0,
+    borderColor: "#F5F5F5",
+    borderStyle: "solid",  
     fontFamily: "Inter-Medium",
     fontSize: 12,
-    paddingVertical: 10,
+    paddingVertical: 8.75,
     paddingLeft: 8,
     borderTopRightRadius: 4,
     borderBottomRightRadius: 4,
-    color: "#606060",
+    color: "#808080",
     width: "50%"
   },
 
@@ -113,7 +116,7 @@ export const styles = StyleSheet.create({
   },
 
   dia_botao: {
-    backgroundColor: "#5A189A",
+    backgroundColor: "black",
     width: "18%",
     paddingVertical: 12,
     borderRadius: 2,

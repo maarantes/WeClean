@@ -188,14 +188,12 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
                 onPress={() => {
                   if (dataKey) {
                     const taskData = { id, nome, descricao, horario, alarme, freq_texto, integrantes };
-                    console.log("Dados da tarefa ao editar:", JSON.stringify(taskData, null, 2));
-                    console.log("Data de referência ao editar:", dataKey);
                     navigation.navigate("CriarTarefa", { task: { id, nome, descricao, horario, alarme, freq_texto, integrantes }, dataReferencia: dataKey });
                     setCardModalVisible(false);
                   }
                 }}
               >
-                <EditarIcon width={24} height={24} color="#5A189A" />
+                <EditarIcon width={24} height={24} color="white" />
                 <Text style={styles.detalhe_botao_editar_texto}>Editar</Text>
               </TouchableOpacity>
             </View>
@@ -221,7 +219,7 @@ const CardTarefa: React.FC<CardTarefaProps> = ({
                 <Text style={styles.detalhe_campo_titulo}>HORÁRIO E ALARME</Text>
                 <View style={styles.flex_row_between}>
                   <View style={styles.flex_row}>
-                    <RelogioIcon width={16} height={16} color="#808080" />
+                    <RelogioIcon width={16} height={16} color="#808080" strokeWidth={1.5}/>
                     <Text style={styles.detalhe_campo_texto_horario}>{horario}</Text>
                   </View>
                   <Text style={[styles.detalhe_campo_texto_cinza, alarme && styles.alarme_ativado]}>

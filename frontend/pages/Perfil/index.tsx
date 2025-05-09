@@ -44,6 +44,7 @@ const PaginaPerfil = () => {
   const [temaAtual, setTemaAtual] = useState<TemaCor>("azul");
   const [grupoNome, setGrupoNome] = useState("Carregando...");
   const [loading, setLoading] = useState(true);
+  const [loadingModal, setLoadingModal] = useState(false);
   const [apelido, setApelido] = useState("Carregando...");
   const [email, setEmail] = useState("Carregando...");
 
@@ -136,6 +137,7 @@ const PaginaPerfil = () => {
     if (!temaSelecionado || !auth.currentUser) return;
 
     const uid = auth.currentUser.uid;
+    setLoadingModal(true);
     await updateDoc(doc(db, "Usuarios", uid), {
       tema: temaSelecionado.cor,
     });
@@ -145,6 +147,8 @@ const PaginaPerfil = () => {
     setTemaAtual(temaSelecionado.cor);
     setCardModalVisible(false);
     setTemaSelecionado(null);
+    setLoadingModal(false);
+    navigation.reset({ index: 0, routes: [{ name: "Perfil" }] });
   };
 
   const capitalizar = (str: string) =>
@@ -163,7 +167,7 @@ const PaginaPerfil = () => {
           alignItems: "center",
           backgroundColor: "white",
         }}>
-          <ActivityIndicator size="large" color="#5A189A" />
+          <ActivityIndicator size="large" color="#808080" />
         </View>
       ) : (
         <ScrollView contentContainerStyle={{ paddingTop: 35, paddingBottom: 140 }}>
@@ -281,9 +285,15 @@ const PaginaPerfil = () => {
           </Text>
 
           <View style={styles.parte_baixo}>
-            <TouchableOpacity style={globalStyles.botao_primario} onPress={salvarTema}>
-              <MaisAdicaoIcon width={18} height={18} color={"#ffffff"} />
-              <Text style={globalStyles.botao_primario_texto}>Salvar Alterações</Text>
+            <TouchableOpacity style={[globalStyles.botao_primario, styles.mesma_largura]} onPress={salvarTema}>
+              {loadingModal ? (
+              <ActivityIndicator size="small" color="#ffffff" />
+                ) : (
+                <>
+                  <MaisAdicaoIcon width={18} height={18} color="#ffffff" />
+                  <Text style={globalStyles.botao_primario_texto}>Salvar Alterações</Text>
+                </>
+              )}
             </TouchableOpacity>
           </View>
         </View>

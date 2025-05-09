@@ -36,18 +36,18 @@ export const styles = StyleSheet.create({
     },
 
     botao_tipo: {
-        backgroundColor: "#EAE3FA",
+        backgroundColor: "#F5F5F5",
         padding: 8,
         borderRadius: 4,
     },
 
     botao_tipo_ativo: {
-        backgroundColor: "#5A189A",
+        backgroundColor: "black",
         borderWidth: 0
     },
 
     botao_tipo_texto: {
-        color: "#5A189A",
+        color: "#808080",
         fontFamily: "Inter-Medium"
     },
 
