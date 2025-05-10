@@ -338,7 +338,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: "#DACAFB",
+    backgroundColor: "#F5F5F5",
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
@@ -346,7 +346,7 @@ export const styles = StyleSheet.create({
   },
 
   modal_botao_cancelar_texto: {
-    color: "black",
+    color: "#808080",
     fontFamily: "Inter-SemiBold"
   },
 

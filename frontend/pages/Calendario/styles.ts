@@ -171,7 +171,8 @@ export const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   diaItem: {
-    marginHorizontal: 14,
+    marginHorizontal: 8,
+    paddingHorizontal: 6,
     justifyContent: "center",
     alignItems: "center",
   },

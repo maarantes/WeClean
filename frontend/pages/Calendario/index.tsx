@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, ActivityIndicator } from "react-native";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, ActivityIndicator, FlatList } from "react-native";
 import { styles } from "./styles";
 import { globalStyles } from "@/frontend/globalStyles";
 import Svg, { Defs, LinearGradient, Stop, Rect, Circle } from "react-native-svg";
@@ -261,6 +261,7 @@ const PaginaCalendario = () => {
   ];
 
   const nomeDiaDaSemana = diasDaSemana[dataSelecionada.getDay()];
+  const flatListRef = useRef<FlatList>(null);
 
   const formatarData = (data: Date) => {
     const dia = String(data.getDate()).padStart(2, "0");
@@ -322,7 +323,22 @@ const PaginaCalendario = () => {
   }, [mesAtual]);
 
   const diasDoMes = Array.from({ length: new Date(anoAtual, mesAtual + 1, 0).getDate() }, (_, i) => i + 1);
-  const indexDiaAtual = diasDoMes.indexOf(diaHoje);
+
+  const [isFlatListReady, setIsFlatListReady] = useState(false);
+
+  useEffect(() => {
+    if (isFlatListReady && flatListRef.current && diasDoMes.length > 0) {
+      const initialIndex = diasDoMes.indexOf(diaHoje);
+      if (initialIndex !== -1) {
+        flatListRef.current.scrollToIndex({
+          index: initialIndex,
+          animated: true,
+          viewPosition: 0.5,
+        });
+      }
+    }
+  }, [isFlatListReady, flatListRef.current, diasDoMes.length, mesAtual, anoAtual, diaHoje]);
+
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -376,21 +392,25 @@ const PaginaCalendario = () => {
             </View>
           </View>
 
-          <View style={{ position: "relative", width: "100%"}}>
             {/* Container de dias roláveis */}
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.scrollContainerDias}
-              contentOffset={{ x: indexDiaAtual * 19, y: 0 }}
-            >
-              {diasDoMes.map((dia) => (
+          <View style={{ position: "relative", width: "100%"}}>
+            <FlatList 
+              ref={flatListRef}
+              data={diasDoMes}
+              onLayout={() => setIsFlatListReady(true)}
+              renderItem={({ item: dia, index }) => (
                 <TouchableOpacity
                   key={dia}
                   style={styles.diaItem}
                   onPress={() => {
                     const novaData = new Date(anoAtual, mesAtual, dia);
                     setDataSelecionada(novaData);
+                    // CHAMAR A FUNÇÃO PARA SCROLLAR
+                    flatListRef.current?.scrollToIndex({
+                      index: index,
+                      animated: true,
+                      viewPosition: 0.5,
+                    });
                   }}
                 >
                   <Text
@@ -415,8 +435,12 @@ const PaginaCalendario = () => {
                     </Svg>
                   )}
                 </TouchableOpacity>
-              ))}
-            </ScrollView>
+              )}
+              keyExtractor={(dia) => dia.toString()}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.scrollContainerDias}
+            />
 
             <View style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none" }}>
               <Svg width="100%" height="100%">
