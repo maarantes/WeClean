@@ -111,7 +111,6 @@ export const styles = StyleSheet.create({
 
   container_escolher: {
     flexDirection: "row",
-    marginTop: 32,
     gap: "2%"
   },
 
@@ -166,6 +165,24 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 4,
     color: "#C4C4C4"
-  }
+  },
 
+  scrollContainerDias: {
+    paddingVertical: 20,
+  },
+  diaItem: {
+    marginHorizontal: 14,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  diaTexto: {
+    fontFamily: "Inter-Medium",
+    fontSize: 18,
+    color: "#808080"
+  },
+  circuloIcon: {
+    position: "absolute",
+    top: -8,
+    zIndex: -1
+  },
 });

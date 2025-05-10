@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, ActivityIndicator } from "react-native";
 import { styles } from "./styles";
 import { globalStyles } from "@/frontend/globalStyles";
+import Svg, { Defs, LinearGradient, Stop, Rect, Circle } from "react-native-svg";
 
 import ParteCima from "../../components/ParteCima/index";
 import { Navbar } from "@/frontend/components/Navbar";
@@ -19,7 +20,6 @@ const nomesDosMeses = [
   "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
 ];
 
-// Define o tipo de dados de semana
 type Semana = {
   semana: string;
   inicio: string;
@@ -157,7 +157,7 @@ const PaginaCalendario = () => {
   
     // Formatar a data para "yyyy-mm-dd"
     const diaFormatado = `${data.getFullYear()}-${(data.getMonth() + 1).toString().padStart(2, "0")}-${data.getDate().toString().padStart(2, "0")}`;
-    console.log('Consultando tarefas para o dia:', diaFormatado);
+    console.log("Consultando tarefas para o dia:", diaFormatado);
   
     // Obter as tarefas do dia específico
     const calendarioDocRef = doc(db, "Calendário", diaFormatado);
@@ -321,6 +321,9 @@ const PaginaCalendario = () => {
     carregarTarefasDoMes();
   }, [mesAtual]);
 
+  const diasDoMes = Array.from({ length: new Date(anoAtual, mesAtual + 1, 0).getDate() }, (_, i) => i + 1);
+  const indexDiaAtual = diasDoMes.indexOf(diaHoje);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ParteCima />
@@ -370,6 +373,66 @@ const PaginaCalendario = () => {
                   </>
                 )}
               </View>
+            </View>
+          </View>
+
+          <View style={{ position: "relative", width: "100%"}}>
+            {/* Container de dias roláveis */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.scrollContainerDias}
+              contentOffset={{ x: indexDiaAtual * 19, y: 0 }}
+            >
+              {diasDoMes.map((dia) => (
+                <TouchableOpacity
+                  key={dia}
+                  style={styles.diaItem}
+                  onPress={() => {
+                    const novaData = new Date(anoAtual, mesAtual, dia);
+                    setDataSelecionada(novaData);
+                  }}
+                >
+                  <Text
+                    style={[
+                      styles.diaTexto,
+                      dataSelecionada.getDate() === dia && { color: colorClass.color },
+                    ]}
+                  >
+                    {dia}
+                  </Text>
+
+                  {/* Círculo abaixo do dia escolhido */}
+                  {dataSelecionada.getDate() === dia && (
+                    <Svg
+                      width="44"
+                      height="44"
+                      viewBox="0 0 44 44"
+                      fill="none"
+                      style={styles.circuloIcon}
+                    >
+                      <Circle cx="22" cy="22" r="18" fill={bgClass.backgroundColor} />
+                    </Svg>
+                  )}
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <View style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none" }}>
+              <Svg width="100%" height="100%">
+                <Defs>
+                  <LinearGradient id="gradLeft" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <Stop offset="0%" stopColor="white" stopOpacity="1" />
+                    <Stop offset="40%" stopColor="white" stopOpacity="0" />
+                  </LinearGradient>
+                  <LinearGradient id="gradRight" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <Stop offset="60%" stopColor="white" stopOpacity="0" />
+                    <Stop offset="100%" stopColor="white" stopOpacity="1" />
+                  </LinearGradient>
+                </Defs>
+                <Rect x="0" y="0" width="100%" height="100%" fill="url(#gradLeft)" />
+                <Rect x="0" y="0" width="100%" height="100%" fill="url(#gradRight)" />
+              </Svg>
             </View>
           </View>
 
