@@ -405,7 +405,6 @@ const PaginaCalendario = () => {
                   onPress={() => {
                     const novaData = new Date(anoAtual, mesAtual, dia);
                     setDataSelecionada(novaData);
-                    // CHAMAR A FUNÇÃO PARA SCROLLAR
                     flatListRef.current?.scrollToIndex({
                       index: index,
                       animated: true,
@@ -440,6 +439,11 @@ const PaginaCalendario = () => {
               horizontal
               showsHorizontalScrollIndicator={false}
               style={styles.scrollContainerDias}
+              onScrollToIndexFailed={({ index }) => {
+                setTimeout(() => {
+                flatListRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.5 });
+                
+                }, 250)}}
             />
 
             <View style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none" }}>
