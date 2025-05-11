@@ -1,20 +1,39 @@
-import { collection, doc, getDocs, updateDoc, deleteDoc } from "firebase/firestore";
+import { collection, doc, getDocs, updateDoc, deleteDoc, query, where } from "firebase/firestore";
 import { db } from "../shared/firebase";
 
-// Exclui a tarefa tanto da coleção "Tarefas" quanto do "Calendário"
 export const excluirTarefa = async (taskId: string): Promise<void> => {
-  // Exclui todas as instâncias (passadas, atuais e futuras) na coleção "Calendário"
-  const calendarRef = collection(db, "Calendário");
-  const querySnapshot = await getDocs(calendarRef);
-  for (const docSnapshot of querySnapshot.docs) {
-    const dataDoc = docSnapshot.data();
-    if (dataDoc.tarefas) {
-      const updatedTasks = dataDoc.tarefas.filter((task: any) => task.id !== taskId);
-      await updateDoc(doc(db, "Calendário", docSnapshot.id), { tarefas: updatedTasks });
+
+  const calendarioCol = collection(db, "Calendário");
+  const calendarioSnap = await getDocs(calendarioCol);
+
+  const instanceIdsToDelete: string[] = [];
+
+  for (const calDoc of calendarioSnap.docs) {
+    const data = calDoc.data();
+    const tarefas: any[] = data.tarefas || [];
+
+    const remaining = tarefas.filter((t) => {
+      if (t.originalId === taskId) {
+        instanceIdsToDelete.push(t.instanceId);
+        return false;
+      }
+      return true;
+    });
+
+    if (remaining.length !== tarefas.length) {
+      const calRef = doc(db, "Calendário", calDoc.id);
+      await updateDoc(calRef, { tarefas: remaining });
     }
   }
 
-  // Exclui a tarefa na coleção "Tarefas"
-  const tarefaRef = doc(db, "Tarefas", taskId);
-  await deleteDoc(tarefaRef);
+  const comentariosCol = collection(db, "Comentários");
+  for (const instanceId of instanceIdsToDelete) {
+    const q = query(comentariosCol, where("instanceId", "==", instanceId));
+    const commentsSnap = await getDocs(q);
+    for (const commentDoc of commentsSnap.docs) {
+      await deleteDoc(doc(db, "Comentários", commentDoc.id));
+    }
+  }
+
+  await deleteDoc(doc(db, "Tarefas", taskId));
 };
