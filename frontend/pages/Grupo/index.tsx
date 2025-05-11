@@ -100,7 +100,7 @@ const PaginaGrupo = () => {
           return {
             uid: membroUid,
             nome: userData.apelido || "Desconhecido",
-            tema: userData.tema || "azul",
+            tema: userData.tema || "undefined",
             tipo,
           };
         });

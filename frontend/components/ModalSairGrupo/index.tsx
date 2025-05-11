@@ -62,7 +62,7 @@ const ModalSairGrupo: React.FC<ModalSairGrupoProps> = ({ visible, setVisible, on
         outrosIntegrantes.map(async (i: any) => {
           const u = await getDoc(doc(db, "Usuarios", i.uid));
           const data = u.data();
-          const tema = data?.tema || "azul";
+          const tema = data?.tema || "undefined";
           const { cor_primaria, cor_secundaria } = getCoresDoTema(tema);
 
           return {

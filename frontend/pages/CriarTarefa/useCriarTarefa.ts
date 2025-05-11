@@ -79,7 +79,7 @@ export const useCriarTarefa = () => {
     
         const userData = userSnap.data();
     
-        const tema = userData.tema || "azul";
+        const tema = userData.tema || "undefined";
         return {
           uid: i.uid,
           nome: userData.apelido || "Desconhecido",

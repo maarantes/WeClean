@@ -5,13 +5,13 @@ import { TemaCor } from "@/frontend/utils/temaStyles";
 
 // Função para validar se o tema recuperado é válido
 const isTemaCor = (tema: string): tema is TemaCor => {
-  const temasValidos: TemaCor[] = ["azul", "vinho", "rosa", "amarelo", "laranja", "verde", "turquesa", "coral", "roxo", "marrom"];
+  const temasValidos: TemaCor[] = ["undefined", "azul", "vinho", "rosa", "amarelo", "laranja", "verde", "turquesa", "coral", "roxo", "marrom"];
   return temasValidos.includes(tema as TemaCor);
 };
 
 // Hook customizado para pegar o tema
 export const useTema = () => {
-  const [temaUsuario, setTemaUsuario] = useState<TemaCor>("azul");
+  const [temaUsuario, setTemaUsuario] = useState<TemaCor>("undefined");
 
   useEffect(() => {
     const carregarTema = async () => {

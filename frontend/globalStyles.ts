@@ -46,19 +46,19 @@ export const globalStyles = StyleSheet.create({
 
 
 
-  // Tipo Undefined (pra parar de dar erro)
+  // Tipo Undefined
 
   tema_bg_undefined_primario: {
-    backgroundColor: "#144f70"
+    backgroundColor: "#F5F5F5"
   },
   tema_bg_undefined_secundario: {
-    backgroundColor: "#cae9fb"
+    backgroundColor: "#F5F5F5"
   },
   tema_color_undefined_primario: {
-    color: "#144f70"
+    color: "#C4C4C4"
   },
   tema_color_undefined_secundario: {
-    color: "#cae9fb"
+    color: "#C4C4C4"
   },
 
 

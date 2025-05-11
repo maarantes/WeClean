@@ -64,7 +64,7 @@ const PaginaInicio = () => {
               t.integrantes?.map(async (userId: string) => {
                 const userRef = doc(db, "Usuarios", userId);
                 const userSnap = await getDoc(userRef);
-                const userData = userSnap.exists() ? userSnap.data() : { apelido: "Desconhecido", tema: "azul" };
+                const userData = userSnap.exists() ? userSnap.data() : { apelido: "Desconhecido", tema: "undefined" };
                 const { cor_primaria, cor_secundaria } = getCoresDoTema(userData.tema);
       
                 return {
@@ -203,8 +203,8 @@ const PaginaInicio = () => {
                   {filtrarTarefas(tarefas).length > 0 ? (
                     filtrarTarefas(tarefas).map((tarefa, index) => (
                       <CardTarefa
-                        key={index}
-                        id={tarefa.id}
+                        key={tarefa.instanceId}
+                        id={tarefa.originalId}
                         nome={tarefa.nome}
                         descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
                         horario={tarefa.horario}
@@ -227,6 +227,7 @@ const PaginaInicio = () => {
                           setShowAlert(true);
                         }}
                         onTaskDeleted={carregarTarefasSemana}
+                        instanceId={tarefa.instanceId}
                       />
                     ))
                   ) : (

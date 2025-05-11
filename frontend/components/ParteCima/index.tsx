@@ -15,12 +15,12 @@ import { auth, db } from '@/backend/services/shared/firebaseConfigApp';
 import { doc, getDoc } from 'firebase/firestore';
 import { globalStyles } from '@/frontend/globalStyles';
 
-import AsyncStorage from '@react-native-async-storage/async-storage'; // ➔ IMPORTAR
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ParteCima = () => {
   const [LogoutModalActive, setLogoutModalActive] = useState(false);
   const [nomeUsuario, setNomeUsuario] = useState<string>("");
-  const [temaUsuario, setTemaUsuario] = useState<string>("azul");
+  const [temaUsuario, setTemaUsuario] = useState<string>("undefined");
 
   type NavigationProps = StackNavigationProp<RootStackParamList, "Grupo">;
   const navigation = useNavigation<NavigationProps>();
@@ -43,7 +43,7 @@ const ParteCima = () => {
           if (userSnap.exists()) {
             const userData = userSnap.data();
             const nome = userData.apelido || "Usuário";
-            const tema = userData.tema || "azul";
+            const tema = userData.tema || "undefined";
   
             setNomeUsuario(nome);
             setTemaUsuario(tema);
