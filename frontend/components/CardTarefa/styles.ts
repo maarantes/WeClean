@@ -53,8 +53,8 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 4,
-    width: 105,
+    paddingVertical: 8,
+    width: 40,
     borderWidth: 1,
     borderColor: "#808080",
     borderRadius: 4,
@@ -241,6 +241,23 @@ export const styles = StyleSheet.create({
     fontFamily: "Inter-SemiBold"
   },
 
+  detalhe_botao_comentar: {
+    flexDirection: "row",
+    gap: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: "black",
+    borderRadius: 4,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%"
+  },
+
+  detalhe_botao_comentar_texto: {
+    color: "white",
+    fontFamily: "Inter-SemiBold"
+  },
+
   detalhe_campo_titulo: {
     color: "#606060",
     marginBottom: 12,
@@ -358,9 +375,41 @@ export const styles = StyleSheet.create({
     color: "#808080"
   },
 
-  botao_concluir_menor: {
-    width: 28,
-    height: 28
+  parte_abas: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 16
+  },
+
+  aba_opcao: {
+      width: "50%",
+      paddingBottom: 8,
+      alignItems: "center",
+      borderBottomWidth: 4,
+      borderBottomColor: "black"
+  },
+
+  aba_opcao_texto: {
+      color: "black",
+      fontFamily: "Inter-SemiBold",
+      fontSize: 14
+  },
+
+  desativado: {
+      borderBottomColor: "#C4C4C4"
+  },
+
+  desativado_texto: {
+      color: "#C4C4C4"
+  },
+
+  sem_comentarios_texto: {
+    backgroundColor: "#F8F8F8",
+    padding: 32,
+    fontFamily: "Inter-SemiBold",
+    color: "#808080",
+    textAlign: "center"
   }
 
 });

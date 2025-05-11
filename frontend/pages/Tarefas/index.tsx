@@ -173,6 +173,8 @@ const PaginaTarefas = () => {
                   integrantes={tarefa.integrantes || []}
                   dataInstancia={tarefa.dataCriacao}
                   onTaskDeleted={carregarTarefas}
+                  semComentarios={true}
+                  instanceId={""}
                 />
               ))
             ) : (
@@ -198,6 +200,8 @@ const PaginaTarefas = () => {
                   integrantes={tarefa.integrantes || []}
                   dataInstancia={tarefa.dataCriacao}
                   onTaskDeleted={carregarTarefas}
+                  semComentarios={true}
+                  instanceId={""}
                 />
               ))
             ) : (
@@ -224,6 +228,8 @@ const PaginaTarefas = () => {
                   integrantes={tarefa.integrantes || []}
                   dataInstancia={tarefa.dataCriacao}
                   onTaskDeleted={carregarTarefas}
+                  semComentarios={true}
+                  instanceId={""}
                 />
               ))
             ) : (
@@ -249,7 +255,9 @@ const PaginaTarefas = () => {
                   alarme={tarefa.alarme}
                   integrantes={tarefa.integrantes || []}
                   dataInstancia={tarefa.dataCriacao}
-                  onTaskDeleted={carregarTarefas} 
+                  onTaskDeleted={carregarTarefas}
+                  semComentarios={true}
+                  instanceId={""}
                 />
               ))
             ) : (

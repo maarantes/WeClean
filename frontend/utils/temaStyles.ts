@@ -2,7 +2,7 @@ import { TextStyle, ViewStyle } from "react-native";
 import { globalStyles } from "@/frontend/globalStyles";
 
 export type TemaCor =
-  | "azul" | "vinho" | "rosa" | "amarelo" | "laranja"
+  | "undefined" | "azul" | "vinho" | "rosa" | "amarelo" | "laranja"
   | "verde" | "turquesa" | "coral" | "roxo" | "marrom";
 
 // retorna o estilo de background (para componentes View)
