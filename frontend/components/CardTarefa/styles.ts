@@ -68,6 +68,10 @@ export const styles = StyleSheet.create({
   },
 
   container_info_relogio: {
+    backgroundColor: "#F0F0F0",
+    borderRadius: 4,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
     flexDirection: "row",
     alignItems: "center",
     gap: 8

@@ -9,7 +9,6 @@ export function formatarDataComentario(s: string): Date {
   return new Date(now.getFullYear(), month - 1, day, hour, min);
 }
 
-// Hook que busca e ordena comentários ao abrir modal
 export function useComentarios(instanceId: string, isOpen: boolean) {
   const [comentarios, setComentarios] = useState<ComentarioProps[]>([]);
 
@@ -18,8 +17,8 @@ export function useComentarios(instanceId: string, isOpen: boolean) {
     try {
       const lista = await obterComentariosPorInstancia(instanceId);
       lista.sort((a, b) =>
-        formatarDataComentario(a.createdAt).getTime()
-        - formatarDataComentario(b.createdAt).getTime()
+        formatarDataComentario(a.createdAt).getTime() -
+        formatarDataComentario(b.createdAt).getTime()
       );
       setComentarios(lista);
     } catch (e) {
@@ -31,5 +30,5 @@ export function useComentarios(instanceId: string, isOpen: boolean) {
     if (isOpen) fetchComentarios();
   }, [isOpen, fetchComentarios]);
 
-  return comentarios;
+  return { comentarios, fetchComentarios };
 }

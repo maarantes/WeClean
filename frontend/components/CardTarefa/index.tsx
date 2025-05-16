@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { doc, getDoc } from "firebase/firestore";
@@ -15,8 +15,8 @@ import ConcluirIcon from "../../../assets/images/concluir.svg";
 import { excluirTarefa } from "../../../backend/services/tarefas/excluirTarefa";
 import { useComentarios } from "./useCardTarefa";
 import { DetalhesModal } from "./detalhesModal";
-import { DeleteConfirmationModal } from "./excluirTarefaModal";
 import ComentarioModal from "../ModalComentar";
+import { DeleteConfirmationModal } from "./excluirTarefaModal";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/frontend/routes";
 
@@ -72,7 +72,13 @@ export const CardTarefa: React.FC<CardTarefaProps> = ({
   const navigation = useNavigation<CriarTarefaNav>();
   const dataKey = dataInstancia!;
 
-  const comentarios = useComentarios(instanceId, openDetalhes);
+  const { comentarios, fetchComentarios } = useComentarios(instanceId, openDetalhes);
+
+  useEffect(() => {
+  if (openDetalhes) {
+    setAba("detalhes");
+  }
+}, [openDetalhes]);
 
   const uidAtual = auth.currentUser?.uid;
   let integrantesOrdenados = [...integrantes];
@@ -184,6 +190,7 @@ export const CardTarefa: React.FC<CardTarefaProps> = ({
           }}
           comentarios={comentarios}
           semComentarios={semComentarios}
+          
         />
 
         <ComentarioModal
@@ -191,11 +198,9 @@ export const CardTarefa: React.FC<CardTarefaProps> = ({
           setVisible={setOpenCommentModal}
           instanceId={instanceId}
           onCommentAdded={() => {
-            if (aba === "comentarios") {
-              setAba("detalhes");
-              setAba("comentarios");
+            fetchComentarios();
             }
-          }}
+          }
         />
 
         <DeleteConfirmationModal

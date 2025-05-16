@@ -4,7 +4,7 @@ import Modal from "react-native-modal";
 import { styles } from "./styles";
 
 import { auth } from "@/backend/services/shared/firebaseConfigApp";
-import { criarComentario } from "../../../backend/services/comentario/CriarComentario"
+import { criarComentario } from "../../../backend/services/comentario/criarComentario"
 
 interface ComentarioModalProps {
   visible: boolean;
