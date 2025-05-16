@@ -18,11 +18,14 @@ import { formatarFrequenciaTexto } from "@/frontend/utils/formatarFrequencia";
 import { obterTarefas } from "../../../backend/services/tarefas/obterTarefas";
 import { auth, db } from "../../../backend/services/shared/firebaseConfigApp";
 import { useTema } from "@/frontend/hooks/useTema";
+import PerguntaTarefaModal from "@/frontend/components/ModalPerguntaTarefa";
 
 const PaginaTarefas = () => {
   const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const [tarefas, setTarefas] = useState<any[]>([]);
+  const [modalPerguntaTarefaVisivel, setModalPerguntaTarefaVisivel] = useState(false);
+
   const [loading, setLoading] = useState(true);
   
   const { temaUsuario, getTemaStyle } = useTema();
@@ -146,7 +149,7 @@ const PaginaTarefas = () => {
 
           <TouchableOpacity
             style={[styles.botao_adicionar, { backgroundColor: bgClass.backgroundColor }]}
-            onPress={() => navigate('CriarTarefa', {})}
+            onPress={() => setModalPerguntaTarefaVisivel(true)}
           >
             <TarefaIcon width={20} height={20} color={colorClass.color} />
             <Text style={[styles.botao_adicionar_texto, { color: colorClass.color }]}>
@@ -264,6 +267,12 @@ const PaginaTarefas = () => {
               <Text style={styles.nenhuma_tarefa}>Nenhuma tarefa anual</Text>
             )}
           </View>
+
+          <PerguntaTarefaModal
+          visible={modalPerguntaTarefaVisivel}
+          setVisible={setModalPerguntaTarefaVisivel}
+        />
+
         </ScrollView>
       )}
       <Navbar />
