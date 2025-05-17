@@ -143,7 +143,7 @@ export function DetalhesModal({
                     : styles.detalhe_campo_texto_cinza
                 }
               >
-                {descricao || "Não há descrição para esta tarefa."}
+                {descricao ?? "Não há descrição para esta tarefa."}
               </Text>
             </View>
             {/* Horário e Alarme */}

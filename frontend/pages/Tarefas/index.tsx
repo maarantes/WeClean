@@ -165,7 +165,7 @@ const PaginaTarefas = () => {
                   key={index}
                   id={tarefa.id}
                   nome={tarefa.nome}
-                  descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
+                  descricao={tarefa.descricao}
                   horario={tarefa.horario}
                   exibirBotao={false}
                   alarme={tarefa.alarme}
@@ -193,7 +193,7 @@ const PaginaTarefas = () => {
                   key={index}
                   id={tarefa.id}
                   nome={tarefa.nome}
-                  descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
+                  descricao={tarefa.descricao}
                   horario={tarefa.horario}
                   exibirBotao={false}
                   freq_texto={formatarFrequenciaTexto(tarefa.frequencia)}
@@ -220,7 +220,7 @@ const PaginaTarefas = () => {
                   key={index}
                   id={tarefa.id}
                   nome={tarefa.nome}
-                  descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
+                  descricao={tarefa.descricao}
                   horario={tarefa.horario}
                   exibirBotao={false}
                   alarme={tarefa.alarme}
@@ -248,7 +248,7 @@ const PaginaTarefas = () => {
                   key={index}
                   id={tarefa.id}
                   nome={tarefa.nome}
-                  descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
+                  descricao={tarefa.descricao}
                   horario={tarefa.horario}
                   exibirBotao={false}
                   freq_texto={formatarFrequenciaTexto(tarefa.frequencia)}

@@ -137,7 +137,7 @@ export const CardTarefa: React.FC<CardTarefaProps> = ({
 
           <View style={styles.container_info_dir}>
             <View style={styles.container_info_relogio}>
-              <RelogioIcon width={16} height={16} color="#606060" />
+              <RelogioIcon width={16} height={16} color="#808080" />
               <Text style={styles.cor_80_normal}>{horario}</Text>
             </View>
 

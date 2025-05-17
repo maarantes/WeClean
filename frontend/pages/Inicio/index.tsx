@@ -44,6 +44,7 @@ const PaginaInicio = () => {
     id: string;
     dataInst: string;
     prevValue: boolean;
+    instanceId: string;
   } | null>(null);
 
   const carregarTarefasSemana = async () => {
@@ -100,20 +101,23 @@ const PaginaInicio = () => {
   useFocusEffect(useCallback(() => { carregarTarefasSemana(); }, []));
 
   const handleDesfazer = () => {
-    if (lastTaskUpdate) {
-      updateTarefaConcluido(lastTaskUpdate.id, lastTaskUpdate.dataInst, lastTaskUpdate.prevValue);
-      setTarefasSemana((prev) => ({
-        ...prev,
-        [lastTaskUpdate.dataInst]: prev[lastTaskUpdate.dataInst].map((t: any) =>
-          t.id === lastTaskUpdate.id ? { ...t, concluido: lastTaskUpdate.prevValue } : t
-        )
-      }));
-      setShowAlert(false);
-      setLastTaskUpdate(null);
-    } else {
-      setShowAlert(false);
-    }
+    if (!lastTaskUpdate) { setShowAlert(false); return; }
+    const { id, dataInst, prevValue, instanceId } = lastTaskUpdate;
+
+    updateTarefaConcluido(id, dataInst, prevValue);
+
+    setTarefasSemana(prev => ({
+      ...prev,
+      [dataInst]: prev[dataInst].map((t: any) =>
+        t.instanceId === instanceId
+          ? { ...t, concluido: prevValue }
+          : t
+      )
+    }));
+    setShowAlert(false);
+    setLastTaskUpdate(null);
   };
+
 
   const today = new Date();
   const startDate = new Date(today);
@@ -201,33 +205,43 @@ const PaginaInicio = () => {
                 </View>
                 <View style={styles.container_gap}>
                   {filtrarTarefas(tarefas).length > 0 ? (
-                    filtrarTarefas(tarefas).map((tarefa, index) => (
+                    filtrarTarefas(tarefas).map((tarefa) => (
                       <CardTarefa
                         key={tarefa.instanceId}
                         id={tarefa.originalId}
                         nome={tarefa.nome}
-                        descricao={tarefa.descricao || "Não há descrição para esta tarefa."}
+                        descricao={tarefa.descricao}
                         horario={tarefa.horario}
-                        exibirBotao={true}
+                        exibirBotao
                         alarme={tarefa.alarme}
                         freq_texto={formatarFrequenciaTexto(tarefa.frequencia)}
                         integrantes={tarefa.integrantes || []}
                         concluido={tarefa.concluido}
                         dataInstancia={dataKey}
-                        onUpdateConcluido={(dataInst: string, novoValor: boolean) => {
-                          setLastTaskUpdate({ id: tarefa.id, dataInst, prevValue: !novoValor });
+                        instanceId={tarefa.instanceId}
+                        onUpdateConcluido={(dataInst, novoValor) => {
+                          // Guarda a instância exata para desfazer
+                          setLastTaskUpdate({
+                            id: tarefa.id,
+                            dataInst,
+                            prevValue: !novoValor,
+                            instanceId: tarefa.instanceId,
+                          });
                           updateTarefaConcluido(tarefa.id, dataInst, novoValor);
                           setTarefasSemana((prev) => ({
                             ...prev,
-                            [dataInst]: prev[dataInst].map((t: any) =>
-                              t.id === tarefa.id ? { ...t, concluido: novoValor } : t
-                            )
+                            [dataInst]: prev[dataInst].map((t) =>
+                              t.instanceId === tarefa.instanceId
+                                ? { ...t, concluido: novoValor }
+                                : t
+                            ),
                           }));
-                          setAlertMessage(novoValor ? "A tarefa foi concluída" : "A tarefa foi reaberta");
+                          setAlertMessage(
+                            novoValor ? "A tarefa foi concluída" : "A tarefa foi reaberta"
+                          );
                           setShowAlert(true);
                         }}
                         onTaskDeleted={carregarTarefasSemana}
-                        instanceId={tarefa.instanceId}
                       />
                     ))
                   ) : (

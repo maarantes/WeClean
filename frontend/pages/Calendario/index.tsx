@@ -489,13 +489,14 @@ const PaginaCalendario = () => {
                     key={index}
                     id={tarefa.id}
                     nome={tarefa.nome || "Tarefa sem nome"}
-                    descricao={tarefa.descricao || "Não há descrição."}
+                    descricao={tarefa.descricao}
                     horario={tarefa.horario}
                     alarme={tarefa.alarme}
                     concluido={tarefa.concluido}
                     freq_texto={formatarFrequenciaTexto(tarefa.frequencia)}
                     integrantes={tarefa.integrantes || []}
                     menor={true}
+                    instanceId={tarefa.instanceId}
                     dataInstancia={`${dataSelecionada.getFullYear()}-${(dataSelecionada.getMonth() + 1).toString().padStart(2, "0")}-${dataSelecionada.getDate().toString().padStart(2, "0")}`}
                   />
                 );
