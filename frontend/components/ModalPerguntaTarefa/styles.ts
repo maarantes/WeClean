@@ -83,7 +83,7 @@ export const styles = StyleSheet.create({
   },
 
   card_texto: {
-    width: "71%"
+    width: "74.8%"
   }
 
 });

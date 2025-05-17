@@ -3,7 +3,7 @@ import { TouchableOpacity, View, Text } from "react-native";
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/frontend/routes';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useTema } from "@/frontend/hooks/useTema"; // Correção: importação do hook
+import { useTema } from "@/frontend/hooks/useTema";
 
 import { styles } from "./styles";
 

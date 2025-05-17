@@ -1,0 +1,61 @@
+{
+  "diariamente": {
+    "pet": [
+      { "titulo": "Trocar água e comida", "frequencia": "Todo dia" },
+      { "titulo": "Escovar o gato", "frequencia": "Todo dia" },
+      { "titulo": "Levar o cachorro para passear", "frequencia": "Todo dia" }
+    ],
+    "limpeza": [
+      { "titulo": "Passar aspirador de pó", "frequencia": "Todo dia" },
+      { "titulo": "Passar pano na sala", "frequencia": "Todo dia" },
+      { "titulo": "Limpar o banheiro", "frequencia": "Todo dia" },
+      { "titulo": "Limpar cozinha", "frequencia": "Todo dia" },
+      { "titulo": "Trocar lixeiras", "frequencia": "Todo dia" }
+    ],
+    "segurança": [
+      { "titulo": "Verificar alarmes", "frequencia": "Todo dia" },
+      { "titulo": "Checar câmeras de segurança", "frequencia": "Todo dia" }
+    ]
+  },
+  "semanalmente": {
+    "pet": [
+      { "titulo": "Escovar o cachorro", "frequencia": "1 vez por semana" },
+      { "titulo": "Limpar o local de dormir do pet", "frequencia": "2 vezes por semana" },
+      { "titulo": "Verificar alimentação do pet", "frequencia": "3 vezes por semana" }
+    ],
+    "limpeza": [
+      { "titulo": "Limpeza profunda da cozinha", "frequencia": "1 vez por semana" },
+      { "titulo": "Limpeza de janelas", "frequencia": "1 vez por semana" },
+      { "titulo": "Limpar as paredes", "frequencia": "1 vez por semana" }
+    ],
+    "segurança": [
+      { "titulo": "Verificar fechaduras", "frequencia": "1 vez por semana" },
+      { "titulo": "Testar o sistema de segurança", "frequencia": "1 vez por semana" }
+    ]
+  },
+  "intervalo": {
+    "pet": [
+      { "titulo": "Limpar brinquedos do pet", "frequencia": "A cada 15 dias" }
+    ],
+    "limpeza": [
+      { "titulo": "Limpeza de carpetes", "frequencia": "A cada 20 dias" },
+      { "titulo": "Trocar de escova de dentes", "frequencia": "A cada 60 dias" }
+    ],
+    "segurança": [
+      { "titulo": "Verificar bateria de alarmes", "frequencia": "A cada 120 dias" }
+    ]
+  },
+  "anualmente": {
+    "pet": [
+      { "titulo": "Levar o pet para check-up anual", "frequencia": "Uma vez por ano" },
+      { "titulo": "Vacinação do pet", "frequencia": "Uma vez por ano" }
+    ],
+    "limpeza": [
+      { "titulo": "Limpeza de móveis estofados", "frequencia": "Duas vezes por ano" },
+      { "titulo": "Limpeza de cortinas", "frequencia": "Uma vez por ano" }
+    ],
+    "segurança": [
+      { "titulo": "Revisão elétrica", "frequencia": "Uma vez por ano" }
+    ]
+  }
+}

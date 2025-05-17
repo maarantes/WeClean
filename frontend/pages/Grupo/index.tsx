@@ -143,7 +143,7 @@ const PaginaGrupo = () => {
           alignItems: "center",
           backgroundColor: "white",
         }}>
-          <ActivityIndicator size="large" color="black" />
+          <ActivityIndicator size="large" color="#808080" />
         </View>
             ) : (
 

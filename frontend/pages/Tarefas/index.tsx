@@ -2,9 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Text, ScrollView, SafeAreaView, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { doc, getDoc } from "firebase/firestore";
 import { getCoresDoTema } from "@/frontend/utils/temaStyles";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "@/frontend/routes";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { styles } from "./styles";
 import { globalStyles } from "@/frontend/globalStyles";
@@ -21,7 +19,6 @@ import { useTema } from "@/frontend/hooks/useTema";
 import PerguntaTarefaModal from "@/frontend/components/ModalPerguntaTarefa";
 
 const PaginaTarefas = () => {
-  const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const [tarefas, setTarefas] = useState<any[]>([]);
   const [modalPerguntaTarefaVisivel, setModalPerguntaTarefaVisivel] = useState(false);

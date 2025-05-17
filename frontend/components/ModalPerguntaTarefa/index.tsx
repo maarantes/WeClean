@@ -25,7 +25,7 @@ const PerguntaTarefaModal: React.FC<PerguntaTarefaModalProps> = ({ visible, setV
 
   const handleVerSugestoes = () => {
     setVisible(false);
-    console.log("Olá!");
+    navigation.navigate("Sugestoes");
   };
 
   return (
@@ -54,7 +54,7 @@ const PerguntaTarefaModal: React.FC<PerguntaTarefaModalProps> = ({ visible, setV
             </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.modal_card_tipo} onPress={handleCriarDoZero}>
+        <TouchableOpacity style={styles.modal_card_tipo} onPress={handleVerSugestoes}>
             <View style={styles.card_esq}>
                 <View style={styles.card_icone_fundo}>
                     <LivroIcon width={40} color={"#FFFFFF"} />
@@ -69,8 +69,8 @@ const PerguntaTarefaModal: React.FC<PerguntaTarefaModalProps> = ({ visible, setV
 
         </View>
 
-        <TouchableOpacity style={{ marginTop: 12 }} onPress={() => setVisible(false)}>
-          <Text style={{ textAlign: "center", color: "#999" }}>Cancelar</Text>
+        <TouchableOpacity style={styles.modal_botao_cancelar} onPress={() => setVisible(false)}>
+          <Text style={styles.modal_botao_cancelar_texto}>Cancelar</Text>
         </TouchableOpacity>
       </View>
     </Modal>

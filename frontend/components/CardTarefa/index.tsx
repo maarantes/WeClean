@@ -173,6 +173,7 @@ export const CardTarefa: React.FC<CardTarefaProps> = ({
               navigation.navigate("CriarTarefa", {
                 task: snap.data(),
                 dataReferencia: dataKey,
+                tipo: "edicao"
               });
             }
             setOpenDetalhes(false);

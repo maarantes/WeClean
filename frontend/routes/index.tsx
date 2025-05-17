@@ -9,18 +9,21 @@ import PaginaLoginCadastro from "../pages/LoginCadastro";
 import PaginaPerfil from "../pages/Perfil";
 import PaginaGrupo from "../pages/Grupo";
 import PaginaSplash from "../pages/SplashScreen";
+import PaginaSugestoes from "../pages/Sugestoes";
 
 export type RootStackParamList = {
     Splash: undefined;
     Login: undefined;
     Início: undefined;
     Tarefas: undefined;
+    Sugestoes: undefined,
     Calendário: undefined;
     Perfil: undefined;
     Grupo: undefined;
     CriarTarefa: {
         task?: any;
         dataReferencia?: string;
+        tipo?: string;
       };
 }
 
@@ -35,6 +38,7 @@ export default function Routes() {
             <Stack.Screen name="Início" component={PaginaInicio} />
             <Stack.Screen name="Calendário" component={PaginaCalendario} />
             <Stack.Screen name="Tarefas" component={PaginaTarefas} />
+            <Stack.Screen name="Sugestoes" component={PaginaSugestoes} />
             <Stack.Screen name="Perfil" component={PaginaPerfil} />
             <Stack.Screen name="Grupo" component={PaginaGrupo} />
             <Stack.Screen name="CriarTarefa" component={PaginaCriarTarefa} />

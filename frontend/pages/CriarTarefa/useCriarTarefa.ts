@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { doc, getDoc } from "firebase/firestore";
@@ -13,18 +13,26 @@ import { validarFormulario } from "./validation";
 import { montarFrequencia } from "./frequenciaUtils";
 import { auth } from "@/backend/services/shared/firebaseConfigApp";
 import { db } from "@/backend/services/shared/firebase";
-import { globalStyles } from "@/frontend/globalStyles";
 import { getCoresDoTema } from "@/frontend/utils/temaStyles";
 
 const DiasDaSemana = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
 
-export const useCriarTarefa = () => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const route = useRoute<any>();
+type CriarTarefaRouteProp = RouteProp<RootStackParamList, "CriarTarefa">;
+type CriarTarefaNavigationProp = StackNavigationProp<RootStackParamList, "CriarTarefa">;
 
-  const isEditMode = !!route.params?.task;
-  const taskToEdit = route.params?.task;
-  const dataReferencia = route.params?.dataReferencia || "";
+export const useCriarTarefa = () => {
+
+  const navigation = useNavigation<CriarTarefaNavigationProp>();
+  const route = useRoute<CriarTarefaRouteProp>();
+
+  const {
+    task: taskToEdit,
+    dataReferencia,
+    tipo: modo,
+  } = route.params ?? {};
+
+  const isEditMode = modo === "edicao";
+  const isSuggestMode = modo === "sugestao";
 
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
@@ -44,11 +52,6 @@ export const useCriarTarefa = () => {
   const [loading, setLoading] = useState(false);
   const [erros, setErros] = useState<any>({});
 
-  const capitalize = (s: any): string => {
-    if (typeof s !== "string") return "";
-    return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-  };
-
   useEffect(() => {
     
     const carregarIntegrantesDoGrupo = async () => {
@@ -61,9 +64,8 @@ export const useCriarTarefa = () => {
       if (!userSnap.exists()) return;
     
       const userData = userSnap.data();
-      const grupoId = userData.grupoId || uid; // Se não tiver grupoId, usa o próprio UID como fallback
+      const grupoId = userData.grupoId || uid;
     
-      // Agora buscar o GRUPO correto
       const grupoRef = doc(db, "Grupos", grupoId);
       const grupoSnap = await getDoc(grupoRef);
     
@@ -98,10 +100,13 @@ export const useCriarTarefa = () => {
   useEffect(() => {
     if (isEditMode && taskToEdit) {
       setNome(taskToEdit.nome || "");
-      setDescricao(taskToEdit.descricao === "Não há descrição para esta tarefa." ? "" : taskToEdit.descricao || "");
+      setDescricao(
+        taskToEdit.descricao === "Não há descrição para esta tarefa."
+          ? ""
+          : taskToEdit.descricao || ""
+      );
       setHorario(taskToEdit.horario || "N/A");
       setAlarmeAtivado(taskToEdit.alarme || false);
-
       setIntegrantesSelecionados(taskToEdit.integrantes || []);
 
       if (taskToEdit.frequencia) {
@@ -123,17 +128,63 @@ export const useCriarTarefa = () => {
         } else if (freqType === "anualmente") {
           setBotaoFrequenciaAtivo(3);
           if (taskToEdit.frequencia.datasEspecificas) {
-            const datas = taskToEdit.frequencia.datasEspecificas.map((dataStr: string, index: number) => {
-              const [day, month] = dataStr.split("/");
-              const date = new Date(new Date().getFullYear(), parseInt(month) - 1, parseInt(day));
-              return { id: index + 1, data: date };
-            });
+            const datas = taskToEdit.frequencia.datasEspecificas.map(
+              (dataStr: string, index: number) => {
+                const [day, month] = dataStr.split("/");
+                return {
+                  id: index + 1,
+                  data: new Date(
+                    new Date().getFullYear(),
+                    parseInt(month, 10) - 1,
+                    parseInt(day, 10)
+                  ),
+                };
+              }
+            );
             setDatasSelecionadas(datas);
           }
         }
       }
     }
   }, [isEditMode, taskToEdit]);
+
+  useEffect(() => {
+    if (isSuggestMode && taskToEdit) {
+      setNome(taskToEdit.nome || "");
+
+      const freqType = taskToEdit.frequencia.tipo.toLowerCase();
+      const freqText = taskToEdit.frequencia.texto?.toLowerCase() || "";
+
+      if (freqType === "diariamente") {
+        setBotaoFrequenciaAtivo(0);
+        setDiasSelecionados(DiasDaSemana);
+      } else if (freqType === "semanalmente" || freqType === "semanal") {
+        setBotaoFrequenciaAtivo(1);
+          let num = 1;
+          if (freqText.includes("2 vezes")) num = 2;
+          else if (freqText.includes("3 vezes")) num = 3;
+          setDiasSelecionados(DiasDaSemana.slice(0, num));
+      } else if (freqType === "intervalo") {
+          setBotaoFrequenciaAtivo(2);
+          const match = freqText.match(/(\d+)/);
+        setIntervalo(match ? match[1] : "1");
+      } else if (freqType === "anualmente") {
+        setBotaoFrequenciaAtivo(3);
+          const vezes = freqText.includes("2 vezes")
+            ? 2
+            : freqText.includes("3 vezes")
+            ? 3
+            : 1;
+          const now = new Date();
+          setDatasSelecionadas(
+            Array.from({ length: vezes }, (_, i) => ({
+              id: i + 1,
+              data: new Date(now.getFullYear(), now.getMonth() + i, 1),
+          }))
+        );
+      }
+    }
+  }, [isSuggestMode, taskToEdit]);
 
   const toggleIntegrante = (uid: string) => {
     setIntegrantesSelecionados((prev) => {
@@ -173,9 +224,9 @@ export const useCriarTarefa = () => {
 
   const escolherData = (id: number) => {
     DateTimePickerAndroid.open({
-      mode: "date",  // Modo para selecionar uma data
-      value: new Date(),  // Inicia com a data atual
-      is24Hour: true,  // Exibe em formato 24 horas
+      mode: "date",
+      value: new Date(),
+      is24Hour: true,
       onChange: (_, selectedDate) => {
         if (selectedDate) {
           const dataSelecionada = new Date(selectedDate);
@@ -262,29 +313,39 @@ export const useCriarTarefa = () => {
 
     console.log("Dados a serem salvos:", JSON.stringify(novaTarefa, null, 2));
 
-    try {
-      setLoading(true);
-      if (isEditMode) {
-        const updatedTask = { ...taskToEdit, ...novaTarefa };
-        await editarTarefa(updatedTask, dataReferencia);
-        Alert.alert("Sucesso", "Tarefa editada com sucesso!", [
-          { text: "OK", onPress: () => navigation.goBack() },
-        ]);
-      } else {
-        await criarTarefa(novaTarefa);
-        Alert.alert("Sucesso", "Tarefa criada com sucesso!", [
-          { text: "OK", onPress: () => navigation.goBack() },
-        ]);
+try {
+    setLoading(true);
+
+    if (isEditMode) {
+      if (!dataReferencia) {
+        Alert.alert("Erro", "Não foi possível editar: data de referência ausente.");
+        return;
       }
 
-      if (alarmeAtivado) definirAlarme(horario);
-    } catch (e) {
-      console.error(e);
-      Alert.alert("Erro", "Erro ao salvar tarefa.");
-    } finally {
-      setLoading(false);
+      const updatedTask = { ...taskToEdit, ...novaTarefa };
+      await editarTarefa(updatedTask, dataReferencia);
+      Alert.alert("Sucesso", "Tarefa editada com sucesso!", [
+        { text: "OK", onPress: () => navigation.goBack() },
+      ]);
+
+    } else {
+      await criarTarefa(novaTarefa);
+      Alert.alert("Sucesso", "Tarefa criada com sucesso!", [
+        { text: "OK", onPress: () => navigation.goBack() },
+      ]);
     }
-  };
+
+    if (alarmeAtivado) {
+      definirAlarme(horario);
+    }
+
+  } catch (e) {
+    console.error(e);
+    Alert.alert("Erro", "Erro ao salvar tarefa.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return {
     nome,

@@ -1,0 +1,9 @@
+<svg id="Layer_1" enable-background="new 0 0 26 26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg">
+  <g id="animal-footprint_2_">
+    <ellipse cx="3.059" cy="9.75" rx="3.059" ry="4.397" fill="currentColor"/>
+    <ellipse cx="9.177" cy="4.397" rx="3.059" ry="4.397" fill="currentColor"/>
+    <path d="m21.412 17.588c-2.565-.855-3.059-3.824-4.589-5.354-1.529-1.529-3.823-1.529-3.823-1.529s-2.294 0-3.823 1.529c-1.53 1.529-2.023 4.498-4.588 5.354-2.295.766-3.06 3.059-3.06 4.971s1.53 3.441 4.589 3.441 4.971-1.146 6.882-1.146c1.912 0 3.823 1.146 6.883 1.146 3.059 0 4.588-1.529 4.588-3.441s-.765-4.205-3.059-4.971z" fill="currentColor"/>
+    <ellipse cx="22.941" cy="9.75" rx="3.059" ry="4.397" fill="currentColor"/>
+    <ellipse cx="16.823" cy="4.397" rx="3.059" ry="4.397" fill="currentColor"/>
+  </g>
+</svg>
