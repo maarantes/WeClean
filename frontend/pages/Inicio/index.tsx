@@ -220,7 +220,6 @@ const PaginaInicio = () => {
                         dataInstancia={dataKey}
                         instanceId={tarefa.instanceId}
                         onUpdateConcluido={(dataInst, novoValor) => {
-                          // Guarda a instância exata para desfazer
                           setLastTaskUpdate({
                             id: tarefa.id,
                             dataInst,

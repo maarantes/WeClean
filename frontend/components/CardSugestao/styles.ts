@@ -16,6 +16,8 @@ export const styles = StyleSheet.create({
         backgroundColor: "black",
         width: 60,
         height: 80,
+        borderTopLeftRadius: 8,
+        borderBottomLeftRadius: 8
     },
 
     card_dir: {

@@ -9,6 +9,8 @@ import LivroIcon from "../../../assets/images/livro.svg";
 import { useTema } from "@/frontend/hooks/useTema";
 import CardSugestao from "@/frontend/components/CardSugestao";
 import sugestoesJson from "./sugestoes.json";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "@/frontend/routes";
 
 type Tarefa = {
   titulo: string;
@@ -32,14 +34,51 @@ const frequencias = [
   { key: "anualmente", label: "Anualmente", cor: "#22A559" },
 ];
 
-const Paginasugestoes = () => {
-  const navigation = useNavigation();
+const PaginaSugestoes = () => {
   
   const [ativo, setAtivo] = useState<string>("diariamente");
   const [frequenciaAtiva, setFrequenciaAtiva] = useState<"diariamente" | "semanalmente" | "intervalo" | "anualmente">("diariamente");
 
-  const { temaUsuario, getTemaStyle } = useTema();
-  const { bgClass, colorClass } = getTemaStyle(temaUsuario);
+const [cardSelecionado, setCardSelecionado] = useState<{
+  titulo: string;
+  tipo: string;
+  frequencia: string;
+} | null>(null);
+
+
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
+  const handleEditarPress = () => {
+    if (!cardSelecionado) return;
+
+    console.log(cardSelecionado)
+
+    navigation.navigate("CriarTarefa", {
+      task: {
+        nome: cardSelecionado.titulo,
+        frequencia: {
+          tipo: cardSelecionado.tipo,
+          texto: cardSelecionado.frequencia,
+        },
+      },
+      tipo: "sugestao",
+    });
+  };
+
+  const getCorPorTipo = (tipo: string) => {
+    switch (tipo) {
+      case "diariamente":
+        return "#2274A5";
+      case "semanalmente":
+        return "#E83F6F";
+      case "intervalo":
+        return "#FFBF00";
+      case "anualmente":
+        return "#22A559";
+      default:
+        return "#ccc";
+    }
+  };
 
   const BotaoTipoTarefa = ({
     tipo,
@@ -70,7 +109,7 @@ const Paginasugestoes = () => {
           borderRadius: 4,
           marginLeft: 12,
           backgroundColor: estaAtivo ? cor : "transparent",
-          borderWidth: estaAtivo ? 0 : 1,
+          borderWidth: estaAtivo ? 0 : 1.25,
           borderColor: estaAtivo ? "transparent" : cor,
           marginRight: ultimo ? 28 : 0
         }}
@@ -141,12 +180,20 @@ const Paginasugestoes = () => {
             <Text style={styles.lista_cards_titulo}>{area.charAt(0).toUpperCase() + area.slice(1)}</Text>
             <View style={styles.lista_cards}>
               {sugestoes[frequenciaAtiva][area as Area].map((task, idx) => (
-                <CardSugestao 
+                <CardSugestao
                   key={idx}
                   tipo={frequenciaAtiva}
                   area={area}
                   titulo={task.titulo}
                   frequencia={task.frequencia}
+                  selecionado={cardSelecionado?.titulo === task.titulo}
+                  onSelecionar={() => {
+                    if (cardSelecionado?.titulo === task.titulo) {
+                      setCardSelecionado(null);
+                    } else {
+                      setCardSelecionado({ titulo: task.titulo, tipo: frequenciaAtiva, frequencia: task.frequencia, });
+                    }
+                  }}
                 />
               ))}
             </View>
@@ -155,15 +202,39 @@ const Paginasugestoes = () => {
       </ScrollView>
 
       <View style={styles.nav_bottom}>
-        <TouchableOpacity style={[styles.botao, { backgroundColor: bgClass.backgroundColor }]}>
-          <MaisAdicaoIcon width={16} height={16} color={colorClass.color} />
-          <Text style={[styles.botao_texto, {color: colorClass.color}]}>
-            Começar a Editar
+        <TouchableOpacity style={styles.botao} onPress={handleEditarPress}>
+          <MaisAdicaoIcon width={16} height={16} color={"white"} strokeWidth={2.5} />
+          <Text style={styles.botao_texto}>
+            Editar
           </Text>
         </TouchableOpacity>
+
+        <View
+          style={{
+            backgroundColor: cardSelecionado ? getCorPorTipo(cardSelecionado.tipo) : "#F5F5F5",
+            paddingVertical: 8,
+            paddingHorizontal: 16,
+            borderRadius: 4,
+            alignSelf: "center",
+            width: "68%",
+          }}
+        >
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={{
+              color: cardSelecionado ? "white" : "#808080",
+              fontFamily: "Inter-SemiBold",
+              fontSize: 14,
+            }}
+          >
+            {cardSelecionado?.titulo || "Selecione uma sugestão"}
+          </Text>
+        </View>
       </View>
+
     </SafeAreaView>
   );
 };
 
-export default Paginasugestoes;
+export default PaginaSugestoes;

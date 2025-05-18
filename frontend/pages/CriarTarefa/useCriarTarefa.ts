@@ -376,6 +376,7 @@ try {
     loading,
     erros,
     isEditMode,
+    isSuggestMode,
     integrantesGrupo,
   };
 };

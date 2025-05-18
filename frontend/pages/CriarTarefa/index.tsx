@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { SafeAreaView, ScrollView, View, Text, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
 import Checkbox from "expo-checkbox";
 import { useNavigation } from "@react-navigation/native";
@@ -51,6 +51,7 @@ const PaginaCriarTarefa = () => {
     loading,
     erros,
     isEditMode,
+    isSuggestMode,
     integrantesGrupo
   } = useCriarTarefa();
 
@@ -58,6 +59,26 @@ const PaginaCriarTarefa = () => {
   const { bgClass, colorClass } = getTemaStyle(temaUsuario);
 
   const navigation = useNavigation();
+
+  const verticalScrollRef = useRef<ScrollView>(null);
+  const horizontalScrollRef = useRef<ScrollView>(null);
+
+   useEffect(() => {
+    verticalScrollRef.current?.scrollTo({ y: 0, animated: false });
+  }, []);
+
+  useEffect(() => {
+    if (
+      horizontalScrollRef.current &&
+      (isEditMode || isSuggestMode) &&
+      botaoFrequenciaAtivo !== null
+    ) {
+      const buttonWidth = 150; 
+      const scrollToX = Math.max(0, botaoFrequenciaAtivo * buttonWidth - 100);
+      horizontalScrollRef.current.scrollTo({ x: scrollToX, animated: true });
+    }
+  }, [botaoFrequenciaAtivo]);
+
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -70,7 +91,7 @@ const PaginaCriarTarefa = () => {
         </Text>
       </View>
 
-      <ScrollView style={globalStyles.containerPagina} contentContainerStyle={{ paddingBottom: 80, paddingTop: 80 }}>
+      <ScrollView style={globalStyles.containerPagina} contentContainerStyle={{ paddingBottom: 80, paddingTop: 80 }} ref={verticalScrollRef}>
 
         {/* Nome */}
         <Text style={styles.label}>NOME</Text>
@@ -121,17 +142,21 @@ const PaginaCriarTarefa = () => {
         {/* Integrantes */}
         <Text style={[styles.label, styles.cima]}>INTEGRANTES</Text>
         <View style={styles.lista_integrantes}>
-          {integrantesGrupo.map((integrante: any) => (
-            <Badge
-              key={integrante.nome}
-              backgroundColor={integrante.cor_primaria}
-              iconColor={integrante.cor_secundaria}
-              text={integrante.nome}
-              isSelected={integrantesSelecionados.includes(integrante.uid)}
-              onPress={() => toggleIntegrante(integrante.uid)}
-              clicavel
-            />
-          ))}
+          {integrantesGrupo.length === 0 ? (
+            <ActivityIndicator size="large" color="#808080" />
+          ) : (
+            integrantesGrupo.map((integrante: any) => (
+              <Badge
+                key={integrante.nome}
+                backgroundColor={integrante.cor_primaria}
+                iconColor={integrante.cor_secundaria}
+                text={integrante.nome}
+                isSelected={integrantesSelecionados.includes(integrante.uid)}
+                onPress={() => toggleIntegrante(integrante.uid)}
+                clicavel
+              />
+            ))
+          )}
         </View>
         {erros.integrantes && <Text style={styles.erro_texto}>Este campo é obrigatório!</Text>}
 
@@ -140,7 +165,7 @@ const PaginaCriarTarefa = () => {
           <Text style={styles.label}>FREQUÊNCIA</Text>
           <Text style={styles.label}>Apenas uma opção</Text>
         </View>
-        <ScrollView style={styles.lista_botoes} horizontal showsHorizontalScrollIndicator={false}>
+        <ScrollView style={styles.lista_botoes} horizontal showsHorizontalScrollIndicator={false} ref={horizontalScrollRef}>
           {Frequencias.map((texto, index) => (
             <TouchableOpacity
               key={index}

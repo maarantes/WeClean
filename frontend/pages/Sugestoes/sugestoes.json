@@ -47,15 +47,15 @@
   },
   "anualmente": {
     "pet": [
-      { "titulo": "Levar o pet para check-up anual", "frequencia": "Uma vez por ano" },
-      { "titulo": "Vacinação do pet", "frequencia": "Uma vez por ano" }
+      { "titulo": "Levar o pet para check-up anual", "frequencia": "1 vez por ano" },
+      { "titulo": "Vacinação do pet", "frequencia": "1 vez por ano" }
     ],
     "limpeza": [
-      { "titulo": "Limpeza de móveis estofados", "frequencia": "Duas vezes por ano" },
-      { "titulo": "Limpeza de cortinas", "frequencia": "Uma vez por ano" }
+      { "titulo": "Limpeza de móveis estofados", "frequencia": "2 vezes por ano" },
+      { "titulo": "Limpeza de cortinas", "frequencia": "1 vez por ano" }
     ],
     "segurança": [
-      { "titulo": "Revisão elétrica", "frequencia": "Uma vez por ano" }
+      { "titulo": "Revisão elétrica", "frequencia": "1 vez por ano" }
     ]
   }
 }

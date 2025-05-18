@@ -97,10 +97,12 @@ export const styles = StyleSheet.create({
     },
 
     nav_bottom: {
+        flexDirection: "row",
         alignItems: "center",
-        paddingVertical: 20,
+        padding: 20,
         borderTopWidth: 1,
-        borderColor: "#E8E8E8"
+        borderColor: "#E8E8E8",
+        gap: "4%"
     },
 
     botao: {
@@ -109,14 +111,14 @@ export const styles = StyleSheet.create({
         paddingVertical: 8,
         justifyContent: "center",
         alignItems: "center",
-        width: "48%",
+        width: "28%",
         backgroundColor: "black",
         borderRadius: 4
     },
 
     botao_texto: {
         color: "white",
-        fontFamily: "Inter-Medium"
+        fontFamily: "Inter-SemiBold"
     },
 
     lista_cards: {
