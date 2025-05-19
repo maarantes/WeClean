@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions, TouchableWithoutFeedback } from "react-native";
 import Modal from "react-native-modal";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -31,11 +31,14 @@ const PerguntaTarefaModal: React.FC<PerguntaTarefaModalProps> = ({ visible, setV
   return (
     <Modal
       isVisible={visible}
-      onBackdropPress={() => setVisible(false)}
-      backdropColor="#404040"
+      statusBarTranslucent={true}
       backdropOpacity={0.5}
       animationIn="slideInUp"
       animationOut="slideOutDown"
+      customBackdrop={
+      <TouchableWithoutFeedback onPress={() => setVisible(false)}>
+        <View style={{ backgroundColor: "#404040", ...Dimensions.get("screen") }} />
+      </TouchableWithoutFeedback>}
     >
       <View style={styles.modal_container}>
         <Text style={styles.modal_titulo}>Criar nova tarefa</Text>

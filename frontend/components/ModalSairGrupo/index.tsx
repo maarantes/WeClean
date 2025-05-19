@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator, Dimensions, TouchableWithoutFeedback } from "react-native";
 import Modal from "react-native-modal";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -102,11 +102,17 @@ const ModalSairGrupo: React.FC<ModalSairGrupoProps> = ({ visible, setVisible, on
   return (
     <Modal
       isVisible={visible}
+      statusBarTranslucent={true}
       onBackdropPress={fecharModal}
       backdropColor="#404040"
       backdropOpacity={0.5}
       animationIn="slideInUp"
       animationOut="slideOutDown"
+      customBackdrop={
+        <TouchableWithoutFeedback onPress={fecharModal}>
+          <View style={{ backgroundColor: "#404040", ...Dimensions.get("screen") }} />
+        </TouchableWithoutFeedback>
+      }
     >
       <View style={styles.modal_container}>
         {loading ? (

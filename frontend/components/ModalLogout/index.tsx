@@ -1,10 +1,10 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions, TouchableWithoutFeedback } from "react-native";
 import Modal from "react-native-modal";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { styles } from "./styles";
-import { RootStackParamList } from '@/frontend/routes';
+import { RootStackParamList } from "@/frontend/routes";
 
 import { signOut } from "firebase/auth";
 import { auth } from "../../../backend/services/shared/firebaseConfigApp";
@@ -26,7 +26,7 @@ const LogoutModal: React.FC<LogoutModalProps> = ({
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      await AsyncStorage.multiRemove(['@userNome', '@userTema', '@userEmail']);
+      await AsyncStorage.multiRemove(["@userNome", "@userTema", "@userEmail"]);
       setLogoutModalActive(false);
       navigation.reset({
         index: 0,
@@ -40,11 +40,14 @@ const LogoutModal: React.FC<LogoutModalProps> = ({
   return (
     <Modal
       isVisible={LogoutModalActive}
-      onBackdropPress={() => setLogoutModalActive(false)}
-      backdropColor="#404040"
+      statusBarTranslucent={true}
       backdropOpacity={0.5}
       animationIn="slideInUp"
       animationOut="slideOutDown"
+      customBackdrop={
+      <TouchableWithoutFeedback onPress={() => setLogoutModalActive(false)}>
+        <View style={{ backgroundColor: "#404040", ...Dimensions.get("screen") }} />
+      </TouchableWithoutFeedback>}
     >
       <View style={styles.modal_container}>
         <Text style={styles.modal_titulo}>Deseja sair da conta?</Text>

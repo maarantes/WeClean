@@ -64,7 +64,8 @@ modal_container: {
     paddingHorizontal: 12,
     borderRadius: 4,
     fontFamily: "Inter-Medium",
-    color: "#404040"
+    color: "#404040",
+    height: 40,
   }
 
 });

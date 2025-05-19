@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { SafeAreaView, Text, View, TouchableOpacity, TextInput, Platform, UIManager, Alert, ActivityIndicator } from "react-native";
+import { SafeAreaView, Text, View, TouchableOpacity, TextInput, Platform, UIManager, Alert, ActivityIndicator, Animated, Dimensions } from "react-native";
 import Modal from "react-native-modal";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -26,12 +26,22 @@ if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental
 type NavigationProps = StackNavigationProp<RootStackParamList>;
 
 const PaginaLoginCadastro = () => {
+
   const navigation = useNavigation<NavigationProps>();
   const [abaSelecionada, setAbaSelecionada] = useState<"login" | "cadastro">("login");
   const scrollRef = useRef<KeyboardAwareScrollView>(null);
   const [loading, setLoading] = useState(false);
 
-  // Estados dos inputs
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  
+  React.useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
   const [apelido, setApelido] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -107,11 +117,12 @@ const PaginaLoginCadastro = () => {
   const ModalLoading = ({ visible }: { visible: boolean }) => (
     <Modal
       isVisible={visible}
+      statusBarTranslucent={true}
       animationIn="fadeIn"
       animationOut="fadeOut"
-      backdropColor="#404040"
       backdropOpacity={0.5}
       useNativeDriver
+      customBackdrop={<View style={{ backgroundColor: "#404040", ...Dimensions.get("screen") }} />}
     >
       <View style={{
         backgroundColor: "white",
@@ -145,80 +156,84 @@ const PaginaLoginCadastro = () => {
         {/* Parte de cima: logo e carrossel */}
         <View style={styles.parte_cima}>
           <LogoWeClean width={200} height={150} />
-          <Text style={styles.parte_cima_texto}>Gestão compartilhada de tarefas domésticas</Text>
-          <Carrossel imagens={imagens} itemSize={56} gap={12} velocidade={20000} direcao="esquerda" />
-          <Carrossel imagens={imagens} itemSize={56} gap={12} velocidade={20000} direcao="direita" />
         </View>
 
         {/* Abas de login/cadastro */}
-        <View style={styles.parte_login}>
-          <TouchableOpacity
-            style={[styles.aba_opcao, abaSelecionada !== "login" && styles.desativado]}
-            onPress={() => setAbaSelecionada("login")}
-          >
-            <Text style={[styles.aba_opcao_texto, abaSelecionada !== "login" && styles.desativado_texto]}>
-              LOGIN
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.aba_opcao, abaSelecionada !== "cadastro" && styles.desativado]}
-            onPress={() => setAbaSelecionada("cadastro")}
-          >
-            <Text style={[styles.aba_opcao_texto, abaSelecionada !== "cadastro" && styles.desativado_texto]}>
-              CADASTRE-SE
-            </Text>
-          </TouchableOpacity>
-        </View>
+        <Animated.View style={{ opacity: fadeAnim }}>
+          <Text style={styles.parte_cima_texto}>Gestão compartilhada de tarefas domésticas</Text>
+          <View style={styles.parte_carrossel}>
+            <Carrossel imagens={imagens} itemSize={56} gap={12} velocidade={20000} direcao="esquerda" />
+            <Carrossel imagens={imagens} itemSize={56} gap={12} velocidade={20000} direcao="direita" />
+          </View>
+          <View style={styles.parte_login}>
+            <TouchableOpacity
+              style={[styles.aba_opcao, abaSelecionada !== "login" && styles.desativado]}
+              onPress={() => setAbaSelecionada("login")}
+            >
+              <Text style={[styles.aba_opcao_texto, abaSelecionada !== "login" && styles.desativado_texto]}>
+                LOGIN
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.aba_opcao, abaSelecionada !== "cadastro" && styles.desativado]}
+              onPress={() => setAbaSelecionada("cadastro")}
+            >
+              <Text style={[styles.aba_opcao_texto, abaSelecionada !== "cadastro" && styles.desativado_texto]}>
+                CADASTRE-SE
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-        {/* Inputs */}
-        <View style={styles.parte_input}>
-          {abaSelecionada === "cadastro" && (
-            <>
-              <Text style={styles.input_label}>Apelido</Text>
-              <TextInput
-                placeholder="Até 8 caracteres"
-                style={styles.input}
-                placeholderTextColor="#999"
-                value={apelido}
-                onChangeText={setApelido}
-                onFocus={(event) => handleOnFocus(event.target)}
-              />
-            </>
-          )}
+          {/* Inputs */}
+          <View style={styles.parte_input}>
+            {abaSelecionada === "cadastro" && (
+              <>
+                <Text style={styles.input_label}>Apelido</Text>
+                <TextInput
+                  placeholder="Até 8 caracteres"
+                  style={styles.input}
+                  placeholderTextColor="#999"
+                  value={apelido}
+                  onChangeText={setApelido}
+                  onFocus={(event) => handleOnFocus(event.target)}
+                />
+              </>
+            )}
 
-          <Text style={styles.input_label}>E-mail</Text>
-          <TextInput
-            placeholder="Digite aqui..."
-            keyboardType="email-address"
-            autoCapitalize="none"
-            style={styles.input}
-            placeholderTextColor="#999"
-            value={email}
-            onChangeText={setEmail}
-            onFocus={(event) => handleOnFocus(event.target)}
-          />
+            <Text style={styles.input_label}>E-mail</Text>
+            <TextInput
+              placeholder="Digite aqui..."
+              keyboardType="email-address"
+              autoCapitalize="none"
+              style={styles.input}
+              placeholderTextColor="#999"
+              value={email}
+              onChangeText={setEmail}
+              onFocus={(event) => handleOnFocus(event.target)}
+            />
 
-          <Text style={styles.input_label}>Senha</Text>
-          <TextInput
-            placeholder="Digite aqui..."
-            secureTextEntry
-            style={styles.input}
-            placeholderTextColor="#999"
-            value={senha}
-            onChangeText={setSenha}
-            onFocus={(event) => handleOnFocus(event.target)}
-          />
-        </View>
+            <Text style={styles.input_label}>Senha</Text>
+            <TextInput
+              placeholder="Digite aqui..."
+              secureTextEntry
+              style={styles.input}
+              placeholderTextColor="#999"
+              value={senha}
+              onChangeText={setSenha}
+              onFocus={(event) => handleOnFocus(event.target)}
+            />
+          </View>
 
-        {/* Botão */}
-        <View style={styles.parte_baixo}>
-          <TouchableOpacity style={globalStyles.botao_primario} onPress={handleLoginOuCadastro}>
-            <LoginIcon width={28} height={28} color="#FFFFFF" />
-            <Text style={globalStyles.botao_primario_texto}>
-              {abaSelecionada === "login" ? "Entrar" : "Criar conta"}
-            </Text>
-          </TouchableOpacity>
-        </View>
+          {/* Botão */}
+          <View style={styles.parte_baixo}>
+            <TouchableOpacity style={globalStyles.botao_primario} onPress={handleLoginOuCadastro}>
+              <LoginIcon width={28} height={28} color="#FFFFFF" />
+              <Text style={globalStyles.botao_primario_texto}>
+                {abaSelecionada === "login" ? "Entrar" : "Criar conta"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
       </KeyboardAwareScrollView>
 
       <ModalLoading visible={loading} />

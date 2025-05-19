@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, TextInput, ViewStyle, TextStyle, ActivityIndicator } from "react-native";
+import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, TextInput, ViewStyle, TextStyle, ActivityIndicator, Dimensions, TouchableWithoutFeedback } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import Modal from "react-native-modal";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -155,6 +156,8 @@ const PaginaPerfil = () => {
     str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 
   return (
+    <>
+    <StatusBar style="light" translucent={true} />
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       {loading ? (
         <View style={{
@@ -170,7 +173,7 @@ const PaginaPerfil = () => {
           <ActivityIndicator size="large" color="#808080" />
         </View>
       ) : (
-        <ScrollView contentContainerStyle={{ paddingTop: 35, paddingBottom: 140 }}>
+        <ScrollView contentContainerStyle={{ paddingBottom: 140 }}>
           <View style={styles.cima_logout}>
             <TouchableOpacity style={styles.botao_logout} onPress={() => setLogoutModalActive(true)}>
               <SairIcon width={20} height={20} color={"#808080"} />
@@ -238,14 +241,22 @@ const PaginaPerfil = () => {
       {/* Modal para mudar o tema */}
       <Modal
         isVisible={isCardModalVisible}
+        statusBarTranslucent={true}
         onBackdropPress={() => {
           setCardModalVisible(false);
           setTemaSelecionado(null);
         }}
-        backdropColor="#404040"
         backdropOpacity={0.5}
         animationIn="slideInUp"
         animationOut="slideOutDown"
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={() => {
+          setCardModalVisible(false);
+          setTemaSelecionado(null);
+        }}>
+            <View style={{ backgroundColor: "#404040", ...Dimensions.get("screen") }} />
+          </TouchableWithoutFeedback>
+        }
         style={{ margin: 0, justifyContent: "flex-end" }}
       >
         <View style={styles.modal_container_descricao}>
@@ -315,6 +326,7 @@ const PaginaPerfil = () => {
 
       <Navbar />
     </SafeAreaView>
+    </>
   );
 }
 

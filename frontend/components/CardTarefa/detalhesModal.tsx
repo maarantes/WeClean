@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Dimensions } from "react-native";
 import Modal from "react-native-modal";
 import { globalStyles } from "../../globalStyles";
 import { styles } from "./styles";
@@ -51,13 +51,14 @@ export function DetalhesModal({
   return (
     <Modal
       isVisible={visible}
+      statusBarTranslucent={true}
       onBackdropPress={onClose}
       onBackButtonPress={onClose}
       animationIn="slideInUp"
       animationOut="slideOutDown"
-      backdropColor="#404040"
       backdropOpacity={0.5}
       style={{ margin: 0, justifyContent: "flex-end" }}
+      customBackdrop={<View style={{ backgroundColor: "#404040", ...Dimensions.get("screen") }} />}
     >
       <View style={styles.modal_container_descricao}>
         {/* Cabeçalho */}

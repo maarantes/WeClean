@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, Alert, Dimensions, TouchableWithoutFeedback } from "react-native";
 import Modal from "react-native-modal";
 import { styles } from "./styles";
 import { atualizarInfoUsuario } from "@/backend/services/auth/editarInfo";
@@ -19,11 +19,16 @@ const EditarInfoModal: React.FC<EditarInfoModalProps> = ({
 }) => {
   const [novoValor, setNovoValor] = useState("");
 
+  const inputRef = useRef<TextInput>(null);
+
   useEffect(() => {
     if (visible) {
       setNovoValor("");
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
     }
-  }, [visible, valorAtual]);
+  }, [visible]);
 
   const handleSalvar = async () => {
     if (novoValor.trim() !== "") {
@@ -42,15 +47,21 @@ const EditarInfoModal: React.FC<EditarInfoModalProps> = ({
     <Modal
       isVisible={visible}
       onBackdropPress={() => setVisible(false)}
-      backdropColor="#404040"
+      statusBarTranslucent={true}
       backdropOpacity={0.5}
       animationIn="slideInUp"
       animationOut="slideOutDown"
+      style={{ margin: 0, justifyContent: "flex-end" }}
+      customBackdrop={
+      <TouchableWithoutFeedback onPress={() => setVisible(false)}>
+        <View style={{ backgroundColor: "#404040", ...Dimensions.get("screen") }} />
+      </TouchableWithoutFeedback>}
     >
       <View style={styles.modal_container}>
         <Text style={styles.modal_titulo}>Digite seu novo apelido</Text>
 
         <TextInput
+          ref={inputRef}
           style={styles.input_modal}
           placeholder="Até 8 caracteres"
           value={novoValor}

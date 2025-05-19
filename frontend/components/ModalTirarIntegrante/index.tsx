@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator, Dimensions, TouchableWithoutFeedback } from "react-native";
 import Modal from "react-native-modal";
 import { styles } from "./styles";
 
@@ -33,11 +33,15 @@ const KickIntegranteModal: React.FC<KickIntegranteModalProps> = ({
   return (
     <Modal
       isVisible={visible}
-      onBackdropPress={() => setVisible(false)}
-      backdropColor="#404040"
+      statusBarTranslucent={true}
       backdropOpacity={0.5}
       animationIn="slideInUp"
       animationOut="slideOutDown"
+      customBackdrop={
+        <TouchableWithoutFeedback  onPress={() => setVisible(false)}>
+          <View style={{ backgroundColor: "#404040", ...Dimensions.get("screen") }} />
+        </TouchableWithoutFeedback>
+      }
     >
       <View style={styles.modal_container}>
         <Text style={styles.modal_titulo}>Remover Integrante</Text>

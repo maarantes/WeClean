@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { View, Text, TouchableOpacity, TextInput, Alert, ActivityIndicator, Pressable } from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Alert, ActivityIndicator, Pressable, Dimensions, TouchableWithoutFeedback } from "react-native";
 import Modal from "react-native-modal";
 import { styles } from "./styles";
 
@@ -110,7 +110,6 @@ const EntrarGrupoModal: React.FC<EntrarGrupoModalProps> = ({
 
       if (!grupoAtualId) throw new Error("Grupo atual não encontrado.");
 
-      // Primeiro: Verificar o grupo do código
       const gruposRef = collection(db, "Grupos");
       const q = query(gruposRef, where("codigo_convite", "==", codigoInserido));
       const querySnapshot = await getDocs(q);
@@ -130,7 +129,7 @@ const EntrarGrupoModal: React.FC<EntrarGrupoModalProps> = ({
         return;
       }
 
-      await apagarGrupoSozinho(grupoAtualId); // Agora passa o grupo certo
+      await apagarGrupoSozinho(grupoAtualId);
       await entrarContinuando();
 
     } catch (error) {
@@ -140,18 +139,24 @@ const EntrarGrupoModal: React.FC<EntrarGrupoModalProps> = ({
     }
   };
 
+  const fecharModal = () => {
+    setEntrarGrupoModalActive(false);
+    setConfirmarTrocaSozinho(false);
+    setCodigoInserido("");
+  };
+
+
   return (
     <Modal
       isVisible={EntrarGrupoModalActive}
-      onBackdropPress={() => {
-        setEntrarGrupoModalActive(false);
-        setConfirmarTrocaSozinho(false);
-        setCodigoInserido("");
-      }}
-      backdropColor="#404040"
+      statusBarTranslucent={true}
       backdropOpacity={0.5}
       animationIn="slideInUp"
       animationOut="slideOutDown"
+      customBackdrop={
+      <TouchableWithoutFeedback onPress={fecharModal}>
+        <View style={{ backgroundColor: "#404040", ...Dimensions.get("screen") }} />
+      </TouchableWithoutFeedback>}
     >
       <View style={styles.modal_container}>
         <Text style={styles.modal_titulo}>

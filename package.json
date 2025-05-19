@@ -25,6 +25,7 @@
     "expo": "~52.0.46",
     "expo-checkbox": "~4.0.1",
     "expo-font": "~13.0.3",
+    "expo-status-bar": "^2.2.3",
     "expo-web-browser": "~14.0.2",
     "firebase": "^11.4.0",
     "firebase-admin": "^13.3.0",

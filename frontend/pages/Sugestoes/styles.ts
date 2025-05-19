@@ -89,7 +89,7 @@ export const styles = StyleSheet.create({
         fontFamily: "Inter-SemiBold",
         marginTop: 16,
         fontSize: 16,
-        color: "#404040"
+        color: "#606060"
     },
 
     ultimo: {
@@ -129,10 +129,10 @@ export const styles = StyleSheet.create({
 
     lista_cards_titulo: {
         paddingHorizontal: 20,
-        marginTop: 40,
+        marginTop: 24,
         fontFamily: "Inter-SemiBold",
         fontSize: 16,
-        color: "#808080"
+        color: "#606060"
     }
 
 });

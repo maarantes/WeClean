@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, TouchableOpacity, TextInput, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, TextInput, ActivityIndicator, Dimensions, TouchableWithoutFeedback } from "react-native";
 import Modal from "react-native-modal";
 import { styles } from "./styles";
 
@@ -56,16 +56,20 @@ const ComentarioModal: React.FC<ComentarioModalProps> = ({
   return (
     <Modal
       isVisible={visible}
-      onBackdropPress={() => setVisible(false)}
-      backdropColor="#404040"
+      statusBarTranslucent={true}
       backdropOpacity={0.5}
       animationIn="slideInUp"
       animationOut="slideOutDown"
       style={{ margin: 0, justifyContent: "flex-end" }}
+      customBackdrop={
+      <TouchableWithoutFeedback onPress={() => setVisible(false)}>
+        <View style={{ backgroundColor: "#404040", ...Dimensions.get("screen") }} />
+      </TouchableWithoutFeedback>}
     >
       <View style={styles.modal_container}>
         <Text style={styles.modal_titulo}>Adicionar Comentário</Text>
         <TextInput
+          ref={inputRef}
           style={styles.modal_input}
           placeholder="Digite seu comentário..."
           value={comentario}

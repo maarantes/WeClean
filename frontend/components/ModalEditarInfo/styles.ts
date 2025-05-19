@@ -5,7 +5,8 @@ export const styles = StyleSheet.create({
 modal_container: {
     backgroundColor: "white",
     padding: 20,
-    borderRadius: 16,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
     alignItems: "center",
     gap: 24
   },

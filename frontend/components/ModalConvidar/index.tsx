@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Clipboard, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, Clipboard, ActivityIndicator, Dimensions, TouchableWithoutFeedback } from "react-native";
 import Modal from "react-native-modal";
 import { styles } from "./styles";
 
@@ -72,10 +72,14 @@ const ConvidarModal: React.FC<ConvidarModalProps> = ({
     <Modal
       isVisible={ConvidarModalActive}
       onBackdropPress={() => setConvidarModalActive(false)}
-      backdropColor="#404040"
+      statusBarTranslucent={true}
       backdropOpacity={0.5}
       animationIn="slideInUp"
       animationOut="slideOutDown"
+      customBackdrop={
+      <TouchableWithoutFeedback onPress={() => setConvidarModalActive(false)}>
+        <View style={{ backgroundColor: "#404040", ...Dimensions.get("screen") }} />
+      </TouchableWithoutFeedback>}
     >
       <View style={styles.modal_container}>
         <Text style={styles.modal_titulo}>Código de Convite</Text>

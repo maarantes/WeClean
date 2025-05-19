@@ -1,6 +1,6 @@
 // src/components/CardTarefa/DeleteConfirmationModal.tsx
 import React from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator, Dimensions } from "react-native";
 import Modal from "react-native-modal";
 import { styles } from "./styles";
 
@@ -17,11 +17,13 @@ export function DeleteConfirmationModal({
   return (
     <Modal
       isVisible={visible}
+      statusBarTranslucent={true}
       onBackdropPress={onCancel}
       backdropColor="#404040"
       backdropOpacity={0.5}
       animationIn="slideInUp"
       animationOut="slideOutDown"
+      customBackdrop={<View style={{ backgroundColor: "#404040", ...Dimensions.get("screen") }} />}
     >
       <View style={styles.modal_exclusao_container}>
         <Text style={styles.modal_exclusao_titulo}>Confirmação de Exclusão</Text>

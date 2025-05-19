@@ -4,7 +4,7 @@ export const styles = StyleSheet.create({
 
     capa: {
         width: "100%",
-        height: 140,
+        height: 200,
         justifyContent: "center",
         alignItems: "center"
     },
@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
         height: 120,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 150
+        marginTop: 200
     },
 
     informacoes: {
@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
 
     parte_input: {
         marginTop: 32,
-        gap: 16
+        gap: 16,
     },
 
     input_label: {
@@ -40,7 +40,7 @@ export const styles = StyleSheet.create({
         backgroundColor: "#F5F5F5",
         borderRadius: 4,
         paddingLeft: 12,
-        fontFamily: "Inter-Medium"
+        fontFamily: "Inter-Medium",
     },
 
     alinhar_editar: {
@@ -48,7 +48,8 @@ export const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#F5F5F5",
         borderRadius: 4,
-        paddingVertical: 8
+        paddingVertical: 8,
+        height: 44
     },
 
     retangulo_container: {

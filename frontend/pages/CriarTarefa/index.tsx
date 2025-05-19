@@ -96,7 +96,7 @@ const PaginaCriarTarefa = () => {
         {/* Nome */}
         <Text style={styles.label}>NOME</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { height: 40 }]}
           placeholder="Digite aqui..."
           value={nome}
           onChangeText={(text) => setNome(text)}
@@ -109,7 +109,7 @@ const PaginaCriarTarefa = () => {
           <Text style={styles.label}>Opcional</Text>
         </View>
         <TextInput
-          style={[styles.input, { minHeight: 100, textAlignVertical: "top" }]}
+          style={[styles.input, { minHeight: 80, paddingTop: 10, textAlignVertical: "top" }]}
           placeholder="Até 250 caracteres"
           value={descricao}
           onChangeText={setDescricao}
@@ -132,7 +132,7 @@ const PaginaCriarTarefa = () => {
         {erros.horario && <Text style={styles.erro_texto}>Este campo é obrigatório!</Text>}
 
         {/* Alarme */}
-        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 16 }}>
           <Checkbox value={alarmeAtivado} onValueChange={setAlarmeAtivado} color={alarmeAtivado ? "#115614" : undefined} />
           <Text style={{ marginLeft: 10, fontFamily: "Inter-Medium", color: "#606060" }}>
             Ativar alarme para esta tarefa

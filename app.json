@@ -11,14 +11,20 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.maarantes.MeuProjeto"
+      "package": "com.maarantes.MeuProjeto",
+      "splash": {
+        "resizeMode": "cover",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "splash": {
+      "resizeMode": "cover",
+      "backgroundColor": "#ffffff"
     },
     "web": {
       "bundler": "metro"
     },
-    "plugins": [
-      "expo-font"
-    ],
+    "plugins": ["expo-font"],
     "experiments": {
       "typedRoutes": true
     },

@@ -3,7 +3,12 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
 
     parte_cima: {
-        marginTop: 40,
+        marginTop: 42,
+        alignItems: "center",
+        justifyContent: "center"
+    },
+
+    parte_carrossel: {
         alignItems: "center",
         justifyContent: "center"
     },
@@ -62,7 +67,8 @@ export const styles = StyleSheet.create({
         backgroundColor: "#F5F5F5",
         borderRadius: 4,
         paddingLeft: 12,
-        fontFamily: "Inter-Medium"
+        fontFamily: "Inter-Medium",
+        height: 40,
     },
 
     parte_baixo: {

@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
 
     label: {
         fontFamily: "Inter-SemiBold",
-        fontSize: 16,
+        fontSize: 14,
         marginBottom: 12,
         color: "#606060",
     },
@@ -45,7 +45,8 @@ export const styles = StyleSheet.create({
         borderRadius: 4,
         color: "#606060",
         paddingHorizontal: 12,
-        fontSize: 16
+        fontSize: 14,
+        fontFamily: "Inter-Medium",
     },
 
     cima: {
@@ -71,7 +72,7 @@ export const styles = StyleSheet.create({
 
     botao_horario_texto: {
         color: "white",
-        fontFamily: "Inter-Medium"
+        fontFamily: "Inter-SemiBold"
     },
 
     horario: {
@@ -195,7 +196,8 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 12,
         fontSize: 16,
         marginHorizontal: 12,
-        width: 64
+        width: 64,
+        height: 40
     },
 
     cimaMetade: {

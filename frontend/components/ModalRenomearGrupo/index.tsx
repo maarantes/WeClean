@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator, Dimensions, TouchableWithoutFeedback } from "react-native";
 import Modal from "react-native-modal";
 import { styles } from "./styles"; 
 import { renomearGrupo } from "@/backend/services/grupos/renomearGrupo";
@@ -38,11 +38,15 @@ const RenomearGrupoModal: React.FC<RenomearGrupoModalProps> = ({
   return (
     <Modal
       isVisible={RenomearGrupoModalActive}
+      statusBarTranslucent={true}
       onBackdropPress={() => setRenomearGrupoModalActive(false)}
-      backdropColor="#404040"
       backdropOpacity={0.5}
       animationIn="slideInUp"
       animationOut="slideOutDown"
+      customBackdrop={
+      <TouchableWithoutFeedback onPress={() => setRenomearGrupoModalActive(false)}>
+        <View style={{ backgroundColor: "#404040", ...Dimensions.get("screen") }} />
+      </TouchableWithoutFeedback>}
     >
       <View style={styles.modal_container}>
         <Text style={styles.modal_titulo}>Renomear Grupo</Text>
