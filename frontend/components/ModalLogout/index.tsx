@@ -26,7 +26,7 @@ const LogoutModal: React.FC<LogoutModalProps> = ({
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      await AsyncStorage.multiRemove(["@userNome", "@userTema", "@userEmail"]);
+      await AsyncStorage.multiRemove(["@userNome", "@userTema", "@userEmail", "usuarioLogado"]);
       setLogoutModalActive(false);
       navigation.reset({
         index: 0,

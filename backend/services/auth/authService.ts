@@ -3,6 +3,7 @@ import { doc, setDoc, collection } from "firebase/firestore";
 import { auth } from "../shared/firebaseConfigApp";
 import { db } from "../shared/firebase";
 import { gerarCodigoConvite } from "../grupos/gerarCodigoConvite";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const cadastrarUsuario = async (
   email: string,
@@ -43,5 +44,6 @@ export const cadastrarUsuario = async (
 
 export const loginUsuario = async (email: string, senha: string) => {
   const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+  await AsyncStorage.setItem('usuarioLogado', userCredential.user.uid);
   return userCredential.user.uid;
 };
