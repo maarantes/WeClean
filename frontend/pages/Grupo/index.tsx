@@ -31,6 +31,7 @@ import { kickarIntegrante } from "@/backend/services/grupos/removerIntegrante";
 import ModalSairGrupo from "@/frontend/components/ModalSairGrupo";
 import ModalExcluirGrupo from "@/frontend/components/ModalExcluirGrupo";
 import { excluirGrupo } from "@/backend/services/grupos/excluirGrupo";
+import { StatusBar } from "expo-status-bar";
 
 type NavigationProps = StackNavigationProp<RootStackParamList, "Grupo">;
 
@@ -125,6 +126,8 @@ const PaginaGrupo = () => {
   const vagasRestantes = totalVagas - integrantesCount;
 
   return (
+    <>
+    <StatusBar style="dark" translucent={true} />
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <View style={styles.container_cima}>
         <TouchableOpacity style={styles.botao_voltar} onPress={() => navigation.goBack()}>
@@ -258,15 +261,15 @@ const PaginaGrupo = () => {
       </ScrollView>
       )}
 
-      <ConvidarModal
-        ConvidarModalActive={convidarModalActive}
-        setConvidarModalActive={setConvidarModalActive}
-      />
+    <ConvidarModal
+      ConvidarModalActive={convidarModalActive}
+      setConvidarModalActive={setConvidarModalActive}
+    />
 
-      <EntrarGrupoModal
-        EntrarGrupoModalActive={entrarGrupoModalActive}
-        setEntrarGrupoModalActive={setEntrarGrupoModalActive}
-      />
+    <EntrarGrupoModal
+      EntrarGrupoModalActive={entrarGrupoModalActive}
+      setEntrarGrupoModalActive={setEntrarGrupoModalActive}
+    />
 
     <RenomearGrupoModal
       RenomearGrupoModalActive={renameGroupModalActive}
@@ -329,9 +332,9 @@ const PaginaGrupo = () => {
       onClose={() => setToastVisible(false)}
     />
 
-    <Navbar />
-      
-    </SafeAreaView>
+    <Navbar /> 
+  </SafeAreaView>
+  </>
     
   );
 };

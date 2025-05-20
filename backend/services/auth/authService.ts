@@ -44,6 +44,5 @@ export const cadastrarUsuario = async (
 
 export const loginUsuario = async (email: string, senha: string) => {
   const userCredential = await signInWithEmailAndPassword(auth, email, senha);
-  await AsyncStorage.setItem('usuarioLogado', userCredential.user.uid);
   return userCredential.user.uid;
 };

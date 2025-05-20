@@ -16,6 +16,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { globalStyles } from '@/frontend/globalStyles';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StatusBar } from 'expo-status-bar';
 
 const ParteCima = () => {
   const [LogoutModalActive, setLogoutModalActive] = useState(false);
@@ -65,6 +66,8 @@ const ParteCima = () => {
   const colorClass = globalStyles[`tema_color_${temaUsuario}_primario` as keyof typeof globalStyles] as { color: string };
 
   return (
+    <>
+    <StatusBar style="dark" translucent={true} />
     <View style={styles.container}>
       <View style={styles.usuario_container}>
         <View style={[styles.bolinha, bgClass]}>
@@ -87,6 +90,7 @@ const ParteCima = () => {
         setLogoutModalActive={setLogoutModalActive}
       />
     </View>
+    </>
   );
 };
 

@@ -1,22 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Animated, Dimensions, StyleSheet } from "react-native";
-import Svg, { Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
+import Svg, { Defs, LinearGradient, Stop, Rect } from "react-native-svg";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/frontend/routes";
 import { useFonts } from "@/frontend/hooks/UsarFontes";
+import * as NavigationBar from "expo-navigation-bar";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/backend/services/shared/firebaseConfigApp";
 
 import LogoWeCleanBranco from "../../../assets/images/logoWeCleanBranco.svg";
 import LogoWeClean from "../../../assets/images/logoWeClean.svg";
-
 import BolaBranca from "../../../assets/images/bolinha_branca.svg";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PaginaSplash = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-
   const fontsLoaded = useFonts();
-
+  const [authInitialized, setAuthInitialized] = useState(false);
   const [usuarioLogado, setUsuarioLogado] = useState<string | null>(null);
 
   const logoScale = useRef(new Animated.Value(0.5)).current;
@@ -24,28 +24,52 @@ const PaginaSplash = () => {
   const circleScale = useRef(new Animated.Value(0)).current;
   const circleOpacity = useRef(new Animated.Value(0)).current;
 
-  const { height } = Dimensions.get('window');
+  const { height } = Dimensions.get("window");
 
   useEffect(() => {
-    const checkLoginAndStart = async () => {
-      if (!fontsLoaded) return;
+    NavigationBar.setPositionAsync("absolute");
+    NavigationBar.setBackgroundColorAsync("#FFFFFF");
+    NavigationBar.setBehaviorAsync("overlay-swipe");
+  }, []);
 
-      const usuario = await AsyncStorage.getItem('usuarioLogado');
-      setUsuarioLogado(usuario);
+  useEffect(() => {
+    if (!fontsLoaded) {
+      return;
+    }
 
-      if (!usuario) {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      setAuthInitialized(true);
+      setUsuarioLogado(firebaseUser ? firebaseUser.uid : null);
 
-        // Usuário não logado
-        await new Promise(resolve => {
-          Animated.timing(logoScale, {
+      // Iniciar animação do logo
+      await new Promise<void>((resolve) =>
+        Animated.timing(logoScale, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }).start(() => resolve())
+      );
+
+      if (firebaseUser) {
+        // Animação para usuário logado
+        logoTranslateY.setValue(0);
+        Animated.sequence([
+          Animated.timing(circleOpacity, {
             toValue: 1,
-            duration: 500,
+            duration: 1000,
             useNativeDriver: true,
-          }).start(() => resolve(true));
+          }),
+          Animated.timing(circleScale, {
+            toValue: 30,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+        ]).start(() => {
+          console.log("Animação concluída, navegando para Início");
+          navigation.reset({ index: 0, routes: [{ name: "Início" }] });
         });
-
-        await new Promise(resolve => setTimeout(resolve, 200));
-
+      } else {
+        // Animação para usuário não logado
         Animated.parallel([
           Animated.timing(circleOpacity, {
             toValue: 1,
@@ -62,49 +86,17 @@ const PaginaSplash = () => {
             duration: 1500,
             useNativeDriver: true,
           }),
-        ]).start(async () => {
-          await new Promise(resolve => setTimeout(resolve, 300));
-          navigation.reset({
-            index: 0,
-            routes: [{ name: "Login" }],
-          });
-        });
-      } else {
-
-        // Usuário logado
-        await new Promise(resolve => {
-          Animated.timing(logoScale, {
-            toValue: 1,
-            duration: 500,
-            useNativeDriver: true,
-          }).start(() => resolve(true));
-        });
-        logoTranslateY.setValue(0);
-
-        await new Promise(resolve => setTimeout(resolve, 200));
-
-        Animated.sequence([
-          Animated.timing(circleOpacity, {
-            toValue: 1,
-            duration: 1000,
-            useNativeDriver: true,
-          }),
-          Animated.timing(circleScale, {
-            toValue: 30,
-            duration: 1000,
-            useNativeDriver: true,
-          }),
-        ]).start(async () => {
-          await new Promise(resolve => setTimeout(resolve, 300));
-          navigation.reset({
-            index: 0,
-            routes: [{ name: "Início" }],
-          });
+        ]).start(() => {
+          console.log("Animação concluída, navegando para Login");
+          navigation.reset({ index: 0, routes: [{ name: "Login" }] });
         });
       }
-    };
+    });
 
-    checkLoginAndStart();
+    return () => {
+      console.log("Limpando listener onAuthStateChanged");
+      unsubscribe();
+    };
   }, [fontsLoaded, navigation, height]);
 
   const logoBrancoOpacity = circleScale.interpolate({
@@ -130,8 +122,8 @@ const PaginaSplash = () => {
         <Rect x="0" y="0" width="100%" height="100%" fill="url(#grad1)" />
       </Svg>
 
-      {/* Bolinha atrás do logo (apenas se usuário não logado) */}
-      {!usuarioLogado && (
+      {/* Bolinha atrás do logo (usuário não logado) */}
+      {(!authInitialized || !usuarioLogado) && (
         <Animated.View
           style={[
             styles.circle,
@@ -168,8 +160,8 @@ const PaginaSplash = () => {
         </Animated.View>
       </Animated.View>
 
-      {/* Bolinha acima do logo (apenas se usuário logado) */}
-      {usuarioLogado && (
+      {/* Bolinha acima do logo (usuário já logado) */}
+      {authInitialized && usuarioLogado && (
         <Animated.View
           style={[
             styles.circle,
@@ -219,7 +211,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     justifyContent: "center",
-    zIndex: 100
+    zIndex: 100,
   },
 });
 
