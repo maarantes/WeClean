@@ -12,6 +12,7 @@ import { auth } from "@/backend/services/shared/firebaseConfigApp";
 import LogoWeCleanBranco from "../../../assets/images/logoWeCleanBranco.svg";
 import LogoWeClean from "../../../assets/images/logoWeClean.svg";
 import BolaBranca from "../../../assets/images/bolinha_branca.svg";
+import { StatusBar } from "expo-status-bar";
 
 const PaginaSplash = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -65,7 +66,6 @@ const PaginaSplash = () => {
             useNativeDriver: true,
           }),
         ]).start(() => {
-          console.log("Animação concluída, navegando para Início");
           navigation.reset({ index: 0, routes: [{ name: "Início" }] });
         });
       } else {
@@ -87,14 +87,12 @@ const PaginaSplash = () => {
             useNativeDriver: true,
           }),
         ]).start(() => {
-          console.log("Animação concluída, navegando para Login");
           navigation.reset({ index: 0, routes: [{ name: "Login" }] });
         });
       }
     });
 
     return () => {
-      console.log("Limpando listener onAuthStateChanged");
       unsubscribe();
     };
   }, [fontsLoaded, navigation, height]);
@@ -111,6 +109,7 @@ const PaginaSplash = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar style="light" translucent />
       <Svg height="100%" width="100%" style={styles.gradient}>
         <Defs>
           <LinearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">

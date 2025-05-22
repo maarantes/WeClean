@@ -45,6 +45,18 @@ export const globalStyles = StyleSheet.create({
 
 
 
+  tema_bg_padrao_primario: {
+    backgroundColor: "#2274A5"
+  },
+  tema_bg_padrao_secundario: {
+    backgroundColor: "#2274A5"
+  },
+  tema_color_padrao_primario: {
+    color: "#FFFFFF"
+  },
+  tema_color_padrao_secundario: {
+    color: "#FFFFFF"
+  },
 
   // Tipo Undefined
 
@@ -97,13 +109,13 @@ export const globalStyles = StyleSheet.create({
   // Tema Rosa
   
   tema_bg_rosa_primario: {
-    backgroundColor: "#dc1e63"
+    backgroundColor: "#E83F6F"
   },
   tema_bg_rosa_secundario: {
     backgroundColor: "#fce0ea"
   },
   tema_color_rosa_primario: {
-    color: "#dc1e63"
+    color: "#E83F6F"
   },
   tema_color_rosa_secundario: {
     color: "#fce0ea"

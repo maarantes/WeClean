@@ -3,38 +3,61 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { globalStyles } from "@/frontend/globalStyles";
 import { TemaCor } from "@/frontend/utils/temaStyles";
 
-// Função para validar se o tema recuperado é válido
-const isTemaCor = (tema: string): tema is TemaCor => {
-  const temasValidos: TemaCor[] = ["undefined", "azul", "vinho", "rosa", "amarelo", "laranja", "verde", "turquesa", "coral", "roxo", "marrom"];
-  return temasValidos.includes(tema as TemaCor);
-};
+const temasValidos: TemaCor[] = ["undefined", "azul", "vinho", "rosa", "amarelo", "laranja", "verde", "turquesa", "coral", "roxo", "marrom"];
 
-// Hook customizado para pegar o tema
+const isTemaCor = (tema: string): tema is TemaCor => temasValidos.includes(tema as TemaCor);
+
 export const useTema = () => {
   const [temaUsuario, setTemaUsuario] = useState<TemaCor>("undefined");
+  const [aplicarTemaApp, setAplicarTemaApp] = useState<boolean>(true);
+  const [loadingTema, setLoadingTema] = useState(true);
 
   useEffect(() => {
-    const carregarTema = async () => {
-      const tema = await AsyncStorage.getItem("@userTema");
-      if (tema && isTemaCor(tema)) {
-        setTemaUsuario(tema);  // Atualiza o estado com o tema encontrado
+    const carregarDados = async () => {
+      try {
+        const tema = await AsyncStorage.getItem("@userTema");
+        if (tema && isTemaCor(tema)) {
+          setTemaUsuario(tema);
+        }
+
+        const aplicarTemaString = await AsyncStorage.getItem("@aplicarTemaApp");
+        setAplicarTemaApp(aplicarTemaString === "true");
+      } finally {
+        setLoadingTema(false); // Marca como carregado
       }
     };
 
-    carregarTema();
+    carregarDados();
   }, []);
 
-  // Função para obter o estilo de fundo do tema
-  const getTemaStyle = (tema: TemaCor) => {
+const getTemaStyle = (tema: TemaCor): { bgClass: { backgroundColor: string }, colorClass: { color: string } } => {
+  // Enquanto carrega, aplica um tema neutro
+  if (loadingTema) {
+    return {
+      bgClass: globalStyles["tema_bg_undefined_secundario"] as { backgroundColor: string },
+      colorClass: globalStyles["tema_color_undefined_primario"] as { color: string },
+    };
+  }
 
-    const bgClass = globalStyles[`tema_bg_${tema}_secundario` as keyof typeof globalStyles] as { backgroundColor: string };
-    const colorClass = globalStyles[`tema_color_${tema}_primario` as keyof typeof globalStyles] as { color: string };
-    
-    return { bgClass, colorClass };
+  if (!aplicarTemaApp) {
+    return {
+      bgClass: globalStyles["tema_bg_padrao_secundario"] as { backgroundColor: string },
+      colorClass: globalStyles["tema_color_padrao_primario"] as { color: string },
+    };
+  }
+
+  // Caso contrário, aplica o tema escolhido
+  return {
+    bgClass: globalStyles[`tema_bg_${tema}_secundario`] as { backgroundColor: string },
+    colorClass: globalStyles[`tema_color_${tema}_primario`] as { color: string },
   };
+};
+
 
   return {
     temaUsuario,
+    aplicarTemaApp,
     getTemaStyle,
+    loadingTema,
   };
 };

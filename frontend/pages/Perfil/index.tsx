@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, TextInput, ViewStyle, TextStyle, ActivityIndicator, Dimensions, TouchableWithoutFeedback } from "react-native";
+import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, ViewStyle, TextStyle, ActivityIndicator, Dimensions, TouchableWithoutFeedback } from "react-native";
 import { StatusBar } from "expo-status-bar";
+import Checkbox from "expo-checkbox";
 import Modal from "react-native-modal";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -51,6 +52,7 @@ const PaginaPerfil = () => {
 
   const [editarModalVisible, setEditarModalVisible] = useState(false);
   const [tipoEdicao, setTipoEdicao] = useState<"apelido" | "email">("apelido");
+  const [aplicarTemaApp, setAplicarTemaApp] = useState(false);
 
 
   const temas: TemaCardProps[] = [
@@ -102,9 +104,9 @@ const PaginaPerfil = () => {
   useEffect(() => {
     const carregarInfoUsuario = async () => {
       try {
-        const temaCache = await AsyncStorage.getItem('@userTema');
-        const nomeCache = await AsyncStorage.getItem('@userNome');
-        const emailCache = await AsyncStorage.getItem('@userEmail');
+        const temaCache = await AsyncStorage.getItem("@userTema");
+        const nomeCache = await AsyncStorage.getItem("@userNome");
+        const emailCache = await AsyncStorage.getItem("@userEmail");
         if (temaCache) setTemaAtual(temaCache as TemaCor);
         if (nomeCache) setApelido(nomeCache);
         if (emailCache) setEmail(emailCache);
@@ -143,7 +145,8 @@ const PaginaPerfil = () => {
       tema: temaSelecionado.cor,
     });
 
-    await AsyncStorage.setItem('@userTema', temaSelecionado.cor); // Atualizar o cache
+    await AsyncStorage.setItem("@userTema", temaSelecionado.cor);
+    await AsyncStorage.setItem("@aplicarTemaApp", aplicarTemaApp.toString());
 
     setTemaAtual(temaSelecionado.cor);
     setCardModalVisible(false);
@@ -295,6 +298,18 @@ const PaginaPerfil = () => {
             {temaSelecionado?.nome ?? "Nenhum"}
           </Text>
 
+          <TouchableOpacity style={styles.parte_checkbox} onPress={() => setAplicarTemaApp(prev => !prev)}>
+            <Checkbox
+              value={aplicarTemaApp}
+              onValueChange={setAplicarTemaApp}
+              color={aplicarTemaApp ? "#115614" : undefined}
+              style={{ marginRight: 8 }}
+            />
+            <Text style={{ color: "#606060", fontSize: 14, fontFamily: "Inter-Medium" }}>
+              Aplicar tema em todo o aplicativo
+            </Text>
+          </TouchableOpacity>
+          
           <View style={styles.parte_baixo}>
             <TouchableOpacity style={[globalStyles.botao_primario, styles.mesma_largura]} onPress={salvarTema}>
               {loadingModal ? (

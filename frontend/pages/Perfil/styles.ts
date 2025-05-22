@@ -182,6 +182,17 @@ export const styles = StyleSheet.create({
 
     mesma_largura: {
         width: 200
-    }
+    },
+
+    parte_checkbox: {
+        flexDirection: "row",
+        justifyContent: "center",
+        marginTop: 16,
+        alignItems: "center",
+        backgroundColor: "#F5F5F5",
+        padding: 12,
+        borderRadius: 4,
+        gap: 12
+    },
     
 });

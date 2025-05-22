@@ -17,9 +17,8 @@ type NavbarProps = StackNavigationProp<RootStackParamList, keyof RootStackParamL
 export function Navbar() {
   const navigation = useNavigation<NavbarProps>();
   const route = useRoute();
-  const { temaUsuario, getTemaStyle } = useTema();  // Correção: obtenção do estilo do tema
+  const { temaUsuario, aplicarTemaApp, getTemaStyle } = useTema();
 
-  // Desestrutura o estilo para obter bgClass e textClass (cor do fundo e do texto)
   const { bgClass, colorClass } = getTemaStyle(temaUsuario);
 
   type RoutesSemParams = {
@@ -38,9 +37,13 @@ export function Navbar() {
       {opcoes.map((opcao) => {
         const isActive = route.name === opcao.key;
 
-        // Quando ativo, usa a cor secundária para o ícone e texto, caso contrário, usa cor padrão
-        const iconColor = isActive ? colorClass.color : "#404040";
-        const textColor = isActive ? colorClass.color : "#404040";
+        const iconColor = isActive
+          ? (aplicarTemaApp ? colorClass.color : bgClass.backgroundColor)
+          : "#404040";
+
+        const textColor = isActive
+          ? (aplicarTemaApp ? colorClass.color : bgClass.backgroundColor)
+          : "#404040";
 
         return (
           <TouchableOpacity 

@@ -51,7 +51,7 @@ const PaginaCalendario = () => {
   const [loadingTarefas, setLoadingTarefas] = useState(true);
   const [semanaAtiva, setSemanaAtiva] = useState<string>("1");
 
-  const { temaUsuario, getTemaStyle } = useTema();
+ const { temaUsuario, aplicarTemaApp,  getTemaStyle, loadingTema } = useTema();
   const { bgClass, colorClass } = getTemaStyle(temaUsuario);
 
   // Calcular as semanas e preparar os dados
@@ -344,7 +344,7 @@ const PaginaCalendario = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ParteCima />
 
-      {loadingSemanas ? (
+      {loadingSemanas || loadingTema ? (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
           <ActivityIndicator size="large" color="#808080" />
         </View>
@@ -369,7 +369,7 @@ const PaginaCalendario = () => {
             <View style={styles.container_cima_dir}>
               <View>
                 <Text style={styles.mes}>MÊS</Text>
-                <Text style={[globalStyles.titulo, { color: colorClass.color }]}>
+                <Text style={[globalStyles.titulo, { color: bgClass.backgroundColor }]}>
                   {nomesDosMeses[mesAtual]}
                 </Text>
               </View>
@@ -465,8 +465,18 @@ const PaginaCalendario = () => {
           </View>
 
           <View style={styles.container_escolher}>
-            <TouchableOpacity style={[styles.dia_botao, { backgroundColor: colorClass.color }]} onPress={handleDataAnterior}>
-            <SetaDiaIcon width={44} color={bgClass.backgroundColor} style={styles.rotate} />
+            <TouchableOpacity
+              style={[
+                styles.dia_botao,
+                {
+                  backgroundColor: aplicarTemaApp
+                    ? colorClass.color
+                    : bgClass.backgroundColor,
+                },
+              ]}
+              onPress={handleDataAnterior}
+            >
+            <SetaDiaIcon width={44} color={aplicarTemaApp ? bgClass.backgroundColor : colorClass.color} style={styles.rotate} />
             </TouchableOpacity>
 
             <View style={styles.dia_atual}>
@@ -474,8 +484,18 @@ const PaginaCalendario = () => {
               <Text style={styles.dia_atual_dir}>{formatarData(dataSelecionada)}</Text>
             </View>
 
-            <TouchableOpacity style={[styles.dia_botao, { backgroundColor: colorClass.color }]} onPress={handleDataProximo}>
-              <SetaDiaIcon width={44} color={bgClass.backgroundColor} />
+            <TouchableOpacity
+              style={[
+                styles.dia_botao,
+                {
+                  backgroundColor: aplicarTemaApp
+                    ? colorClass.color
+                    : bgClass.backgroundColor,
+                },
+              ]}
+              onPress={handleDataProximo}
+            >
+              <SetaDiaIcon width={44} color={aplicarTemaApp ? bgClass.backgroundColor : colorClass.color} />
             </TouchableOpacity>
           </View>
 
