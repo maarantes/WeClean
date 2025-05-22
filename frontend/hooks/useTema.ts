@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { globalStyles } from "@/frontend/globalStyles";
 import { TemaCor } from "@/frontend/utils/temaStyles";
 
-const temasValidos: TemaCor[] = ["undefined", "azul", "vinho", "rosa", "amarelo", "laranja", "verde", "turquesa", "coral", "roxo", "marrom"];
+const temasValidos: TemaCor[] = ["undefined", "azul", "vinho", "rosa", "amarelo", "laranja", "verde", "turquesa", "menta", "roxo", "violeta"];
 
 const isTemaCor = (tema: string): tema is TemaCor => temasValidos.includes(tema as TemaCor);
 

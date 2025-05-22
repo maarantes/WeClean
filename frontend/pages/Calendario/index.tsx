@@ -243,12 +243,21 @@ const PaginaCalendario = () => {
       <TouchableOpacity
         style={[
           styles.botao_semana,
-          { backgroundColor: ativa ? bgClass.backgroundColor : "#F5F5F5" },
-          !ativa && styles.desativado 
+          {
+            backgroundColor: aplicarTemaApp
+            ? colorClass.color
+            : bgClass.backgroundColor,
+          },
+          !ativa && styles.desativado
         ]}
         onPress={onPress}
+      >
+        <Text
+          style={[
+            { color: "white", fontFamily: "Inter-Medium" },
+            !ativa && styles.desativado_texto
+          ]}
         >
-        <Text style={[{ color: colorClass.color, fontFamily: "Inter-Medium" }, ativa ? "" : styles.desativado_texto]}>
           {`Sem. ${semana}`}
         </Text>
       </TouchableOpacity>
@@ -369,7 +378,11 @@ const PaginaCalendario = () => {
             <View style={styles.container_cima_dir}>
               <View>
                 <Text style={styles.mes}>MÊS</Text>
-                <Text style={[globalStyles.titulo, { color: bgClass.backgroundColor }]}>
+                <Text style={[globalStyles.titulo, {
+                  color: aplicarTemaApp
+                    ? colorClass.color
+                    : bgClass.backgroundColor,
+                },]}>
                   {nomesDosMeses[mesAtual]}
                 </Text>
               </View>
@@ -476,7 +489,7 @@ const PaginaCalendario = () => {
               ]}
               onPress={handleDataAnterior}
             >
-            <SetaDiaIcon width={44} color={aplicarTemaApp ? bgClass.backgroundColor : colorClass.color} style={styles.rotate} />
+            <SetaDiaIcon width={44} color={"white"} style={styles.rotate} />
             </TouchableOpacity>
 
             <View style={styles.dia_atual}>
@@ -495,7 +508,7 @@ const PaginaCalendario = () => {
               ]}
               onPress={handleDataProximo}
             >
-              <SetaDiaIcon width={44} color={aplicarTemaApp ? bgClass.backgroundColor : colorClass.color} />
+              <SetaDiaIcon width={44} color={"white"} />
             </TouchableOpacity>
           </View>
 

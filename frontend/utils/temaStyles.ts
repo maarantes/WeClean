@@ -3,7 +3,7 @@ import { globalStyles } from "@/frontend/globalStyles";
 
 export type TemaCor =
   | "undefined" | "azul" | "vinho" | "rosa" | "amarelo" | "laranja"
-  | "verde" | "turquesa" | "coral" | "roxo" | "marrom";
+  | "verde" | "turquesa" | "menta" | "roxo" | "violeta";
 
 // retorna o estilo de background (para componentes View)
 

@@ -74,7 +74,7 @@ const seed = async () => {
     ]);
 
     console.log("👤 Criando usuários...");
-    const temas = ["azul", "vinho", "rosa", "amarelo", "laranja", "verde", "turquesa", "coral"];
+    const temas = ["azul", "vinho", "rosa", "amarelo", "laranja", "verde", "turquesa", "menta"];
     const nomes = ["Marco", "Geovana", "Maria", "Joana", "Bruno", "Ana", "Carlos", "Daisy"];
     const emails = [
       "marco@aa.com",

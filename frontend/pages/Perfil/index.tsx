@@ -27,7 +27,7 @@ import { getTemaBgStyle, getTemaTextStyle } from "../../utils/temaStyles";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-type TemaCor = "azul" | "vinho" | "rosa" | "amarelo" | "laranja" | "verde" | "turquesa" | "coral" | "roxo" | "marrom";
+type TemaCor = "azul" | "vinho" | "rosa" | "amarelo" | "laranja" | "verde" | "turquesa" | "menta" | "roxo" | "violeta";
 
 type TemaCardProps = {
   nome: string;
@@ -57,15 +57,15 @@ const PaginaPerfil = () => {
 
   const temas: TemaCardProps[] = [
     { nome: "Azul", cor: "azul" },
+    { nome: "Turquesa", cor: "turquesa" },
+    { nome: "Verde", cor: "verde" },
+    { nome: "Menta", cor: "menta" },
+    { nome: "Roxo", cor: "roxo" },
+    { nome: "Violeta", cor: "violeta" },
     { nome: "Vinho", cor: "vinho" },
     { nome: "Rosa", cor: "rosa" },
-    { nome: "Amarelo", cor: "amarelo" },
     { nome: "Laranja", cor: "laranja" },
-    { nome: "Verde", cor: "verde" },
-    { nome: "Turquesa", cor: "turquesa" },
-    { nome: "Coral", cor: "coral" },
-    { nome: "Roxo", cor: "roxo" },
-    { nome: "Marrom", cor: "marrom" },
+    { nome: "Amarelo", cor: "amarelo" },
   ];
 
   const TemaCard = ({ nome, cor, botao = false, onPress, ativo = true }: TemaCardProps) => {

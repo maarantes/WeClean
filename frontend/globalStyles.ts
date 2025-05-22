@@ -75,162 +75,144 @@ export const globalStyles = StyleSheet.create({
 
 
   // Tema Azul
-
   tema_bg_azul_primario: {
-    backgroundColor: "#144f70"
+    backgroundColor: "#144F70"
   },
   tema_bg_azul_secundario: {
-    backgroundColor: "#cae9fb"
+    backgroundColor: "#CAE9FB"
   },
   tema_color_azul_primario: {
-    color: "#144f70"
+    color: "#144F70"
   },
   tema_color_azul_secundario: {
-    color: "#cae9fb"
+    color: "#CAE9FB"
   },
-
 
   // Tema Vinho
-  
   tema_bg_vinho_primario: {
-    backgroundColor: "#66003d"
+    backgroundColor: "#5B0034"
   },
   tema_bg_vinho_secundario: {
-    backgroundColor: "#fad1ec"
+    backgroundColor: "#F5CCE1"
   },
   tema_color_vinho_primario: {
-    color: "#66003d"
+    color: "#5B0034"
   },
   tema_color_vinho_secundario: {
-    color: "#fad1ec"
+    color: "#F5CCE1"
   },
-
 
   // Tema Rosa
-  
   tema_bg_rosa_primario: {
-    backgroundColor: "#E83F6F"
+    backgroundColor: "#F24C7C"
   },
   tema_bg_rosa_secundario: {
-    backgroundColor: "#fce0ea"
+    backgroundColor: "#FFDFE8"
   },
   tema_color_rosa_primario: {
-    color: "#E83F6F"
+    color: "#F24C7C"
   },
   tema_color_rosa_secundario: {
-    color: "#fce0ea"
+    color: "#FFDFE8"
   },
-
 
   // Tema Amarelo
-  
   tema_bg_amarelo_primario: {
-    backgroundColor: "#b58300"
+    backgroundColor: "#FFC300"
   },
   tema_bg_amarelo_secundario: {
-    backgroundColor: "#fff6ce"
+    backgroundColor: "#FFF5CC"
   },
   tema_color_amarelo_primario: {
-    color: "#b58300"
+    color: "#FFC300"
   },
   tema_color_amarelo_secundario: {
-    color: "#fff6ce"
+    color: "#FFF5CC"
   },
-
 
   // Tema Laranja
-  
   tema_bg_laranja_primario: {
-    backgroundColor: "#f66b00"
+    backgroundColor: "#F37329"
   },
   tema_bg_laranja_secundario: {
-    backgroundColor: "#ffe1c3"
+    backgroundColor: "#FFE1C8"
   },
   tema_color_laranja_primario: {
-    color: "#f66b00"
+    color: "#F37329"
   },
   tema_color_laranja_secundario: {
-    color: "#ffe1c3"
+    color: "#FFE1C8"
   },
-
 
   // Tema Verde
-  
   tema_bg_verde_primario: {
-    backgroundColor: "#3a751c"
+    backgroundColor: "#376B1D"
   },
   tema_bg_verde_secundario: {
-    backgroundColor: "#e2f0db"
+    backgroundColor: "#D4F3C4"
   },
   tema_color_verde_primario: {
-    color: "#3a751c"
+    color: "#376B1D"
   },
   tema_color_verde_secundario: {
-    color: "#e2f0db"
+    color: "#D4F3C4"
   },
-
 
   // Tema Turquesa
-  
   tema_bg_turquesa_primario: {
-    backgroundColor: "#317b7d"
+    backgroundColor: "#44C2BC"
   },
   tema_bg_turquesa_secundario: {
-    backgroundColor: "#dff5f4"
+    backgroundColor: "#E5FFFE"
   },
   tema_color_turquesa_primario: {
-    color: "#317b7d"
+    color: "#44C2BC"
   },
   tema_color_turquesa_secundario: {
-    color: "#dff5f4"
+    color: "#E5FFFE"
   },
 
-
-  // Tema Coral
-  
-  tema_bg_coral_primario: {
-    backgroundColor: "#b93131"
+  // Tema Menta
+  tema_bg_menta_primario: {
+    backgroundColor: "#25A65E"
   },
-  tema_bg_coral_secundario: {
-    backgroundColor: "#fedad7"
+  tema_bg_menta_secundario: {
+    backgroundColor: "#C8F5DF"
   },
-  tema_color_coral_primario: {
-    color: "#b93131"
+  tema_color_menta_primario: {
+    color: "#25A65E"
   },
-  tema_color_coral_secundario: {
-    color: "#fedad7"
+  tema_color_menta_secundario: {
+    color: "#C8F5DF"
   },
-
 
   // Tema Roxo
-  
   tema_bg_roxo_primario: {
-    backgroundColor: "#3f1b78"
+    backgroundColor: "#4D2C91"
   },
   tema_bg_roxo_secundario: {
-    backgroundColor: "#e1d4fd"
+    backgroundColor: "#E1D4F9"
   },
   tema_color_roxo_primario: {
-    color: "#3f1b78"
+    color: "#4D2C91"
   },
   tema_color_roxo_secundario: {
-    color: "#e1d4fd"
+    color: "#E1D4F9"
   },
 
-
-  // Tema Marrom
-  
-  tema_bg_marrom_primario: {
-    backgroundColor: "#593702"
+  // Tema Violeta
+  tema_bg_violeta_primario: {
+    backgroundColor: "#7E52FF"
   },
-  tema_bg_marrom_secundario: {
-    backgroundColor: "#f0e6dd"
+  tema_bg_violeta_secundario: {
+    backgroundColor: "#ECE4FF"
   },
-  tema_color_marrom_primario: {
-    color: "#593702"
+  tema_color_violeta_primario: {
+    color: "#7E52FF"
   },
-  tema_color_marrom_secundario: {
-    color: "#f0e6dd"
+  tema_color_violeta_secundario: {
+    color: "#ECE4FF"
   }
+
   
 });

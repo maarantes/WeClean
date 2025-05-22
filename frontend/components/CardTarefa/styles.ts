@@ -375,8 +375,9 @@ export const styles = StyleSheet.create({
     backgroundColor: "#E8E8E8",
     paddingHorizontal: 12,
     paddingVertical: 4,
-    borderRadius: 4,
-    color: "#808080"
+    borderRadius: 2,
+    color: "#808080",
+    fontFamily: "Inter-Medium"
   },
 
   parte_abas: {

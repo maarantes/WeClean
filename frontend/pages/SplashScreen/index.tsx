@@ -13,6 +13,7 @@ import LogoWeCleanBranco from "../../../assets/images/logoWeCleanBranco.svg";
 import LogoWeClean from "../../../assets/images/logoWeClean.svg";
 import BolaBranca from "../../../assets/images/bolinha_branca.svg";
 import { StatusBar } from "expo-status-bar";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PaginaSplash = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
