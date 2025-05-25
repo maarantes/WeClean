@@ -7,11 +7,14 @@ import { auth } from "../backend/services/shared/firebaseConfigApp";
 import Routes from "./routes";
 import { atualizarCalendario } from "../backend/services/calendario/atualizarCalendario";
 import { ActivityIndicator, View } from "react-native";
+import * as NavigationBar from "expo-navigation-bar";
 
 export default function App() {
   const [authInitialized, setAuthInitialized] = useState(false);
 
   useEffect(() => {
+    NavigationBar.setBackgroundColorAsync("#FFFFFF");
+    NavigationBar.setButtonStyleAsync("dark");
     const unsubscribe = onAuthStateChanged(auth, user => {
       if (user) atualizarCalendario();
       setAuthInitialized(true);

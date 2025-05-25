@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, ActivityIndicator, FlatList } from "react-native";
+import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, ActivityIndicator, FlatList, Dimensions } from "react-native";
 import { styles } from "./styles";
 import { globalStyles } from "@/frontend/globalStyles";
 import Svg, { Defs, LinearGradient, Stop, Rect, Circle } from "react-native-svg";
@@ -51,10 +51,9 @@ const PaginaCalendario = () => {
   const [loadingTarefas, setLoadingTarefas] = useState(true);
   const [semanaAtiva, setSemanaAtiva] = useState<string>("1");
 
- const { temaUsuario, aplicarTemaApp,  getTemaStyle, loadingTema } = useTema();
+  const { temaUsuario, aplicarTemaApp,  getTemaStyle, loadingTema } = useTema();
   const { bgClass, colorClass } = getTemaStyle(temaUsuario);
 
-  // Calcular as semanas e preparar os dados
   useEffect(() => {
     const calcularSemanas = () => {
       const primeiroDiaDoMes = new Date(anoAtual, mesAtual, 1).getDay();
@@ -121,6 +120,7 @@ const PaginaCalendario = () => {
 
     calcularSemanas();
   }, [mesAtual, anoAtual]);
+  
 
   const semanaHojeFormatada = semanas.find((s) => {
     let inicio = parseInt(s.inicio);
@@ -222,7 +222,19 @@ const PaginaCalendario = () => {
     }
   };
 
+  const scrollParaDataSelecionada = () => {
+    const index = diasDoMes.indexOf(dataSelecionada.getDate());
+      if (index !== -1 && flatListRef.current) {
+        flatListRef.current.scrollToIndex({
+          index,
+          animated: true,
+          viewPosition: 0.5, // centraliza
+        });
+      }
+    };
+
   const handleSemanaChange = (semanaSelecionada: string) => {
+
     setSemanaAtiva(semanaSelecionada);
     const semanaEscolhida = semanas.find(s => s.semana === semanaSelecionada);
     if (semanaEscolhida) {
@@ -286,6 +298,9 @@ const PaginaCalendario = () => {
       return dataSelecionada.getDate() >= inicio && dataSelecionada.getDate() <= fim;
     });
     setSemanaAtiva(semanaAtual?.semana || "1");
+
+    scrollParaDataSelecionada();
+
   }, [dataSelecionada, semanas]);
 
   useEffect(() => {
@@ -348,6 +363,9 @@ const PaginaCalendario = () => {
     }
   }, [isFlatListReady, flatListRef.current, diasDoMes.length, mesAtual, anoAtual, diaHoje]);
 
+  const screenWidth = Dimensions.get("window").width;
+  const lateralPadding = screenWidth / 2 - 40;
+
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -408,6 +426,8 @@ const PaginaCalendario = () => {
             {/* Container de dias roláveis */}
           <View style={{ position: "relative", width: "100%"}}>
             <FlatList 
+              ListHeaderComponent={<View style={{ width: lateralPadding }} />}
+              ListFooterComponent={<View style={{ width: lateralPadding }} />}
               ref={flatListRef}
               data={diasDoMes}
               onLayout={() => setIsFlatListReady(true)}

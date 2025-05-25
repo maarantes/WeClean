@@ -160,13 +160,13 @@ export const globalStyles = StyleSheet.create({
 
   // Tema Turquesa
   tema_bg_turquesa_primario: {
-    backgroundColor: "#44C2BC"
+    backgroundColor: "#3AB6AE"
   },
   tema_bg_turquesa_secundario: {
     backgroundColor: "#E5FFFE"
   },
   tema_color_turquesa_primario: {
-    color: "#44C2BC"
+    color: "#3AB6AE"
   },
   tema_color_turquesa_secundario: {
     color: "#E5FFFE"
