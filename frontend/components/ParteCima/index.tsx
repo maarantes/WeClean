@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, View, Text } from 'react-native';
 import { styles } from './styles';
 
-import GrupoIcon from "../../../assets/images/grupo.svg";
 import SairIcon from "../../../assets/images/sair.svg";
 import PerfilIcon from "../../../assets/images/user.svg";
-import LogoutModal from "@/frontend/components/ModalLogout";
+import SininhoIcon from "../../../assets/images/sininho.svg";
+
+import LogoutModal from "../ModalLogout";
+import NotificacaoModal from '../ModalNotificacoes';
 
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -20,6 +22,7 @@ import { StatusBar } from 'expo-status-bar';
 
 const ParteCima = () => {
   const [LogoutModalActive, setLogoutModalActive] = useState(false);
+  const [NotificacaoModalActive, setNotificacaoModalActive] = useState(false);
   const [nomeUsuario, setNomeUsuario] = useState<string>("");
   const [temaUsuario, setTemaUsuario] = useState<string>("undefined");
 
@@ -77,11 +80,11 @@ const ParteCima = () => {
       </View>
 
       <View style={styles.containerBotoes}>
-        <TouchableOpacity style={styles.botao} onPress={() => { navigation.navigate("Grupo") }}>
-          <GrupoIcon width={24} height={24} />
-        </TouchableOpacity>
         <TouchableOpacity style={styles.botao} onPress={() => setLogoutModalActive(true)}>
           <SairIcon width={24} height={24} color={"#808080"} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.botao} onPress={() => setNotificacaoModalActive(true)}>
+          <SininhoIcon width={24} height={24} color={"#808080"} />
         </TouchableOpacity>
       </View>
 
@@ -89,6 +92,12 @@ const ParteCima = () => {
         LogoutModalActive={LogoutModalActive}
         setLogoutModalActive={setLogoutModalActive}
       />
+
+      <NotificacaoModal
+        NotificacaoModalActive={NotificacaoModalActive}
+        setNotificacaoModalActive={setNotificacaoModalActive}
+      />
+
     </View>
     </>
   );
