@@ -4,7 +4,7 @@ import { db } from "../shared/firebase";
 export interface Notificacao {
   id: string;
   userId: string;
-  tipo: "add_comentario" | "add_tarefa" | "removido_tarefa" | "editado_tarefa" | "removido_grupo" | "excluido_grupo";
+  tipo: "add_comentario" | "add_tarefa" | "removido_tarefa" | "editado_tarefa" | "excluido_tarefa" | "removido_grupo" | "excluido_grupo";
   nomeTarefa?: string;
   data?: string;
   nomeGrupo?: string;
