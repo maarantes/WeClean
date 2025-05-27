@@ -7,37 +7,43 @@ import ExcluidoGrupo from "../../../assets/images/excluir.svg";
 export const notificacaoConfig = {
   add_comentario: {
     titulo: "Novo Comentário",
-    descricao: 'Tarefa "Passar aspirador" no dia 25/05',
+    descricao: (dados: { nomeTarefa?: string; data?: string; content?: string }) =>
+      `Tarefa "${dados.nomeTarefa}" em ${dados.data}`,
     Icone: ComentarioPlus,
   },
 
   add_tarefa: {
     titulo: "Nova Atribuição",
-    descricao: 'Você foi adicionado na tarefa "Lavar louça"',
+    descricao: (dados: { nomeTarefa?: string }) =>
+      `Você foi adicionado na tarefa "${dados.nomeTarefa}"`,
     Icone: TarefaPlus,
   },
 
   removido_tarefa: {
     titulo: "Desatribuição",
-    descricao: 'Você foi tirado da tarefa "Lavar louça"',
+    descricao: (dados: { nomeTarefa?: string }) =>
+      `Você foi removido da tarefa "${dados.nomeTarefa}"`,
     Icone: TarefaMinus,
   },
 
   editado_tarefa: {
     titulo: "Tarefa Editada",
-    descricao: 'A tarefa "Estudar", que você está atribuído, foi editada',
+    descricao: (dados: { nomeTarefa?: string }) =>
+      `A tarefa "${dados.nomeTarefa}", que você está atribuído, foi editada.`,
     Icone: ComentarioPlus,
   },
 
   removido_grupo: {
     titulo: "Removido do Grupo",
-    descricao: 'Você foi removido do grupo "Projeto Final"',
+    descricao: (dados: { nomeGrupo?: string }) =>
+      `Você foi removido do grupo "${dados.nomeGrupo}"`,
     Icone: RetiradoGrupo,
   },
 
   excluido_grupo: {
     titulo: "Grupo Excluído",
-    descricao: 'O grupo "Viagem 2025" foi excluído. Você foi colocado no seu Grupo Pessoal.',
+    descricao: (dados: { nomeGrupo?: string }) =>
+      `O grupo "${dados.nomeGrupo}" foi excluído. Você foi colocado no seu Grupo Pessoal.`,
     Icone: ExcluidoGrupo,
   },
 };

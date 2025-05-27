@@ -44,7 +44,24 @@ export const styles = StyleSheet.create({
   notif_lista: {
     gap: 16,
     marginBottom: 4
-  }
+  },
+
+  botao_excluir: {
+    flexDirection: "row",
+    gap: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: "black",
+    borderRadius: 4,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20
+  },
+
+  botao_excluir_texto: {
+    color: "white",
+    fontFamily: "Inter-SemiBold"
+  },
 
 
 
