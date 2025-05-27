@@ -1,8 +1,9 @@
 import ComentarioPlus from "../../../assets/images/comentar_plus.svg";
 import TarefaPlus from "../../../assets/images/tarefa_plus.svg";
 import TarefaMinus from "../../../assets/images/tarefa_minus.svg";
+import TarefaEditado from "../../../assets/images/editar.svg";
 import RetiradoGrupo from "../../../assets/images/retirado_grupo.svg";
-import ExcluidoGrupo from "../../../assets/images/excluir.svg";
+import ExcluidoIcon from "../../../assets/images/excluir.svg";
 
 export const notificacaoConfig = {
   add_comentario: {
@@ -15,35 +16,42 @@ export const notificacaoConfig = {
   add_tarefa: {
     titulo: "Nova Atribuição",
     descricao: (dados: { nomeTarefa?: string }) =>
-      `Você foi adicionado na tarefa "${dados.nomeTarefa}"`,
+      `Você foi adicionado(a) na tarefa "${dados.nomeTarefa}"`,
     Icone: TarefaPlus,
   },
 
   removido_tarefa: {
     titulo: "Desatribuição",
     descricao: (dados: { nomeTarefa?: string }) =>
-      `Você foi removido da tarefa "${dados.nomeTarefa}"`,
+      `Você foi removido(a) da tarefa "${dados.nomeTarefa}"`,
     Icone: TarefaMinus,
   },
 
   editado_tarefa: {
     titulo: "Tarefa Editada",
     descricao: (dados: { nomeTarefa?: string }) =>
-      `A tarefa "${dados.nomeTarefa}", que você está atribuído, foi editada.`,
-    Icone: ComentarioPlus,
+      `A tarefa "${dados.nomeTarefa}", na qual você está atribuído(a), foi editada.`,
+    Icone: TarefaEditado,
+  },
+
+  excluido_tarefa: {
+    titulo: "Tarefa Excluida",
+    descricao: (dados: { nomeTarefa?: string }) =>
+      `A tarefa "${dados.nomeTarefa}", na qual você estava atribuído(a), foi excluida.`,
+    Icone: ExcluidoIcon,
   },
 
   removido_grupo: {
     titulo: "Removido do Grupo",
     descricao: (dados: { nomeGrupo?: string }) =>
-      `Você foi removido do grupo "${dados.nomeGrupo}"`,
+      `Você foi removido(a) do grupo "${dados.nomeGrupo}"`,
     Icone: RetiradoGrupo,
   },
 
   excluido_grupo: {
     titulo: "Grupo Excluído",
     descricao: (dados: { nomeGrupo?: string }) =>
-      `O grupo "${dados.nomeGrupo}" foi excluído. Você foi colocado no seu Grupo Pessoal.`,
-    Icone: ExcluidoGrupo,
+      `O grupo "${dados.nomeGrupo}" foi excluído. Você foi colocado(a) no seu Grupo Pessoal.`,
+    Icone: ExcluidoIcon,
   },
 };

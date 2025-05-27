@@ -14,6 +14,9 @@ import { montarFrequencia } from "./frequenciaUtils";
 import { auth } from "@/backend/services/shared/firebaseConfigApp";
 import { db } from "@/backend/services/shared/firebase";
 import { getCoresDoTema } from "@/frontend/utils/temaStyles";
+import { criarNotificacaoAtribuicao } from "@/backend/services/notificacoes/CriarNotifAtribuicao";
+import { criarNotificacaoRemocaoTarefa } from "@/backend/services/notificacoes/CriarNotifRemocaoTarefa";
+import { criarNotificacaoEdicaoTarefa } from "@/backend/services/notificacoes/CriarNotifEditadoTarefa";
 
 const DiasDaSemana = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
 
@@ -324,12 +327,34 @@ try {
 
       const updatedTask = { ...taskToEdit, ...novaTarefa };
       await editarTarefa(updatedTask, dataReferencia);
+
+      const antigos = taskToEdit.integrantes || [];
+      const novos = integrantesFinal;
+
+      const novosIntegrantes = novos.filter((id) => !antigos.includes(id) && id !== uid);
+      const removidos = antigos.filter((id: any) => !novos.includes(id) && id !== uid);
+      const aindaAtribuidos = novos.filter((id) => antigos.includes(id) && id !== uid);
+
+      if (aindaAtribuidos.length > 0) {
+        await criarNotificacaoEdicaoTarefa(aindaAtribuidos, nome);
+      }
+
+      if (novosIntegrantes.length > 0) {
+        await criarNotificacaoAtribuicao(novosIntegrantes, nome);
+      }
+
+      if (removidos.length > 0) {
+        await criarNotificacaoRemocaoTarefa(removidos, nome);
+      }
+      
       Alert.alert("Sucesso", "Tarefa editada com sucesso!", [
         { text: "OK", onPress: () => navigation.goBack() },
       ]);
 
     } else {
       await criarTarefa(novaTarefa);
+      const destinatarios = integrantesFinal.filter((id) => id !== uid);
+      await criarNotificacaoAtribuicao(destinatarios, nome);
       Alert.alert("Sucesso", "Tarefa criada com sucesso!", [
         { text: "OK", onPress: () => navigation.goBack() },
       ]);

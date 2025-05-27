@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
   modal_container: {
     backgroundColor: "white",
     height: "105.5%",
-    width: "80%",
+    width: "85%",
     position: "absolute",
     padding: 20,
     right: -20,
@@ -34,6 +34,10 @@ export const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 20,
     alignItems: "center"
+  },
+
+  sem_notif_loading: {
+    marginTop: 32
   },
 
   sem_notif_texto: {

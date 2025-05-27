@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Dimensions, TouchableWithoutFeedback, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions, TouchableWithoutFeedback, ScrollView, ActivityIndicator } from "react-native";
 import Modal from "react-native-modal";
 import { styles } from "./styles";
 import { CardNotificacao } from "../CardNotificacao";
@@ -23,6 +23,7 @@ export const NotificacaoModal: React.FC<NotificacaoModalProps> = ({
 }) => {
   const [notificacoes, setNotificacoes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [excluindo, setExcluindo] = useState(false);
 
   const { temaUsuario, getTemaStyle } = useTema();
   const { bgClass, colorClass } = getTemaStyle(temaUsuario);
@@ -52,10 +53,17 @@ export const NotificacaoModal: React.FC<NotificacaoModalProps> = ({
     const userId = auth.currentUser?.uid;
     if (!userId) return;
 
-    await excluirTodasNotificacoes(userId);
-    setNotificacaoModalActive(false)
-  setNotificacoes([]);
-};
+    setExcluindo(true);
+    try {
+      await excluirTodasNotificacoes(userId);
+      setNotificacoes([]);
+      setNotificacaoModalActive(false);
+    } catch (e) {
+      console.error("Erro ao excluir notificações:", e);
+    } finally {
+      setExcluindo(false);
+    }
+  };
 
   return (
     <Modal
@@ -82,16 +90,25 @@ export const NotificacaoModal: React.FC<NotificacaoModalProps> = ({
 
         <ScrollView style={{ flex: 1 }}>
           {loading ? (
-            <Text style={styles.sem_notif_texto}>Carregando...</Text>
+            <View style={styles.sem_notif_loading}>
+             <ActivityIndicator size="large" color={"#808080"} />
+            </View>
           ) : notificacoes.length === 0 ? (
             <View style={styles.sem_notif}>
               <Text style={styles.sem_notif_texto}>Você não tem notificações.</Text>
             </View>
           ) : (
             <>
-            <TouchableOpacity style={[styles.botao_excluir, { backgroundColor: bgClass.backgroundColor }]}
-            onPress={handleLimparNotificacoes}>
-              <LixeiraIcon width={24} height={24} color={"white"}/>
+            <TouchableOpacity
+              style={[styles.botao_excluir, { backgroundColor: bgClass.backgroundColor }]}
+              onPress={handleLimparNotificacoes}
+              disabled={excluindo}
+            >
+              {excluindo ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <LixeiraIcon width={24} height={24} color="white" />
+              )}
               <Text style={styles.botao_excluir_texto}>Limpar Notificações</Text>
             </TouchableOpacity>
             <View style={styles.notif_lista}>
