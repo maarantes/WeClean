@@ -2,20 +2,22 @@ import React from "react";
 import { Text, View, ViewStyle, TextStyle } from "react-native";
 import { styles } from "./styles";
 import PerfilIcon from "../../../assets/images/user.svg";
+import { Timestamp } from "firebase/firestore";
+import { formatarDataCriacao } from "@/frontend/utils/formatarDataCriacao";
 
 interface CaixaComentarioProps {
-  nomeUsuario: string;
+  nome_usuario: string;
   cor_primaria: string;
   cor_secundaria: string;
-  data: string;
+  data_criacao: Timestamp;
   conteudo: string;
 }
 
 const CaixaComentario: React.FC<CaixaComentarioProps> = ({
-  nomeUsuario,
+  nome_usuario,
   cor_primaria,
   cor_secundaria,
-  data,
+  data_criacao,
   conteudo
 }) => {
   return (
@@ -27,11 +29,11 @@ const CaixaComentario: React.FC<CaixaComentarioProps> = ({
             <PerfilIcon width={16} height={16} color={cor_secundaria} strokeWidth={1.25}/>
           </View>
           <Text style={[styles.usuario_nome, { color: cor_secundaria }]}>
-            {nomeUsuario}
+            {nome_usuario}
           </Text>
         </View>
         <View>
-            <Text style={styles.data_texto}>{data}</Text>
+            <Text style={styles.data_texto}>{formatarDataCriacao(data_criacao)}</Text>
         </View>
       </View>
 

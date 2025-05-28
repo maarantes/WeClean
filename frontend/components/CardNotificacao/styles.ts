@@ -16,12 +16,18 @@ export const styles = StyleSheet.create({
 
     card_cima: {
         flexDirection: "row",
+        justifyContent: "space-between",
         alignItems: "center",
-        gap: 12,
         paddingBottom: 12,
         marginBottom: 12,
         borderBottomWidth: 1,
         borderBottomColor: "#C4C4C4"
+    },
+
+    card_esq: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 12
     },
 
     card_titulo: {
@@ -34,6 +40,12 @@ export const styles = StyleSheet.create({
         fontSize: 14,
         lineHeight: 22,
         color: "#606060"
+    },
+
+    card_horario: {
+        fontFamily: "Inter-Medium",
+        fontSize: 12,
+        color: "#C4C4C4"
     }
 
 });

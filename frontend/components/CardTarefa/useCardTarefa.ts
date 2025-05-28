@@ -1,13 +1,8 @@
 import { useCallback, useState, useEffect } from "react";
-import { obterComentariosPorInstancia, ComentarioProps } from "../../../backend/services/comentario/obterComentarios";
-
-export function formatarDataComentario(s: string): Date {
-  const [datePart, timePart] = s.split(", ");
-  const [day, month]        = datePart.split("/").map(Number);
-  const [hour, min]         = timePart.replace("h", ":").split(":").map(Number);
-  const now                 = new Date();
-  return new Date(now.getFullYear(), month - 1, day, hour, min);
-}
+import {
+  obterComentariosPorInstancia,
+  ComentarioProps,
+} from "../../../backend/services/comentario/obterComentarios";
 
 export function useComentarios(instanceId: string, isOpen: boolean) {
   const [comentarios, setComentarios] = useState<ComentarioProps[]>([]);
@@ -16,13 +11,14 @@ export function useComentarios(instanceId: string, isOpen: boolean) {
     if (!instanceId) return;
     try {
       const lista = await obterComentariosPorInstancia(instanceId);
+
       lista.sort((a, b) =>
-        formatarDataComentario(a.createdAt).getTime() -
-        formatarDataComentario(b.createdAt).getTime()
+        a.dataCriacao.toDate().getTime() - b.dataCriacao.toDate().getTime()
       );
+
       setComentarios(lista);
     } catch (e) {
-      console.error(e);
+      console.error("Erro ao buscar comentários:", e);
     }
   }, [instanceId]);
 

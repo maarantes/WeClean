@@ -11,6 +11,7 @@ import ComentarIcon from "../../../assets/images/comentar.svg";
 import Badge from "../Badge";
 import CaixaComentario from "../Comentario";
 import { useTema } from "@/frontend/hooks/useTema";
+import { Timestamp } from "firebase/firestore";
 
 interface DetalhesModalProps {
   visible: boolean;
@@ -28,7 +29,8 @@ interface DetalhesModalProps {
     freq_texto?: string;
     integrantesOrdenados: Array<{ nome: string; cor_primaria: string; cor_secundaria: string }>;
   };
-  comentarios: Array<{ id: string; nomeUsuario: string; cor_primaria: string; cor_secundaria: string; createdAt: string; content: string }>;
+  comentarios: Array<{ id: string; nomeUsuario: string; cor_primaria: string; 
+  cor_secundaria: string; data_criacao: Timestamp; content: string }>;
   semComentarios?: boolean;
 }
 
@@ -195,10 +197,10 @@ export function DetalhesModal({
               comentarios.map(c => (
                 <CaixaComentario
                   key={c.id}
-                  nomeUsuario={c.nomeUsuario}
+                  nome_usuario={c.nomeUsuario}
                   cor_primaria={c.cor_primaria}
                   cor_secundaria={c.cor_secundaria}
-                  data={c.createdAt}
+                  data_criacao={c.data_criacao}
                   conteudo={c.content}
                 />
               ))

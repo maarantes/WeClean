@@ -7,7 +7,7 @@ import { CardNotificacao } from "../CardNotificacao";
 import FecharIcon from "../../../assets/images/fechar.svg";
 import LixeiraIcon from "../../../assets/images/excluir.svg";
 
-import { buscarNotificacoesDoUsuario } from "@/backend/services/notificacoes/BuscarNotificacoes";
+import { buscarNotificacoes } from "@/backend/services/notificacoes/BuscarNotificacoes";
 import { auth } from "@/backend/services/shared/firebaseConfigApp";
 import { useTema } from "@/frontend/hooks/useTema";
 import { excluirTodasNotificacoes } from "@/backend/services/notificacoes/ExcluirTodasNotificacoes";
@@ -37,7 +37,7 @@ export const NotificacaoModal: React.FC<NotificacaoModalProps> = ({
       if (!userId) return;
 
       try {
-        const resultado = await buscarNotificacoesDoUsuario(userId);
+        const resultado = await buscarNotificacoes(userId);
         setNotificacoes(resultado);
       } catch (e) {
         console.error("Erro ao buscar notificações:", e);
@@ -119,6 +119,7 @@ export const NotificacaoModal: React.FC<NotificacaoModalProps> = ({
                   nomeTarefa={n.nomeTarefa}
                   data={n.data}
                   nomeGrupo={n.nomeGrupo}
+                  dataCriacao={n.dataCriacao}
                 />
               ))}
             </View>

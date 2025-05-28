@@ -4,12 +4,19 @@ import TarefaMinus from "../../../assets/images/tarefa_minus.svg";
 import TarefaEditado from "../../../assets/images/editar.svg";
 import RetiradoGrupo from "../../../assets/images/retirado_grupo.svg";
 import ExcluidoIcon from "../../../assets/images/excluir.svg";
+import { Timestamp } from "firebase/firestore";
+
 
 export const notificacaoConfig = {
+
   add_comentario: {
     titulo: "Novo Comentário",
-    descricao: (dados: { nomeTarefa?: string; data?: string; content?: string }) =>
-      `Tarefa "${dados.nomeTarefa}" em ${dados.data}`,
+    descricao: (dados: { nomeTarefa?: string; dataCriacao?: Timestamp }) => {
+      const data = dados.dataCriacao?.toDate();
+      const dia = String(data?.getDate()).padStart(2, "0");
+      const mes = String((data?.getMonth() ?? 0) + 1).padStart(2, "0");
+      return `Tarefa "${dados.nomeTarefa}" em ${dia}/${mes}`;
+    },
     Icone: ComentarioPlus,
   },
 
