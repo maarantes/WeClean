@@ -1,7 +1,8 @@
-import { collection, doc, getDocs, updateDoc, deleteDoc, query, where, getDoc } from "firebase/firestore";
+import { doc, getDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../shared/firebase";
 import { auth } from "../shared/firebaseConfigApp";
 import { criarNotificacaoExclusaoTarefa } from "../notificacoes/CriarNotifExclusaoTarefa";
+import { excluirInstanciasDaTarefa } from "./excluirInstanciasTarefa";
 
 export const excluirTarefa = async (taskId: string): Promise<void> => {
   const tarefaRef = doc(db, "Tarefas", taskId);
@@ -19,44 +20,14 @@ export const excluirTarefa = async (taskId: string): Promise<void> => {
   const uid = auth.currentUser?.uid;
   const destinatarios = integrantes.filter((id) => id !== uid);
 
+  // Notificar integrantes (exceto quem deletou)
   if (destinatarios.length > 0) {
     await criarNotificacaoExclusaoTarefa(destinatarios, nomeTarefa);
   }
 
-  // Remoção das instâncias do calendário
-  const calendarioCol = collection(db, "Calendário");
-  const calendarioSnap = await getDocs(calendarioCol);
+  // Remover todas as instâncias e seus comentários
+  await excluirInstanciasDaTarefa(taskId);
 
-  const instanceIdsToDelete: string[] = [];
-
-  for (const calDoc of calendarioSnap.docs) {
-    const data = calDoc.data();
-    const tarefas: any[] = data.tarefas || [];
-
-    const remaining = tarefas.filter((t) => {
-      if (t.originalId === taskId) {
-        instanceIdsToDelete.push(t.instanceId);
-        return false;
-      }
-      return true;
-    });
-
-    if (remaining.length !== tarefas.length) {
-      const calRef = doc(db, "Calendário", calDoc.id);
-      await updateDoc(calRef, { tarefas: remaining });
-    }
-  }
-
-  // Remover comentários relacionados às instâncias
-  const comentariosCol = collection(db, "Comentários");
-  for (const instanceId of instanceIdsToDelete) {
-    const q = query(comentariosCol, where("instanceId", "==", instanceId));
-    const commentsSnap = await getDocs(q);
-    for (const commentDoc of commentsSnap.docs) {
-      await deleteDoc(doc(db, "Comentários", commentDoc.id));
-    }
-  }
-
-  // Finalmente, remover a tarefa master
+  // Remover a tarefa master
   await deleteDoc(tarefaRef);
 };

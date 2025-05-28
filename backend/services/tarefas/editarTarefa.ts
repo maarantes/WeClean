@@ -1,17 +1,30 @@
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../shared/firebase";
 import { Tarefa } from "./types";
-import { excluirTarefa } from "./excluirTarefa";
-import { criarTarefa } from "./criarTarefa";
+import { registrarTarefaNoCalendario } from "../calendario/registrarTarefaNoCalendario";
+import { excluirInstanciasDaTarefa } from "./excluirInstanciasTarefa";
 import { removerDocumentosVaziosNoCalendario } from "../calendario/removerDocumentosVazios";
 
-// Edita a tarefa recriando com os dados novos e limpando calendário vazio
+// Atualiza a tarefa e recria as instâncias no calendário
 export const editarTarefa = async (updatedTask: Tarefa, dataReferencia: string): Promise<void> => {
-  // 1. Exclui a tarefa antiga (documento em "Tarefas" e ocorrências no "Calendário")
-  await excluirTarefa(updatedTask.id!);
-  
-  // 2. Remove o id para que a nova tarefa receba um novo identificador
-  const { id, ...novaTarefa } = updatedTask;
-  
-  // 3. Cria a nova tarefa com as informações atualizadas e exclui os dias sem nenhuma tarefa na coleção Calendário
-  await criarTarefa(novaTarefa as Tarefa);
+  if (!updatedTask.id) {
+    console.error("ID da tarefa ausente.");
+    return;
+  }
+
+  // 1. Atualizar a tarefa master (sem recriar)
+  const tarefaRef = doc(db, "Tarefas", updatedTask.id);
+  await updateDoc(tarefaRef, {
+    ...updatedTask,
+    id: updatedTask.id, // garante que o ID se mantenha
+  });
+
+  // 2. Remover instâncias antigas da tarefa
+  await excluirInstanciasDaTarefa(updatedTask.id);
+
+  // 3. Criar novas instâncias com os dados atualizados
+  await registrarTarefaNoCalendario(updatedTask);
+
+  // 4. Limpeza do calendário (caso tenha sobrado dias vazios)
   await removerDocumentosVaziosNoCalendario();
 };
