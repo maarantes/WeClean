@@ -1,6 +1,7 @@
-import { db } from "../shared/firebaseConfigApp";
+import { auth, db } from "../shared/firebaseConfigApp";
 import { doc, deleteDoc, getDoc } from "firebase/firestore";
 import { kickarIntegrante } from "./removerIntegrante";
+import { criarNotificacaoExclusaoGrupo } from "../notificacoes/CriarNotifExclusaoGrupo";
 
 export const excluirGrupo = async (grupoId: string) => {
   try {
@@ -13,13 +14,26 @@ export const excluirGrupo = async (grupoId: string) => {
 
     const grupoData = grupoSnap.data();
     const integrantes = grupoData.integrantes || [];
+    const nomeGrupo = grupoData.nome || "Grupo";
+
+    const uidAdmin = auth.currentUser?.uid;
 
     // Remove todos os integrantes (incluindo admin)
     for (const integrante of integrantes) {
-      await kickarIntegrante(integrante.uid, grupoId);
+      await kickarIntegrante(integrante.uid, grupoId, false);
     }
 
-    // Exclui o grupo depois de remover todos
+    // Listar usuários para mandar a notificação, exceto para quem excluiu
+    const uidsParaNotificar = integrantes
+      .filter((i: any) => i.uid !== uidAdmin)
+      .map((i: any) => i.uid);
+
+    // Mandar notificação
+    if (uidsParaNotificar.length > 0) {
+      await criarNotificacaoExclusaoGrupo(uidsParaNotificar, nomeGrupo);
+    }
+
+    // Exclui o grupo
     await deleteDoc(grupoRef);
 
     console.log("Grupo excluído com sucesso");

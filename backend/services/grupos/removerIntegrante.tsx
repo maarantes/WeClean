@@ -1,8 +1,9 @@
 import { db } from "../shared/firebaseConfigApp";
 import { collection, getDocs, updateDoc, doc, writeBatch, arrayRemove, setDoc } from "firebase/firestore";
 import { gerarCodigoConvite } from "./gerarCodigoConvite";
+import { criarNotificacaoRemocaoGrupo } from "../notificacoes/CriarNotifRemocaoGrupo";
 
-export const kickarIntegrante = async (uidIntegrante: string, grupoIdAtual: string) => {
+export const kickarIntegrante = async (uidIntegrante: string, grupoIdAtual: string, notificar: boolean = true) => {
   try {
     const grupoRef = doc(db, "Grupos", grupoIdAtual);
 
@@ -28,7 +29,7 @@ export const kickarIntegrante = async (uidIntegrante: string, grupoIdAtual: stri
 
     const commitTarefas = batchTarefas.commit();
 
-    // 3. Remover do CALENDÁRIO (somente datas futuras)
+    // 3. Remover do Calendário (somente datas futuras)
     const calendarioSnapshot = await getDocs(collection(db, "Calendário"));
     const batchCalendario = writeBatch(db);
 
@@ -76,6 +77,12 @@ export const kickarIntegrante = async (uidIntegrante: string, grupoIdAtual: stri
     const atualizarUsuario = updateDoc(userRef, {
       grupoId: novoGrupoRef.id,
     });
+
+    // 6. Mandar notificação que o usuário foi removido do grupo
+    // Obs. Apenas se "notificar" for true (no ExcluirGrupo ele é false)
+    if (notificar) {
+      await criarNotificacaoRemocaoGrupo(uidIntegrante, grupoIdAtual);
+    }
 
     await Promise.all([
       commitTarefas,
