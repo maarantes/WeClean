@@ -1,11 +1,11 @@
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, Timestamp } from "firebase/firestore";
 import { db } from "../shared/firebase";
 import { criarNotificacao } from "./CriarNotificacao";
 
 export const criarNotifComentario = async (
   userId: string,
   instanceId: string,
-  dataFormatada: string,
+  dataCriacao: Timestamp
 ): Promise<void> => {
   const calendarioSnap = await getDocs(collection(db, "Calendário"));
   let instanciaEncontrada: any = null;
@@ -49,8 +49,7 @@ export const criarNotifComentario = async (
   const notificacoes = destinatarios.map((destinatarioId) =>
     criarNotificacao(destinatarioId, "add_comentario", {
       nomeTarefa,
-      data: dataFormatada
-    })
+      }, dataCriacao)
   );
 
   await Promise.all(notificacoes);

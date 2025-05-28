@@ -1,4 +1,4 @@
-import { collection,  query,  where,  getDocs,  doc,  getDoc } from "firebase/firestore";
+import { collection,  query,  where,  getDocs,  doc,  getDoc, Timestamp } from "firebase/firestore";
 import { db } from "../shared/firebase";
 import { getCoresDoTema, TemaCor } from "@/frontend/utils/temaStyles";
 
@@ -8,7 +8,7 @@ export interface ComentarioProps {
   nomeUsuario: string;
   cor_primaria: string;
   cor_secundaria: string;
-  createdAt: string;
+  dataCriacao: Timestamp;
   content: string;
 }
 
@@ -26,11 +26,10 @@ export async function obterComentariosPorInstancia(
   for (const docSnap of snap.docs) {
     const data = docSnap.data() as {
       userId: string;
-      createdAt: string;
+      dataCriacao: Timestamp;
       content: string;
     };
 
-    // busca dados do autor do comentário
     const userRef  = doc(db, "Usuarios", data.userId);
     const userSnap = await getDoc(userRef);
     const userData = userSnap.exists()
@@ -46,7 +45,7 @@ export async function obterComentariosPorInstancia(
       nomeUsuario: userData.apelido,
       cor_primaria,
       cor_secundaria,
-      createdAt: data.createdAt,
+      dataCriacao: data.dataCriacao,
       content: data.content,
     });
   }

@@ -1,13 +1,14 @@
-import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
+import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
 import { db } from "../shared/firebase";
 
-export const buscarNotificacoesDoUsuario = async (userId: string) => {
+export const buscarNotificacoes = async (userId: string) => {
+  const notificacoesRef = collection(db, "Notificacoes");
   const q = query(
-    collection(db, "Notificacoes"),
+    notificacoesRef,
     where("userId", "==", userId),
-    orderBy("createdAt", "desc")
+    orderBy("dataCriacao", "desc")
   );
 
   const snap = await getDocs(q);
-  return snap.docs.map(doc => doc.data());
+  return snap.docs.map((doc) => doc.data());
 };
