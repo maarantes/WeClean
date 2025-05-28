@@ -23,7 +23,7 @@ export const cadastrarUsuario = async (
   const grupoPessoalRef = doc(gruposCol);
   const grupoId = grupoPessoalRef.id;
 
-  const codigoConvite = gerarCodigoConvite();
+  const codigoConvite = await gerarCodigoConvite();
 
   // Cria o grupo pessoal
   await setDoc(grupoPessoalRef, {
