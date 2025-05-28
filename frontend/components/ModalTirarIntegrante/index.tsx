@@ -46,7 +46,7 @@ const KickIntegranteModal: React.FC<KickIntegranteModalProps> = ({
       <View style={styles.modal_container}>
         <Text style={styles.modal_titulo}>Remover Integrante</Text>
         <Text style={styles.modal_texto}>
-          Deseja remover {nomeIntegrante} do grupo? Ele será removido de todas as tarefas.
+          Deseja remover {nomeIntegrante} do grupo? O integrante será removido de todas as tarefas.
         </Text>
 
         <View style={styles.modal_botoes}>

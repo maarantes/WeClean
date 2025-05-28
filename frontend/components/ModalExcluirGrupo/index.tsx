@@ -56,7 +56,7 @@ const ModalExcluirGrupo: React.FC<ModalExcluirGrupoProps> = ({ visible, setVisib
       </TouchableWithoutFeedback>}
     >
       <View style={styles.modal_container}>
-        <Text style={styles.modal_titulo}>Deseja excluir este grupo?</Text>
+        <Text style={styles.modal_titulo}>Confirmar Exclusão</Text>
         <Text style={styles.modal_texto}>
           Todos os integrantes serão realocados para seus grupos pessoais e todas as tarefas do grupo atual serão apagadas.
         </Text>

@@ -10,7 +10,7 @@ export const formatarDataCriacao = (dataCriacao: Timestamp | Date): string => {
   const dias = Math.floor(horas / 24);
   const semanas = Math.floor(dias / 7);
 
-  if (segundos < 60) return `${segundos}s`;
+  if (segundos < 60) return "Agora";
   if (minutos < 60) return `${minutos}min`;
   if (horas < 24) return `${horas}h`;
   if (dias < 7) return `${dias}d`;

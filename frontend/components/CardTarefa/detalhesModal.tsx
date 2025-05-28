@@ -30,7 +30,7 @@ interface DetalhesModalProps {
     integrantesOrdenados: Array<{ nome: string; cor_primaria: string; cor_secundaria: string }>;
   };
   comentarios: Array<{ id: string; nomeUsuario: string; cor_primaria: string; 
-  cor_secundaria: string; data_criacao: Timestamp; content: string }>;
+  cor_secundaria: string; dataCriacao: Timestamp; content: string }>;
   semComentarios?: boolean;
 }
 
@@ -200,7 +200,7 @@ export function DetalhesModal({
                   nome_usuario={c.nomeUsuario}
                   cor_primaria={c.cor_primaria}
                   cor_secundaria={c.cor_secundaria}
-                  data_criacao={c.data_criacao}
+                  data_criacao={c.dataCriacao}
                   conteudo={c.content}
                 />
               ))
