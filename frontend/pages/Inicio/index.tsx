@@ -17,6 +17,7 @@ import { db } from "@/backend/services/shared/firebase";
 import { useTema } from "@/frontend/hooks/useTema";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getCoresDoTema } from "@/frontend/utils/temaStyles";
+import PaginaWrapper from "@/frontend/components/PaginaWrapper";
 
 const DiasDaSemana = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
 
@@ -145,9 +146,7 @@ const PaginaInicio = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white", position: "relative" }}>
-      <ParteCima />
-
+    <PaginaWrapper>
       {loading ? (
         <View style={{
           position: "absolute",
@@ -261,7 +260,7 @@ const PaginaInicio = () => {
       />
 
       <Navbar />
-    </SafeAreaView>
+    </PaginaWrapper>
   );
 };
 

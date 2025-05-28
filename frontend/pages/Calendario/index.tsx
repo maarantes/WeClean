@@ -14,6 +14,7 @@ import { auth, db } from "@/backend/services/shared/firebaseConfigApp";
 import { getCoresDoTema } from "@/frontend/utils/temaStyles";
 import { formatarFrequenciaTexto } from "@/frontend/utils/formatarFrequencia";
 import { useTema } from "@/frontend/hooks/useTema";
+import PaginaWrapper from "@/frontend/components/PaginaWrapper";
 
 const nomesDosMeses = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -368,9 +369,7 @@ const PaginaCalendario = () => {
 
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <ParteCima />
-
+    <PaginaWrapper>
       {loadingSemanas || loadingTema ? (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
           <ActivityIndicator size="large" color="#808080" />
@@ -560,9 +559,7 @@ const PaginaCalendario = () => {
           </View>
         </ScrollView>
       )}
-
-      <Navbar />
-    </SafeAreaView>
+    </PaginaWrapper>
   );
 };
 

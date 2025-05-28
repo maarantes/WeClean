@@ -8,6 +8,7 @@ import Routes from "./routes";
 import { atualizarCalendario } from "../backend/services/calendario/atualizarCalendario";
 import { ActivityIndicator, View } from "react-native";
 import * as NavigationBar from "expo-navigation-bar";
+import { UsuarioProvider } from "./context/usuarioContext";
 
 export default function App() {
   const [authInitialized, setAuthInitialized] = useState(false);
@@ -31,11 +32,13 @@ export default function App() {
   }
 
   return (
-    <MenuProvider>
-      <StatusBar style="dark" translucent />
-      <NavigationContainer>
-        <Routes />
-      </NavigationContainer>
-    </MenuProvider>
+    <UsuarioProvider>
+      <MenuProvider>
+        <StatusBar style="dark" translucent />
+        <NavigationContainer>
+          <Routes />
+        </NavigationContainer>
+      </MenuProvider>
+    </UsuarioProvider>
   );
 }

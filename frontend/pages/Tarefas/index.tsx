@@ -17,6 +17,7 @@ import { obterTarefas } from "../../../backend/services/tarefas/obterTarefas";
 import { auth, db } from "../../../backend/services/shared/firebaseConfigApp";
 import { useTema } from "@/frontend/hooks/useTema";
 import PerguntaTarefaModal from "@/frontend/components/ModalPerguntaTarefa";
+import PaginaWrapper from "@/frontend/components/PaginaWrapper";
 
 const PaginaTarefas = () => {
 
@@ -116,8 +117,7 @@ const PaginaTarefas = () => {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <ParteCima />
+  <PaginaWrapper>
       {loading ? (
         <View style={{
           position: "absolute",
@@ -272,8 +272,7 @@ const PaginaTarefas = () => {
 
         </ScrollView>
       )}
-      <Navbar />
-    </SafeAreaView>
+    </PaginaWrapper>
   );
 };
 
