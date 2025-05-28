@@ -14,7 +14,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from '@/frontend/routes';
 
 import { auth, db } from '@/backend/services/shared/firebaseConfigApp';
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { globalStyles } from '@/frontend/globalStyles';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -28,6 +28,23 @@ const ParteCima = () => {
 
   type NavigationProps = StackNavigationProp<RootStackParamList, "Grupo">;
   const navigation = useNavigation<NavigationProps>();
+
+  const [temNotificacoes, setTemNotificacoes] = useState(false);
+
+  useEffect(() => {
+    const buscarNotificacoes = async () => {
+      const uid = auth.currentUser?.uid;
+      if (!uid) return;
+
+      const notificacoesSnap = await getDocs(
+        query(collection(db, "Notificacoes"), where("userId", "==", uid))
+      );
+
+      setTemNotificacoes(!notificacoesSnap.empty);
+    };
+
+    buscarNotificacoes();
+  }, []);
 
   useEffect(() => {
     const carregarDadosUsuario = async () => {
@@ -85,6 +102,9 @@ const ParteCima = () => {
         </TouchableOpacity>
         <TouchableOpacity style={styles.botao} onPress={() => setNotificacaoModalActive(true)}>
           <SininhoIcon width={24} height={24} color={"#808080"} />
+          {temNotificacoes && (
+            <View style={styles.bolinha_notificacao} />
+          )}
         </TouchableOpacity>
       </View>
 

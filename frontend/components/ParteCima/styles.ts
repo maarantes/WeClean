@@ -46,6 +46,14 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Inter-SemiBold",
   },
-  
 
+  bolinha_notificacao: {
+    position: "absolute",
+    right: 4,
+    top: 4,
+    backgroundColor: "#e83a71",
+    width: 8,
+    height: 8,
+    borderRadius: 20
+  }
 });
