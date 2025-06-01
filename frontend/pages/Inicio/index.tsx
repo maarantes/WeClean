@@ -18,6 +18,7 @@ import { useTema } from "@/frontend/hooks/useTema";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getCoresDoTema } from "@/frontend/utils/temaStyles";
 import PaginaWrapper from "@/frontend/components/PaginaWrapper";
+import SkeletonLoaderCard from "@/frontend/components/SkeletonLoaderCard";
 
 const DiasDaSemana = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
 
@@ -147,110 +148,95 @@ const PaginaInicio = () => {
 
   return (
     <PaginaWrapper>
-      {loading ? (
-        <View style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "white",
-        }}>
-          <ActivityIndicator size="large" color="#808080" />
-        </View>
-      ) : (
-        <ScrollView style={globalStyles.containerPagina} contentContainerStyle={{ paddingBottom: 140, paddingTop: 80 }}>
-          <Text style={[globalStyles.titulo, globalStyles.mbottom32]}>Tarefas da Semana</Text>
+      <ScrollView style={globalStyles.containerPagina} contentContainerStyle={{ paddingBottom: 140, paddingTop: 80 }}>
+        <Text style={[globalStyles.titulo, globalStyles.mbottom32]}>Tarefas da Semana</Text>
 
-          <View style={styles.wrapper_botao_tipo}>
-            {["tudo", "pendente", "concluido"].map((tipo) => {
-              const { bgClass, colorClass } = getTemaStyle(temaUsuario);
-
-              return (
-                <TouchableOpacity
-                  key={tipo}
-                  style={[
-                    styles.botao_tipo,
-                    filtro === tipo && styles.botao_tipo_ativo,
-                    filtro === tipo && { backgroundColor: bgClass.backgroundColor },
-                  ]}
-                  onPress={() => setFiltro(tipo as any)}
-                >
-                  <Text
-                    style={[
-                      styles.botao_tipo_texto,
-                      filtro === tipo && { color: colorClass.color },
-                    ]}
-                  >
-                    {tipo === "tudo" ? "Tudo" : tipo.charAt(0).toUpperCase() + tipo.slice(1)}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-
-          {weekDates.map((dataKey) => {
-            const dateObj = parseLocalDate(dataKey);
-            const nomeDia = DiasDaSemana[dateObj.getDay()];
-            const tarefas = tarefasSemana[dataKey] || [];
+        <View style={styles.wrapper_botao_tipo}>
+          {["tudo", "pendente", "concluido"].map((tipo) => {
+            const { bgClass, colorClass } = getTemaStyle(temaUsuario);
 
             return (
-              <View key={dataKey} style={globalStyles.mbottom32}>
-                <View style={[styles.flex_between, globalStyles.mbottom16]}>
-                  <Text style={globalStyles.textoNormal}>{nomeDia}</Text>
-                  <Text style={styles.data_dia}>{formatarDataKey(dataKey)}</Text>
-                </View>
-                <View style={styles.container_gap}>
-                  {filtrarTarefas(tarefas).length > 0 ? (
-                    filtrarTarefas(tarefas).map((tarefa) => (
-                      <CardTarefa
-                        key={tarefa.instanceId}
-                        id={tarefa.originalId}
-                        nome={tarefa.nome}
-                        descricao={tarefa.descricao}
-                        horario={tarefa.horario}
-                        exibirBotao
-                        alarme={tarefa.alarme}
-                        freq_texto={formatarFrequenciaTexto(tarefa.frequencia)}
-                        integrantes={tarefa.integrantes || []}
-                        concluido={tarefa.concluido}
-                        dataInstancia={dataKey}
-                        instanceId={tarefa.instanceId}
-                        onUpdateConcluido={(dataInst, novoValor) => {
-                          setLastTaskUpdate({
-                            id: tarefa.id,
-                            dataInst,
-                            prevValue: !novoValor,
-                            instanceId: tarefa.instanceId,
-                          });
-                          updateTarefaConcluido(tarefa.id, dataInst, novoValor);
-                          setTarefasSemana((prev) => ({
-                            ...prev,
-                            [dataInst]: prev[dataInst].map((t) =>
-                              t.instanceId === tarefa.instanceId
-                                ? { ...t, concluido: novoValor }
-                                : t
-                            ),
-                          }));
-                          setAlertMessage(
-                            novoValor ? "A tarefa foi concluída" : "A tarefa foi reaberta"
-                          );
-                          setShowAlert(true);
-                        }}
-                        onTaskDeleted={carregarTarefasSemana}
-                      />
-                    ))
-                  ) : (
-                    <SemTarefa />
-                  )}
-                </View>
-              </View>
+              <TouchableOpacity
+                key={tipo}
+                style={[
+                  styles.botao_tipo,
+                  filtro === tipo && styles.botao_tipo_ativo,
+                  filtro === tipo && { backgroundColor: bgClass.backgroundColor },
+                ]}
+                onPress={() => setFiltro(tipo as any)}
+              >
+                <Text
+                  style={[
+                    styles.botao_tipo_texto,
+                    filtro === tipo && { color: colorClass.color },
+                  ]}
+                >
+                  {tipo === "tudo" ? "Tudo" : tipo.charAt(0).toUpperCase() + tipo.slice(1)}
+                </Text>
+              </TouchableOpacity>
             );
           })}
-        </ScrollView>
-      )}
+        </View>
+
+        {weekDates.map((dataKey) => {
+          const dateObj = parseLocalDate(dataKey);
+          const nomeDia = DiasDaSemana[dateObj.getDay()];
+          const tarefas = tarefasSemana[dataKey] || [];
+
+          return (
+            <View key={dataKey} style={globalStyles.mbottom32}>
+              <View style={[styles.flex_between, globalStyles.mbottom16]}>
+                <Text style={globalStyles.textoNormal}>{nomeDia}</Text>
+                <Text style={styles.data_dia}>{formatarDataKey(dataKey)}</Text>
+              </View>
+              <View style={styles.container_gap}>
+              {loading ? (
+                <SkeletonLoaderCard />
+                ) : filtrarTarefas(tarefas).length > 0 ? (
+                filtrarTarefas(tarefas).map((tarefa) => (
+                  <CardTarefa
+                    key={tarefa.instanceId}
+                    id={tarefa.originalId}
+                    nome={tarefa.nome}
+                    descricao={tarefa.descricao}
+                    horario={tarefa.horario}
+                    exibirBotao
+                    alarme={tarefa.alarme}
+                    freq_texto={formatarFrequenciaTexto(tarefa.frequencia)}
+                    integrantes={tarefa.integrantes || []}
+                    concluido={tarefa.concluido}
+                    dataInstancia={dataKey}
+                    instanceId={tarefa.instanceId}
+                    onUpdateConcluido={(dataInst, novoValor) => {
+                      setLastTaskUpdate({
+                        id: tarefa.id,
+                        dataInst,
+                        prevValue: !novoValor,
+                        instanceId: tarefa.instanceId,
+                      });
+                      updateTarefaConcluido(tarefa.id, dataInst, novoValor);
+                      setTarefasSemana((prev) => ({
+                        ...prev,
+                        [dataInst]: prev[dataInst].map((t) =>
+                          t.instanceId === tarefa.instanceId
+                            ? { ...t, concluido: novoValor }
+                            : t
+                        ),
+                      }));
+                      setAlertMessage(novoValor ? "A tarefa foi concluída" : "A tarefa foi reaberta");
+                      setShowAlert(true);
+                    }}
+                    onTaskDeleted={carregarTarefasSemana}
+                  />
+                ))
+              ) : (
+                <SemTarefa />
+              )}
+              </View>
+            </View>
+          );
+        })}
+      </ScrollView>
 
       <AlertaConcluido
         visible={showAlert}

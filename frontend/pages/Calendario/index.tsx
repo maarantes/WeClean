@@ -15,6 +15,7 @@ import { getCoresDoTema } from "@/frontend/utils/temaStyles";
 import { formatarFrequenciaTexto } from "@/frontend/utils/formatarFrequencia";
 import { useTema } from "@/frontend/hooks/useTema";
 import PaginaWrapper from "@/frontend/components/PaginaWrapper";
+import SkeletonLoaderCard from "@/frontend/components/SkeletonLoaderCard";
 
 const nomesDosMeses = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -370,195 +371,189 @@ const PaginaCalendario = () => {
 
   return (
     <PaginaWrapper>
-      {loadingSemanas || loadingTema ? (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-          <ActivityIndicator size="large" color="#808080" />
-        </View>
-      ) : (
-        <ScrollView style={globalStyles.containerPagina} contentContainerStyle={{ paddingBottom: 140, paddingTop: 80 }}>
-          <Text style={[globalStyles.titulo, globalStyles.mbottom32]}>Calendário</Text>
+      <ScrollView style={globalStyles.containerPagina} contentContainerStyle={{ paddingBottom: 140, paddingTop: 80 }}>
+        <Text style={[globalStyles.titulo, globalStyles.mbottom32]}>Calendário</Text>
 
-          <View style={styles.container_cima}>
-            <View style={styles.container_cima_esq}>
-              {semanas.map(({ semana, inicio, fim }) => (
-                <SemanaItem
-                  key={semana}
-                  semana={semana}
-                  inicio={inicio}
-                  fim={fim}
-                  ativa={semana === semanaAtiva}
-                  onPress={() => handleSemanaChange(semana)}
-                />
-              ))}
-            </View>
-
-            <View style={styles.container_cima_dir}>
-              <View>
-                <Text style={styles.mes}>MÊS</Text>
-                <Text style={[globalStyles.titulo, {
-                  color: aplicarTemaApp
-                    ? colorClass.color
-                    : bgClass.backgroundColor,
-                },]}>
-                  {nomesDosMeses[mesAtual]}
-                </Text>
-              </View>
-              <View style={[styles.container_baixo, loadingMetrica && styles.align_start]}>
-                {loadingMetrica ? (
-                  <ActivityIndicator size="large" color="#808080" />
-                ) : (
-                  <>
-                    <View style={styles.semana_info}>
-                      <Text style={styles.semana_info_titulo}>Total de Tarefas</Text>
-                      <Text style={styles.semana_info_num}>{totalMes}</Text>
-                    </View>
-                    <View style={styles.semana_info}>
-                      <Text style={styles.semana_info_titulo}>Desempenho</Text>
-                      <Text style={styles.semana_info_num}>{desempenho}%</Text>
-                    </View>
-                  </>
-                )}
-              </View>
-            </View>
+        <View style={styles.container_cima}>
+          <View style={styles.container_cima_esq}>
+            {semanas.map(({ semana, inicio, fim }) => (
+              <SemanaItem
+                key={semana}
+                semana={semana}
+                inicio={inicio}
+                fim={fim}
+                ativa={semana === semanaAtiva}
+                onPress={() => handleSemanaChange(semana)}
+              />
+            ))}
           </View>
 
-            {/* Container de dias roláveis */}
-          <View style={{ position: "relative", width: "100%"}}>
-            <FlatList 
-              ListHeaderComponent={<View style={{ width: lateralPadding }} />}
-              ListFooterComponent={<View style={{ width: lateralPadding }} />}
-              ref={flatListRef}
-              data={diasDoMes}
-              onLayout={() => setIsFlatListReady(true)}
-              renderItem={({ item: dia, index }) => (
-                <TouchableOpacity
-                  key={dia}
-                  style={styles.diaItem}
-                  onPress={() => {
-                    const novaData = new Date(anoAtual, mesAtual, dia);
-                    setDataSelecionada(novaData);
-                    flatListRef.current?.scrollToIndex({
-                      index: index,
-                      animated: true,
-                      viewPosition: 0.5,
-                    });
-                  }}
-                >
-                  <Text
-                    style={[
-                      styles.diaTexto,
-                      dataSelecionada.getDate() === dia && { color: colorClass.color },
-                    ]}
-                  >
-                    {dia}
-                  </Text>
-
-                  {/* Círculo abaixo do dia escolhido */}
-                  {dataSelecionada.getDate() === dia && (
-                    <Svg
-                      width="44"
-                      height="44"
-                      viewBox="0 0 44 44"
-                      fill="none"
-                      style={styles.circuloIcon}
-                    >
-                      <Circle cx="22" cy="22" r="18" fill={bgClass.backgroundColor} />
-                    </Svg>
-                  )}
-                </TouchableOpacity>
+          <View style={styles.container_cima_dir}>
+            <View>
+              <Text style={styles.mes}>MÊS</Text>
+              <Text style={[globalStyles.titulo, {
+                color: aplicarTemaApp
+                  ? colorClass.color
+                  : bgClass.backgroundColor,
+              },]}>
+                {nomesDosMeses[mesAtual]}
+              </Text>
+            </View>
+            <View style={[styles.container_baixo, loadingMetrica && styles.align_start]}>
+              {loadingMetrica ? (
+                <ActivityIndicator size="large" color="#808080" />
+              ) : (
+                <>
+                  <View style={styles.semana_info}>
+                    <Text style={styles.semana_info_titulo}>Total de Tarefas</Text>
+                    <Text style={styles.semana_info_num}>{totalMes}</Text>
+                  </View>
+                  <View style={styles.semana_info}>
+                    <Text style={styles.semana_info_titulo}>Desempenho</Text>
+                    <Text style={styles.semana_info_num}>{desempenho}%</Text>
+                  </View>
+                </>
               )}
-              keyExtractor={(dia) => dia.toString()}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.scrollContainerDias}
-              onScrollToIndexFailed={({ index }) => {
-                setTimeout(() => {
-                flatListRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.5 });
-                
-                }, 250)}}
-            />
-
-            <View style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none" }}>
-              <Svg width="100%" height="100%">
-                <Defs>
-                  <LinearGradient id="gradLeft" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <Stop offset="0%" stopColor="white" stopOpacity="1" />
-                    <Stop offset="40%" stopColor="white" stopOpacity="0" />
-                  </LinearGradient>
-                  <LinearGradient id="gradRight" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <Stop offset="60%" stopColor="white" stopOpacity="0" />
-                    <Stop offset="100%" stopColor="white" stopOpacity="1" />
-                  </LinearGradient>
-                </Defs>
-                <Rect x="0" y="0" width="100%" height="100%" fill="url(#gradLeft)" />
-                <Rect x="0" y="0" width="100%" height="100%" fill="url(#gradRight)" />
-              </Svg>
             </View>
           </View>
+        </View>
 
-          <View style={styles.container_escolher}>
-            <TouchableOpacity
-              style={[
-                styles.dia_botao,
-                {
-                  backgroundColor: aplicarTemaApp
-                    ? colorClass.color
-                    : bgClass.backgroundColor,
-                },
-              ]}
-              onPress={handleDataAnterior}
-            >
-            <SetaDiaIcon width={44} color={"white"} style={styles.rotate} />
-            </TouchableOpacity>
+          {/* Container de dias roláveis */}
+        <View style={{ position: "relative", width: "100%"}}>
+          <FlatList 
+            ListHeaderComponent={<View style={{ width: lateralPadding }} />}
+            ListFooterComponent={<View style={{ width: lateralPadding }} />}
+            ref={flatListRef}
+            data={diasDoMes}
+            onLayout={() => setIsFlatListReady(true)}
+            renderItem={({ item: dia, index }) => (
+              <TouchableOpacity
+                key={dia}
+                style={styles.diaItem}
+                onPress={() => {
+                  const novaData = new Date(anoAtual, mesAtual, dia);
+                  setDataSelecionada(novaData);
+                  flatListRef.current?.scrollToIndex({
+                    index: index,
+                    animated: true,
+                    viewPosition: 0.5,
+                  });
+                }}
+              >
+                <Text
+                  style={[
+                    styles.diaTexto,
+                    dataSelecionada.getDate() === dia && { color: colorClass.color },
+                  ]}
+                >
+                  {dia}
+                </Text>
 
-            <View style={styles.dia_atual}>
-              <Text style={styles.dia_atual_esq}>{nomeDiaDaSemana}</Text>
-              <Text style={styles.dia_atual_dir}>{formatarData(dataSelecionada)}</Text>
-            </View>
-
-            <TouchableOpacity
-              style={[
-                styles.dia_botao,
-                {
-                  backgroundColor: aplicarTemaApp
-                    ? colorClass.color
-                    : bgClass.backgroundColor,
-                },
-              ]}
-              onPress={handleDataProximo}
-            >
-              <SetaDiaIcon width={44} color={"white"} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.cards}>
-          {loadingTarefas ? (
-            <ActivityIndicator size="large" color="#808080" />
-          ) : tarefasDoDia.length > 0 ? (
-              tarefasDoDia.map((tarefa, index) => {
-                return (
-                  <CardTarefa
-                    key={index}
-                    id={tarefa.originalId}
-                    nome={tarefa.nome}
-                    descricao={tarefa.descricao}
-                    horario={tarefa.horario}
-                    alarme={tarefa.alarme}
-                    concluido={tarefa.concluido}
-                    freq_texto={formatarFrequenciaTexto(tarefa.frequencia)}
-                    integrantes={tarefa.integrantes || []}
-                    menor={true}
-                    instanceId={tarefa.instanceId}
-                    dataInstancia={`${dataSelecionada.getFullYear()}-${(dataSelecionada.getMonth() + 1).toString().padStart(2, "0")}-${dataSelecionada.getDate().toString().padStart(2, "0")}`}
-                  />
-                );
-              })
-            ) : (
-              <Text style={styles.nenhuma_tarefa}>Nenhuma tarefa para este dia</Text>
+                {/* Círculo abaixo do dia escolhido */}
+                {dataSelecionada.getDate() === dia && (
+                  <Svg
+                    width="44"
+                    height="44"
+                    viewBox="0 0 44 44"
+                    fill="none"
+                    style={styles.circuloIcon}
+                  >
+                    <Circle cx="22" cy="22" r="18" fill={bgClass.backgroundColor} />
+                  </Svg>
+                )}
+              </TouchableOpacity>
             )}
+            keyExtractor={(dia) => dia.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.scrollContainerDias}
+            onScrollToIndexFailed={({ index }) => {
+              setTimeout(() => {
+              flatListRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.5 });
+              
+              }, 250)}}
+          />
+
+          <View style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none" }}>
+            <Svg width="100%" height="100%">
+              <Defs>
+                <LinearGradient id="gradLeft" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <Stop offset="0%" stopColor="white" stopOpacity="1" />
+                  <Stop offset="40%" stopColor="white" stopOpacity="0" />
+                </LinearGradient>
+                <LinearGradient id="gradRight" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <Stop offset="60%" stopColor="white" stopOpacity="0" />
+                  <Stop offset="100%" stopColor="white" stopOpacity="1" />
+                </LinearGradient>
+              </Defs>
+              <Rect x="0" y="0" width="100%" height="100%" fill="url(#gradLeft)" />
+              <Rect x="0" y="0" width="100%" height="100%" fill="url(#gradRight)" />
+            </Svg>
           </View>
-        </ScrollView>
-      )}
+        </View>
+
+        <View style={styles.container_escolher}>
+          <TouchableOpacity
+            style={[
+              styles.dia_botao,
+              {
+                backgroundColor: aplicarTemaApp
+                  ? colorClass.color
+                  : bgClass.backgroundColor,
+              },
+            ]}
+            onPress={handleDataAnterior}
+          >
+          <SetaDiaIcon width={44} color={"white"} style={styles.rotate} />
+          </TouchableOpacity>
+
+          <View style={styles.dia_atual}>
+            <Text style={styles.dia_atual_esq}>{nomeDiaDaSemana}</Text>
+            <Text style={styles.dia_atual_dir}>{formatarData(dataSelecionada)}</Text>
+          </View>
+
+          <TouchableOpacity
+            style={[
+              styles.dia_botao,
+              {
+                backgroundColor: aplicarTemaApp
+                  ? colorClass.color
+                  : bgClass.backgroundColor,
+              },
+            ]}
+            onPress={handleDataProximo}
+          >
+            <SetaDiaIcon width={44} color={"white"} />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.cards}>
+        {loadingTarefas ? (
+          <SkeletonLoaderCard />
+        ) : tarefasDoDia.length > 0 ? (
+            tarefasDoDia.map((tarefa, index) => {
+              return (
+                <CardTarefa
+                  key={index}
+                  id={tarefa.originalId}
+                  nome={tarefa.nome}
+                  descricao={tarefa.descricao}
+                  horario={tarefa.horario}
+                  alarme={tarefa.alarme}
+                  concluido={tarefa.concluido}
+                  freq_texto={formatarFrequenciaTexto(tarefa.frequencia)}
+                  integrantes={tarefa.integrantes || []}
+                  menor={true}
+                  instanceId={tarefa.instanceId}
+                  dataInstancia={`${dataSelecionada.getFullYear()}-${(dataSelecionada.getMonth() + 1).toString().padStart(2, "0")}-${dataSelecionada.getDate().toString().padStart(2, "0")}`}
+                />
+              );
+            })
+          ) : (
+            <Text style={styles.nenhuma_tarefa}>Nenhuma tarefa para este dia</Text>
+          )}
+        </View>
+      </ScrollView>
     </PaginaWrapper>
   );
 };
