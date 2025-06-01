@@ -539,8 +539,8 @@ const PaginaCalendario = () => {
                 return (
                   <CardTarefa
                     key={index}
-                    id={tarefa.id}
-                    nome={tarefa.nome || "Tarefa sem nome"}
+                    id={tarefa.originalId}
+                    nome={tarefa.nome}
                     descricao={tarefa.descricao}
                     horario={tarefa.horario}
                     alarme={tarefa.alarme}

@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { TouchableOpacity, View, Text } from 'react-native';
-import { styles } from './styles';
+import React, { useState } from "react";
+import { TouchableOpacity, View, Text } from "react-native";
+import { styles } from "./styles";
 
 import SairIcon from "../../../assets/images/sair.svg";
 import PerfilIcon from "../../../assets/images/user.svg";
 import SininhoIcon from "../../../assets/images/sininho.svg";
 
 import LogoutModal from "../ModalLogout";
-import NotificacaoModal from '../ModalNotificacoes';
+import NotificacaoModal from "../ModalNotificacoes";
 
-import { StatusBar } from 'expo-status-bar';
-import { globalStyles } from '@/frontend/globalStyles';
-import { useUsuario } from '@/frontend/context/usuarioContext';
+import { StatusBar } from "expo-status-bar";
+import { globalStyles } from "@/frontend/globalStyles";
+import { useUsuario } from "@/frontend/context/usuarioContext";
 
 const ParteCima = () => {
   const [LogoutModalActive, setLogoutModalActive] = useState(false);
@@ -51,9 +51,9 @@ const ParteCima = () => {
         <NotificacaoModal
           NotificacaoModalActive={NotificacaoModalActive}
           setNotificacaoModalActive={(v) => {
-    setNotificacaoModalActive(v);
-    if (!v) recarregarNotificacoes();
-  }}
+          setNotificacaoModalActive(v);
+            if (!v) recarregarNotificacoes();
+          }}
         />
       </View>
     </>

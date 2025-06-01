@@ -1,9 +1,8 @@
-import React from 'react';
+import React from "react";
 import { TouchableOpacity, View, Text } from "react-native";
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '@/frontend/routes';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { useTema } from "@/frontend/hooks/useTema";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "@/frontend/routes";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 import { styles } from "./styles";
 
@@ -12,24 +11,29 @@ import CalendarioIcon from "../../../assets/images/calendario.svg";
 import TarefasIcon from "../../../assets/images/tarefa.svg";
 import PerfilIcon from "../../../assets/images/perfil.svg";
 
+import { useUsuario } from "@/frontend/context/usuarioContext";
+import { globalStyles } from "@/frontend/globalStyles";
+
 type NavbarProps = StackNavigationProp<RootStackParamList, keyof RootStackParamList>;
 
 export function Navbar() {
   const navigation = useNavigation<NavbarProps>();
   const route = useRoute();
-  const { temaUsuario, aplicarTemaApp, getTemaStyle } = useTema();
 
-  const { bgClass, colorClass } = getTemaStyle(temaUsuario);
+  const { tema } = useUsuario();
+
+  const bgClass = globalStyles[`tema_bg_${tema}_secundario` as keyof typeof globalStyles] as { backgroundColor: string };
+  const colorClass = globalStyles[`tema_color_${tema}_primario` as keyof typeof globalStyles] as { color: string };
 
   type RoutesSemParams = {
     [K in keyof RootStackParamList]: RootStackParamList[K] extends undefined ? K : never
   }[keyof RootStackParamList];
 
   const opcoes: { key: RoutesSemParams; label: string; icon: React.FC<any> }[] = [
-    { key: 'Início', label: 'Início', icon: InicioIcon },
-    { key: 'Calendário', label: 'Calendário', icon: CalendarioIcon },
-    { key: 'Tarefas', label: 'Tarefas', icon: TarefasIcon },
-    { key: 'Perfil', label: 'Perfil', icon: PerfilIcon },
+    { key: "Início", label: "Início", icon: InicioIcon },
+    { key: "Calendário", label: "Calendário", icon: CalendarioIcon },
+    { key: "Tarefas", label: "Tarefas", icon: TarefasIcon },
+    { key: "Perfil", label: "Perfil", icon: PerfilIcon },
   ];
 
   return (
@@ -37,13 +41,8 @@ export function Navbar() {
       {opcoes.map((opcao) => {
         const isActive = route.name === opcao.key;
 
-        const iconColor = isActive
-          ? (aplicarTemaApp ? colorClass.color : bgClass.backgroundColor)
-          : "#404040";
-
-        const textColor = isActive
-          ? (aplicarTemaApp ? colorClass.color : bgClass.backgroundColor)
-          : "#404040";
+        const iconColor = isActive ? colorClass.color : "#404040";
+        const textColor = isActive ? colorClass.color : "#404040";
 
         return (
           <TouchableOpacity 
@@ -51,7 +50,6 @@ export function Navbar() {
             style={styles.botao}
             onPress={() => navigation.navigate(opcao.key)}
           >
-            {/* Ícone com a cor secundária do tema */}
             <opcao.icon width={24} height={24} color={iconColor} />
             <Text style={[styles.texto, { color: textColor }]}>
               {opcao.label}
