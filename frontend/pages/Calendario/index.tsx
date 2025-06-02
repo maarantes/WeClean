@@ -16,6 +16,10 @@ import { formatarFrequenciaTexto } from "@/frontend/utils/formatarFrequencia";
 import { useTema } from "@/frontend/hooks/useTema";
 import PaginaWrapper from "@/frontend/components/PaginaWrapper";
 import SkeletonLoaderCard from "@/frontend/components/SkeletonLoaderCard";
+import AlertaSimples from "@/frontend/components/AlertaSimples";
+import { NavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "@/frontend/routes";
+import { useLastActionListener } from "@/frontend/hooks/useLastActionListener";
 
 const nomesDosMeses = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -205,6 +209,7 @@ const PaginaCalendario = () => {
   useEffect(() => {
     obterTarefasPorDia(dataSelecionada); // Carrega as tarefas ao iniciar
   }, [dataSelecionada, obterTarefasPorDia]);
+  
 
   const handleDataAnterior = () => {
     const novaData = new Date(dataSelecionada);
@@ -305,48 +310,68 @@ const PaginaCalendario = () => {
 
   }, [dataSelecionada, semanas]);
 
-  useEffect(() => {
-    const carregarTarefasDoMes = async () => {
-      setLoadingMetrica(true);
-  
-      const uid = auth.currentUser?.uid;
-      if (!uid) return;
-  
-      const userRef = doc(db, "Usuarios", uid);
-      const userSnap = await getDoc(userRef);
-      if (!userSnap.exists()) return;
-  
-      const grupoId = userSnap.data().grupoId;
-  
-      const primeiroDiaMes = new Date(anoAtual, mesAtual, 1);
-      const ultimoDiaMes = new Date(anoAtual, mesAtual + 1, 0);
-  
-      let total = 0;
-      let concluidas = 0;
-  
-      for (let dia = 1; dia <= ultimoDiaMes.getDate(); dia++) {
-        const data = new Date(anoAtual, mesAtual, dia);
-        const diaFormatado = `${data.getFullYear()}-${(data.getMonth() + 1)
-          .toString()
-          .padStart(2, "0")}-${data.getDate().toString().padStart(2, "0")}`;
-  
-        const docRef = doc(db, "Calendário", diaFormatado);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const tarefas = docSnap.data()?.tarefas || [];
-          const tarefasGrupo = tarefas.filter((t: any) => t.grupoId === grupoId);
-          total += tarefasGrupo.length;
-          concluidas += tarefasGrupo.filter((t: any) => t.concluido).length;
-        }
+  const carregarTarefasDoMes = useCallback(async () => {
+    setLoadingMetrica(true);
+
+    const uid = auth.currentUser?.uid;
+    if (!uid) return;
+
+    const userRef = doc(db, "Usuarios", uid);
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) return;
+
+    const grupoId = userSnap.data().grupoId;
+
+    const primeiroDiaMes = new Date(anoAtual, mesAtual, 1);
+    const ultimoDiaMes = new Date(anoAtual, mesAtual + 1, 0);
+
+    let total = 0;
+    let concluidas = 0;
+
+    for (let dia = 1; dia <= ultimoDiaMes.getDate(); dia++) {
+      const data = new Date(anoAtual, mesAtual, dia);
+      const diaFormatado = `${data.getFullYear()}-${(data.getMonth() + 1).toString().padStart(2, "0")}-${data.getDate().toString().padStart(2, "0")}`;
+
+      const docRef = doc(db, "Calendário", diaFormatado);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const tarefas = docSnap.data()?.tarefas || [];
+        const tarefasGrupo = tarefas.filter((t: any) => t.grupoId === grupoId);
+        total += tarefasGrupo.length;
+        concluidas += tarefasGrupo.filter((t: any) => t.concluido).length;
       }
-  
-      setTotalMes(total);
-      setDesempenho(total > 0 ? Math.round((concluidas / total) * 100) : 0);
-      setLoadingMetrica(false);
-    };
-  
+    }
+
+    setTotalMes(total);
+    setDesempenho(total > 0 ? Math.round((concluidas / total) * 100) : 0);
+    setLoadingMetrica(false);
+  }, [anoAtual, mesAtual]);
+
+  useEffect(() => {
     carregarTarefasDoMes();
-  }, [mesAtual]);
+  }, [carregarTarefasDoMes]);
+
+  const [alertaVisivel, setAlertaVisivel] = useState(false);
+  const [mensagemAlerta, setMensagemAlerta] = useState("");
+
+  const recarregarDados = () => {
+    obterTarefasPorDia(dataSelecionada);
+    carregarTarefasDoMes();
+  };
+
+    useLastActionListener({
+    edit: () => {
+      recarregarDados();
+      setMensagemAlerta("Tarefa editada com sucesso!");
+      setAlertaVisivel(true);
+    },
+    delete: () => {
+      recarregarDados();
+      setMensagemAlerta("Tarefa excluída com sucesso!");
+      setAlertaVisivel(true);
+    },
+  });
+
 
   const diasDoMes = Array.from({ length: new Date(anoAtual, mesAtual + 1, 0).getDate() }, (_, i) => i + 1);
 
@@ -546,6 +571,7 @@ const PaginaCalendario = () => {
                   menor={true}
                   instanceId={tarefa.instanceId}
                   dataInstancia={`${dataSelecionada.getFullYear()}-${(dataSelecionada.getMonth() + 1).toString().padStart(2, "0")}-${dataSelecionada.getDate().toString().padStart(2, "0")}`}
+                  onTaskDeleted={recarregarDados}
                 />
               );
             })
@@ -554,6 +580,13 @@ const PaginaCalendario = () => {
           )}
         </View>
       </ScrollView>
+
+      <AlertaSimples
+        visible={alertaVisivel}
+        message={mensagemAlerta}
+        onClose={() => setAlertaVisivel(false)}
+      />
+
     </PaginaWrapper>
   );
 };

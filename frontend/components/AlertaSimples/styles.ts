@@ -13,9 +13,7 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderRadius: 8,
         elevation: 5,
-        flexDirection: "row",
         justifyContent: "space-between",
-        alignItems: "center"
       },
       
       alerta_texto: {

@@ -17,6 +17,7 @@ import { getCoresDoTema } from "@/frontend/utils/temaStyles";
 import { criarNotificacaoAtribuicao } from "@/backend/services/notificacoes/CriarNotifAtribuicao";
 import { criarNotificacaoRemocaoTarefa } from "@/backend/services/notificacoes/CriarNotifRemocaoTarefa";
 import { criarNotificacaoEdicaoTarefa } from "@/backend/services/notificacoes/CriarNotifEditadoTarefa";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DiasDaSemana = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
 
@@ -347,17 +348,15 @@ try {
         await criarNotificacaoRemocaoTarefa(removidos, nome);
       }
       
-      Alert.alert("Sucesso", "Tarefa editada com sucesso!", [
-        { text: "OK", onPress: () => navigation.goBack() },
-      ]);
+      await AsyncStorage.setItem("lastAction", "edit");
+      navigation.goBack()
 
     } else {
-      await criarTarefa(novaTarefa);
-      const destinatarios = integrantesFinal.filter((id) => id !== uid);
-      await criarNotificacaoAtribuicao(destinatarios, nome);
-      Alert.alert("Sucesso", "Tarefa criada com sucesso!", [
-        { text: "OK", onPress: () => navigation.goBack() },
-      ]);
+        await criarTarefa(novaTarefa);
+        const destinatarios = integrantesFinal.filter((id) => id !== uid);
+        await criarNotificacaoAtribuicao(destinatarios, nome);
+        await AsyncStorage.setItem("lastAction", "create");
+        navigation.goBack()
     }
 
     if (alarmeAtivado) {

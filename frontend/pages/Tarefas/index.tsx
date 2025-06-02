@@ -1,3 +1,5 @@
+// src/frontend/pages/Tarefas/index.tsx
+
 import React, { useCallback, useEffect, useState } from "react";
 import { Text, ScrollView, TouchableOpacity, View } from "react-native";
 import { doc, getDoc } from "firebase/firestore";
@@ -15,7 +17,9 @@ import { auth, db } from "../../../backend/services/shared/firebaseConfigApp";
 import { useTema } from "@/frontend/hooks/useTema";
 import PerguntaTarefaModal from "@/frontend/components/ModalPerguntaTarefa";
 import PaginaWrapper from "@/frontend/components/PaginaWrapper";
-import SkeletonLoaderCard from "@/frontend/components/SkeletonLoaderCard"; // novo
+import SkeletonLoaderCard from "@/frontend/components/SkeletonLoaderCard";
+import AlertaSimples from "@/frontend/components/AlertaSimples";
+import { useLastActionListener } from "@/frontend/hooks/useLastActionListener";
 
 const PaginaTarefas = () => {
   const [tarefas, setTarefas] = useState<any[]>([]);
@@ -24,6 +28,9 @@ const PaginaTarefas = () => {
 
   const { temaUsuario, getTemaStyle } = useTema();
   const { bgClass, colorClass } = getTemaStyle(temaUsuario);
+
+  const [alertaVisivel, setAlertaVisivel] = useState(false);
+  const [mensagemAlerta, setMensagemAlerta] = useState("");
 
   const carregarTarefas = async () => {
     setLoading(true);
@@ -45,11 +52,11 @@ const PaginaTarefas = () => {
         tarefasDoGrupo.map(async (t: any) => {
           const integrantesCompletos = await Promise.all(
             (t.integrantes || []).map(async (userId: string) => {
-              const userRef = doc(db, "Usuarios", userId);
-              const userSnap = await getDoc(userRef);
-              const userData = userSnap.exists() ? userSnap.data() : { apelido: "Desconhecido", tema: "azul" };
-              const { cor_primaria, cor_secundaria } = getCoresDoTema(userData.tema);
-              return { uid: userId, nome: userData.apelido, cor_primaria, cor_secundaria };
+              const uRef = doc(db, "Usuarios", userId);
+              const uSnap = await getDoc(uRef);
+              const uData = uSnap.exists() ? uSnap.data() : { apelido: "Desconhecido", tema: "azul" };
+              const { cor_primaria, cor_secundaria } = getCoresDoTema(uData.tema);
+              return { uid: userId, nome: uData.apelido, cor_primaria, cor_secundaria };
             })
           );
           return { ...t, integrantes: integrantesCompletos };
@@ -64,15 +71,41 @@ const PaginaTarefas = () => {
     }
   };
 
-  useEffect(() => { carregarTarefas(); }, []);
-  useFocusEffect(useCallback(() => { carregarTarefas(); }, []));
+  useEffect(() => {
+    carregarTarefas();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      carregarTarefas();
+    }, [])
+  );
 
   const tarefasPorFrequencia = {
     diariamente: tarefas.filter((t) => t.frequencia?.tipo === "diariamente"),
-    semanal: tarefas.filter((t) => t.frequencia?.tipo === "semanal"),
-    intervalo: tarefas.filter((t) => t.frequencia?.tipo === "intervalo"),
-    anualmente: tarefas.filter((t) => t.frequencia?.tipo === "anualmente"),
+    semanal:     tarefas.filter((t) => t.frequencia?.tipo === "semanal"),
+    intervalo:   tarefas.filter((t) => t.frequencia?.tipo === "intervalo"),
+    anualmente:  tarefas.filter((t) => t.frequencia?.tipo === "anualmente"),
   };
+
+  useLastActionListener({
+    create: () => {
+      carregarTarefas();
+      setMensagemAlerta("Tarefa criada com sucesso!");
+      setAlertaVisivel(true);
+    },
+
+    edit: () => {
+      carregarTarefas();
+      setMensagemAlerta("Tarefa editada com sucesso!");
+      setAlertaVisivel(true);
+    },
+    delete: () => {
+      carregarTarefas();
+      setMensagemAlerta("Tarefa excluída com sucesso!");
+      setAlertaVisivel(true);
+    },
+  });
 
   const SecaoTarefa = ({
     titulo,
@@ -103,7 +136,7 @@ const PaginaTarefas = () => {
               dataInstancia={tarefa.dataCriacao}
               onTaskDeleted={carregarTarefas}
               semComentarios={true}
-              instanceId=""
+              instanceId={""}
             />
           ))
         ) : (
@@ -119,7 +152,9 @@ const PaginaTarefas = () => {
         style={globalStyles.containerPagina}
         contentContainerStyle={{ paddingBottom: 140, paddingTop: 80, flexGrow: 1 }}
       >
-        <Text style={[globalStyles.titulo, globalStyles.mbottom32]}>Tarefas do Grupo</Text>
+        <Text style={[globalStyles.titulo, globalStyles.mbottom32]}>
+          Tarefas do Grupo
+        </Text>
 
         <TouchableOpacity
           style={[styles.botao_adicionar, { backgroundColor: bgClass.backgroundColor }]}
@@ -157,6 +192,12 @@ const PaginaTarefas = () => {
           setVisible={setModalPerguntaTarefaVisivel}
         />
       </ScrollView>
+
+      <AlertaSimples
+        visible={alertaVisivel}
+        message={mensagemAlerta}
+        onClose={() => setAlertaVisivel(false)}
+      />
     </PaginaWrapper>
   );
 };

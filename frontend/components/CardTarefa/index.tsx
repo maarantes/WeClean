@@ -19,6 +19,7 @@ import ComentarioModal from "../ModalComentar";
 import { DeleteConfirmationModal } from "./excluirTarefaModal";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/frontend/routes";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export interface Integrante {
   uid: string;
@@ -212,6 +213,7 @@ export const CardTarefa: React.FC<CardTarefaProps> = ({
             await excluirTarefa(id);
             setDeleting(false);
             setOpenDelete(false);
+            await AsyncStorage.setItem("lastAction", "delete");
             onTaskDeleted?.();
           }}
           onCancel={() => setOpenDelete(false)}
