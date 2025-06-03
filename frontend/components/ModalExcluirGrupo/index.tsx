@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, ActivityIndicator, Dimensions, TouchableWithoutFeedback } from "react-native";
 import Modal from "react-native-modal";
 import { styles } from "./styles";
+import LixeiraIcon from "../../../assets/images/excluir.svg";
 
 interface ModalExcluirGrupoProps {
   visible: boolean;
@@ -16,7 +17,7 @@ const ModalExcluirGrupo: React.FC<ModalExcluirGrupoProps> = ({ visible, setVisib
   // Começa o countdown sempre que o modal abrir
   useEffect(() => {
     if (!visible) {
-      setCountdown(10);
+      setCountdown(5);
       setLoading(false);
       return;
     }
@@ -75,9 +76,13 @@ const ModalExcluirGrupo: React.FC<ModalExcluirGrupoProps> = ({ visible, setVisib
             {loading ? (
               <ActivityIndicator color="#fff" />
             ) : (
+              <>
+              <LixeiraIcon width={24} height={24} color="white" />
               <Text style={styles.modal_botao_sair_texto}>
                 {countdown > 0 ? `Excluir (${countdown})` : "Excluir"}
               </Text>
+              </>
+
             )}
           </TouchableOpacity>
 

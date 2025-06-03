@@ -87,7 +87,7 @@ export const styles = StyleSheet.create({
 
   botao_convidar: {
     width: "100%",
-    backgroundColor: "black",
+    backgroundColor: "#2274A5",
   },
 
   botao_menor: {
@@ -100,11 +100,11 @@ export const styles = StyleSheet.create({
 
   botao_sair: {
     width: "49%",
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#E9F1F6",
   },
 
   botao_sair_texto: {
-    color: "#606060"
+    color: "#2274A5"
   },
 
   botao_excluir: {
@@ -113,7 +113,7 @@ export const styles = StyleSheet.create({
   },
 
   botao_excluir_texto: {
-    color: "#C22E63"
+    color: "#E7516E"
   },
 
   botao_entrar: {

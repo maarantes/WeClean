@@ -10,11 +10,12 @@ import { auth, db } from "@/backend/services/shared/firebaseConfigApp";
 import { doc, getDoc } from "firebase/firestore";
 import Badge from "../Badge";
 import { getCoresDoTema } from "@/frontend/utils/temaStyles";
+import SairIcon from "../../../assets/images/sair.svg";
 
 interface ModalSairGrupoProps {
   visible: boolean;
   setVisible: (v: boolean) => void;
-  onSuccess?: () => void; // Adicionando o onSuccess!
+  onSuccess?: () => void;
 }
 
 type NavigationProps = StackNavigationProp<RootStackParamList, "Grupo">;
@@ -121,7 +122,7 @@ const ModalSairGrupo: React.FC<ModalSairGrupoProps> = ({ visible, setVisible, on
           <>
             <Text style={styles.modal_titulo}>Sair do Grupo</Text>
             <Text style={styles.modal_texto}>
-              Antes de sair do grupo, escolha uma pessoa para ser o novo administrador.
+              Antes de sair do grupo, escolha uma pessoa para ser a nova administradora.
             </Text>
 
             <View style={styles.lista_integrantes}>
@@ -158,7 +159,10 @@ const ModalSairGrupo: React.FC<ModalSairGrupoProps> = ({ visible, setVisible, on
                 {saindo ? (
                   <ActivityIndicator size="small" color="#FFFFFF" />
                 ) : (
-                  <Text style={styles.modal_botao_sair_texto}>Confirmar e Sair</Text>
+                  <>
+                  <SairIcon width={20} height={18} color="white" strokeWidth={1.5} />
+                  <Text style={styles.modal_botao_sair_texto}>Escolher e Sair</Text>
+                  </>
                 )}
               </TouchableOpacity>
 
@@ -177,21 +181,24 @@ const ModalSairGrupo: React.FC<ModalSairGrupoProps> = ({ visible, setVisible, on
               Você não fará mais parte deste grupo.
             </Text>
 
-            <View style={styles.modal_botoes}>
+            <View style={[styles.modal_botoes, styles.gap_menor]}>
               <TouchableOpacity
-                style={styles.modal_botao_sair}
+                style={[styles.modal_botao_sair, styles.menor]}
                 onPress={handleSairDoGrupo}
                 disabled={saindo}
               >
                 {saindo ? (
                   <ActivityIndicator size="small" color="#FFFFFF" />
                 ) : (
-                  <Text style={styles.modal_botao_sair_texto}>Sair</Text>
+                  <>
+                    <SairIcon width={20} height={18} color="white" strokeWidth={1.5} />
+                    <Text style={styles.modal_botao_sair_texto}>Sair</Text>
+                  </>
                 )}
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.modal_botao_cancelar}
+                style={[styles.modal_botao_cancelar, styles.menor]}
                 onPress={fecharModal}
               >
                 <Text style={styles.modal_botao_cancelar_texto}>Cancelar</Text>

@@ -92,10 +92,6 @@ export const styles = StyleSheet.create({
     color: "#ffffff",
   },
 
-  roxo: {
-    color: "black"
-  },
-
   // Modal
 
   modal_container: {
@@ -153,7 +149,7 @@ export const styles = StyleSheet.create({
 },
 
   texto_integrantes_extras: {
-    backgroundColor: "#E8E8E8",
+    backgroundColor: "#F0F0F0",
     paddingVertical: 4,
     paddingHorizontal: 8,
     color: "#808080",
@@ -216,7 +212,7 @@ export const styles = StyleSheet.create({
     gap: 12,
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: "black",
+    backgroundColor: "#2274A5",
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
@@ -233,7 +229,7 @@ export const styles = StyleSheet.create({
     gap: 12,
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: "#FBDFE4",
+    backgroundColor: "#FDEEF1",
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
@@ -241,7 +237,7 @@ export const styles = StyleSheet.create({
   },
 
   detalhe_botao_excluir_texto: {
-    color: "#C22E63",
+    color: "#E7516E",
     fontFamily: "Inter-SemiBold"
   },
 
@@ -250,7 +246,7 @@ export const styles = StyleSheet.create({
     gap: 12,
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: "black",
+    backgroundColor: "#2274A5",
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
@@ -337,8 +333,9 @@ export const styles = StyleSheet.create({
   modal_excluir_botao_excluir: {
     flexDirection: "row",
     paddingVertical: 8,
+    gap: 8,
     paddingHorizontal: 16,
-    backgroundColor: "#FBDFE4",
+    backgroundColor: "#E7516E",
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
@@ -346,7 +343,7 @@ export const styles = StyleSheet.create({
   },
 
   modal_botao_excluir_texto: {
-    color: "#E7516E",
+    color: "white",
     fontFamily: "Inter-SemiBold"
   },
 
@@ -359,7 +356,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#E9F1F6",
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
@@ -367,7 +364,7 @@ export const styles = StyleSheet.create({
   },
 
   modal_botao_cancelar_texto: {
-    color: "#808080",
+    color: "#2274A5",
     fontFamily: "Inter-SemiBold"
   },
 

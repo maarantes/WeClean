@@ -22,15 +22,20 @@ modal_container: {
     textAlign: "center"
   },
 
-  modal_botao_sair: {
+   modal_botao_sair: {
     flexDirection: "row",
     paddingVertical: 8,
+    gap: 8,
     paddingHorizontal: 16,
-    backgroundColor: "black",
+    backgroundColor: "#2274A5",
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
-    width: "48%"
+    width: "55%"
+  },
+
+  menor: {
+    width: "45%"
   },
 
   modal_botao_sair_texto: {
@@ -41,22 +46,26 @@ modal_container: {
   modal_botoes: {
     width: "100%",
     flexDirection: "row",
-    gap: "4%"
+    gap: "5%"
+  },
+
+  gap_menor: {
+    gap: 32
   },
 
   modal_botao_cancelar: {
     flexDirection: "row",
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#E9F1F6",
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
-    width: "45%"
+    width: "40%"
   },
 
   modal_botao_cancelar_texto: {
-    color: "#808080",
+    color: "#2274A5",
     fontFamily: "Inter-SemiBold"
   },
 
@@ -77,7 +86,7 @@ modal_container: {
     borderRadius: 8,
     textAlign: "center",
     fontFamily: "Inter-Medium",
-    marginBottom: -12,
+    marginBottom: -8,
     color: "#404040"
   },
 

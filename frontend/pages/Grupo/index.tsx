@@ -16,7 +16,7 @@ import SetaBackIcon from "../../../assets/images/setaBack.svg";
 import GrupoPessoaIcon from "../../../assets/images/grupo_pessoa.svg";
 import GrupoSemPessoaIcon from "../../../assets/images/grupo_sem_pessoa.svg";
 import ConvidarIcon from "../../../assets/images/convidar.svg";
-import SairIcon from "../../../assets/images/sair.svg";1
+import GrupoIcon from "../../../assets/images/grupo.svg";
 import AdminIcon from "../../../assets/images/admin.svg";
 import PerfilIcon from "../../../assets/images/user.svg";
 import FecharIcon from "../../../assets/images/fechar.svg";
@@ -200,7 +200,7 @@ const PaginaGrupo = () => {
                 style={[styles.botao_base, styles.botao_sair, styles.botao_menor]}
                 onPress={() => setEntrarGrupoModalActive(true)}
               >
-                <SairIcon width={20} height={20} color={"#606060"}/>
+                <GrupoIcon width={20} height={20} color={"#2274A5"}/>
                 <Text style={[styles.botao_base_texto, styles.botao_sair_texto]}>
                   Trocar Grupo
                 </Text>

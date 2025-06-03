@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
 
   botao_semana: {
     alignItems: "center",
-    backgroundColor: "black",
+    backgroundColor: "#2274A5",
     padding: 8,
     width: "50%",
     borderTopLeftRadius: 4,
@@ -115,7 +115,7 @@ export const styles = StyleSheet.create({
   },
 
   dia_botao: {
-    backgroundColor: "black",
+    backgroundColor: "#2274A5",
     width: "18%",
     paddingVertical: 12,
     borderRadius: 2,

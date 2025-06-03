@@ -5,7 +5,7 @@ export type TemaCor =
   | "undefined" | "azul" | "vinho" | "rosa" | "amarelo" | "laranja"
   | "verde" | "turquesa" | "menta" | "roxo" | "violeta";
 
-// retorna o estilo de background (para componentes View)
+// Retorna o estilo de background (para componentes View)
 
 export const getTemaBgStyle = (
   tema: TemaCor,
@@ -44,4 +44,4 @@ export const getCoresDoTema = (
       cor_primaria: String(bgStyle.backgroundColor),
       cor_secundaria: String(textStyle.color),
     };
-  };  
+};  

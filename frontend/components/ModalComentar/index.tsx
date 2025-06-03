@@ -6,6 +6,8 @@ import { styles } from "./styles";
 import { auth } from "@/backend/services/shared/firebaseConfigApp";
 import { criarComentario } from "../../../backend/services/comentario/criarComentario"
 
+import EnviarIcon from "../../../assets/images/enviar.svg"
+
 interface ComentarioModalProps {
   visible: boolean;
   setVisible: (v: boolean) => void;
@@ -81,7 +83,10 @@ const ComentarioModal: React.FC<ComentarioModalProps> = ({
           {loading ? (
               <ActivityIndicator size="small" color="#FFFFFF" />
             ) : (
+              <>
+              <EnviarIcon color="white" strokeWidth={1.5} />
               <Text style={styles.modal_botao_sair_texto}>Enviar</Text>
+              </>
             )}
           </TouchableOpacity>
           <TouchableOpacity style={styles.modal_botao_cancelar} onPress={() => setVisible(false)}>

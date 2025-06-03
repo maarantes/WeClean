@@ -66,7 +66,7 @@ export const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         width: "48%",
-        backgroundColor: "black",
+        backgroundColor: "#2274A5",
         borderRadius: 4
     },
 
@@ -138,7 +138,7 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 8,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "black",
+        backgroundColor: "#2274A5",
         borderRadius: 4,
         marginRight: 8
     },
@@ -167,6 +167,7 @@ export const styles = StyleSheet.create({
 
     botao_frequencia_semanal: {
         flexDirection: "row",
+        backgroundColor: "#2274A5",
         paddingVertical: 8,
         justifyContent: "center",
         alignItems: "center",

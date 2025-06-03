@@ -10,7 +10,6 @@ import ExcluirIcon from "../../../assets/images/excluir.svg";
 import ComentarIcon from "../../../assets/images/comentar.svg";
 import Badge from "../Badge";
 import CaixaComentario from "../Comentario";
-import { useTema } from "@/frontend/hooks/useTema";
 import { Timestamp } from "firebase/firestore";
 
 interface DetalhesModalProps {
@@ -47,8 +46,6 @@ export function DetalhesModal({
   semComentarios
 }: DetalhesModalProps) {
   const { nome, descricao, horario, alarme, freq_texto, integrantesOrdenados } = tarefa;
-  const { temaUsuario, getTemaStyle } = useTema();
-  const { bgClass, colorClass } = getTemaStyle(temaUsuario);
 
   return (
     <Modal
@@ -78,7 +75,7 @@ export function DetalhesModal({
             {aba === "detalhes" ? (
                 <>  
                 <TouchableOpacity style={styles.detalhe_botao_excluir} onPress={onDelete}>
-                    <ExcluirIcon width={24} height={24} color="#C22E63" />
+                    <ExcluirIcon width={24} height={24} color="#E7516E" />
                     <Text style={styles.detalhe_botao_excluir_texto}>Excluir</Text>
                 </TouchableOpacity>
 
@@ -88,9 +85,9 @@ export function DetalhesModal({
                 </TouchableOpacity>
                 </>
             ) : (
-                <TouchableOpacity style={[styles.detalhe_botao_comentar, bgClass]} onPress={onOpenComment}>
-                    <ComentarIcon width={24} height={24} color={colorClass.color} />
-                    <Text style={[styles.detalhe_botao_comentar_texto, { color: colorClass.color }]}>Escrever Comentário</Text>
+                <TouchableOpacity style={styles.detalhe_botao_comentar} onPress={onOpenComment}>
+                    <ComentarIcon width={24} height={24} color={"white"} />
+                    <Text style={styles.detalhe_botao_comentar_texto}>Escrever Comentário</Text>
                 </TouchableOpacity>
             )}
         </View>

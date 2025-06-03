@@ -1,7 +1,7 @@
-// src/components/CardTarefa/DeleteConfirmationModal.tsx
 import React from "react";
 import { View, Text, TouchableOpacity, ActivityIndicator, Dimensions } from "react-native";
 import Modal from "react-native-modal";
+import ExcluirIcon from "../../../assets/images/excluir.svg";
 import { styles } from "./styles";
 
 interface DeleteModalProps {
@@ -38,7 +38,10 @@ export function DeleteConfirmationModal({
             {loading ? (
               <ActivityIndicator size="small" color="#E7516E" />
             ) : (
+              <>
+              <ExcluirIcon width={24} height={24} color="white" />
               <Text style={styles.modal_botao_excluir_texto}>Excluir</Text>
+              </>
             )}
           </TouchableOpacity>
           <TouchableOpacity

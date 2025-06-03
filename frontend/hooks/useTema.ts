@@ -9,7 +9,6 @@ const isTemaCor = (tema: string): tema is TemaCor => temasValidos.includes(tema 
 
 export const useTema = () => {
   const [temaUsuario, setTemaUsuario] = useState<TemaCor>("undefined");
-  const [aplicarTemaApp, setAplicarTemaApp] = useState<boolean>(true);
   const [loadingTema, setLoadingTema] = useState(true);
 
   useEffect(() => {
@@ -20,10 +19,8 @@ export const useTema = () => {
           setTemaUsuario(tema);
         }
 
-        const aplicarTemaString = await AsyncStorage.getItem("@aplicarTemaApp");
-        setAplicarTemaApp(aplicarTemaString === "true");
       } finally {
-        setLoadingTema(false); // Marca como carregado
+        setLoadingTema(false);
       }
     };
 
@@ -31,7 +28,7 @@ export const useTema = () => {
   }, []);
 
 const getTemaStyle = (tema: TemaCor): { bgClass: { backgroundColor: string }, colorClass: { color: string } } => {
-  // Enquanto carrega, aplica um tema neutro
+
   if (loadingTema) {
     return {
       bgClass: globalStyles["tema_bg_undefined_secundario"] as { backgroundColor: string },
@@ -39,14 +36,6 @@ const getTemaStyle = (tema: TemaCor): { bgClass: { backgroundColor: string }, co
     };
   }
 
-  if (!aplicarTemaApp) {
-    return {
-      bgClass: globalStyles["tema_bg_padrao_secundario"] as { backgroundColor: string },
-      colorClass: globalStyles["tema_color_padrao_primario"] as { color: string },
-    };
-  }
-
-  // Caso contrário, aplica o tema escolhido
   return {
     bgClass: globalStyles[`tema_bg_${tema}_secundario`] as { backgroundColor: string },
     colorClass: globalStyles[`tema_color_${tema}_primario`] as { color: string },
@@ -56,7 +45,6 @@ const getTemaStyle = (tema: TemaCor): { bgClass: { backgroundColor: string }, co
 
   return {
     temaUsuario,
-    aplicarTemaApp,
     getTemaStyle,
     loadingTema,
   };

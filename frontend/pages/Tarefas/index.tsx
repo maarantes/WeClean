@@ -14,7 +14,6 @@ import CardTarefa from "@/frontend/components/CardTarefa";
 import { formatarFrequenciaTexto } from "@/frontend/utils/formatarFrequencia";
 import { obterTarefas } from "../../../backend/services/tarefas/obterTarefas";
 import { auth, db } from "../../../backend/services/shared/firebaseConfigApp";
-import { useTema } from "@/frontend/hooks/useTema";
 import PerguntaTarefaModal from "@/frontend/components/ModalPerguntaTarefa";
 import PaginaWrapper from "@/frontend/components/PaginaWrapper";
 import SkeletonLoaderCard from "@/frontend/components/SkeletonLoaderCard";
@@ -25,9 +24,6 @@ const PaginaTarefas = () => {
   const [tarefas, setTarefas] = useState<any[]>([]);
   const [modalPerguntaTarefaVisivel, setModalPerguntaTarefaVisivel] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  const { temaUsuario, getTemaStyle } = useTema();
-  const { bgClass, colorClass } = getTemaStyle(temaUsuario);
 
   const [alertaVisivel, setAlertaVisivel] = useState(false);
   const [mensagemAlerta, setMensagemAlerta] = useState("");
@@ -157,11 +153,11 @@ const PaginaTarefas = () => {
         </Text>
 
         <TouchableOpacity
-          style={[styles.botao_adicionar, { backgroundColor: bgClass.backgroundColor }]}
+          style={styles.botao_adicionar}
           onPress={() => setModalPerguntaTarefaVisivel(true)}
         >
-          <TarefaIcon width={20} height={20} color={colorClass.color} />
-          <Text style={[styles.botao_adicionar_texto, { color: colorClass.color }]}>
+          <TarefaIcon width={20} height={20} color={"white"} />
+          <Text style={styles.botao_adicionar_texto}>
             Criar Nova Tarefa
           </Text>
         </TouchableOpacity>

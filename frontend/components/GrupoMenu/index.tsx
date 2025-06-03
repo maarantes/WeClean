@@ -95,7 +95,7 @@ const GrupoMenu: React.FC<GrupoMenuProps> = ({
                 style={{
                   marginLeft: 20,
                   fontSize: 14,
-                  color: sozinho ? "#C4C4C4" : "#C22E63",
+                  color: sozinho ? "#C4C4C4" : "#E7516E",
                   fontFamily: "Inter-Medium",
                 }}
               >

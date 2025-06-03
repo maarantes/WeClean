@@ -52,7 +52,6 @@ const PaginaPerfil = () => {
 
   const [editarModalVisible, setEditarModalVisible] = useState(false);
   const [tipoEdicao, setTipoEdicao] = useState<"apelido" | "email">("apelido");
-  const [aplicarTemaApp, setAplicarTemaApp] = useState(false);
 
 
   const temas: TemaCardProps[] = [
@@ -95,7 +94,7 @@ const PaginaPerfil = () => {
         <Conteudo />
       </TouchableOpacity>
     ) : (
-      <View style={styles.retangulo_container}>
+      <View style={[styles.retangulo_container, styles.maior]}>
         <Conteudo />
       </View>
     );
@@ -146,7 +145,6 @@ const PaginaPerfil = () => {
     });
 
     await AsyncStorage.setItem("@userTema", temaSelecionado.cor);
-    await AsyncStorage.setItem("@aplicarTemaApp", aplicarTemaApp.toString());
 
     setTemaAtual(temaSelecionado.cor);
     setCardModalVisible(false);
@@ -219,9 +217,9 @@ const PaginaPerfil = () => {
               <Text style={styles.input_label}>Tema da Conta</Text>
               <View style={styles.tema_wrapper}>
                 <TemaCard nome={capitalizar(temaAtual)} cor={temaAtual} />
-                <TouchableOpacity style={styles.botao_editar} onPress={() => setCardModalVisible(true)}>
+                <TouchableOpacity style={[styles.botao_editar, getTemaBgStyle(temaAtual, "primario")]} onPress={() => setCardModalVisible(true)}>
                   <Text style={styles.botao_editar_texto}>Editar</Text>
-                  <EditarIcon width={24} height={24} color={"#808080"} />
+                  <EditarIcon width={24} height={24} color={"white"} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -231,9 +229,9 @@ const PaginaPerfil = () => {
               <Text style={styles.input_label}>Seu Grupo</Text>
               <View style={styles.tema_wrapper}>
                 <Text style={styles.grupo_texto}>{grupoNome}</Text>
-                <TouchableOpacity style={styles.botao_editar} onPress={() => navigation.navigate("Grupo")}>
-                  <Text style={styles.botao_editar_texto}>Gerenciar</Text>
-                  <EncaminharIcon width={18} height={18} color={"#808080"} />
+                <TouchableOpacity style={[styles.botao_editar, getTemaBgStyle(temaAtual, "primario")]} onPress={() => navigation.navigate("Grupo")}>
+                  <Text style={styles.botao_editar_texto}>Ver</Text>
+                  <EncaminharIcon width={18} height={18} color="white" />
                 </TouchableOpacity>
               </View>
             </View>
@@ -297,18 +295,6 @@ const PaginaPerfil = () => {
             <Text style={{ color: "#404040" }}>Tema selecionado: </Text>
             {temaSelecionado?.nome ?? "Nenhum"}
           </Text>
-
-          <TouchableOpacity style={styles.parte_checkbox} onPress={() => setAplicarTemaApp(prev => !prev)}>
-            <Checkbox
-              value={aplicarTemaApp}
-              onValueChange={setAplicarTemaApp}
-              color={aplicarTemaApp ? "#115614" : undefined}
-              style={{ marginRight: 8 }}
-            />
-            <Text style={{ color: "#606060", fontSize: 14, fontFamily: "Inter-Medium" }}>
-              Aplicar tema em todo o aplicativo
-            </Text>
-          </TouchableOpacity>
           
           <View style={styles.parte_baixo}>
             <TouchableOpacity style={[globalStyles.botao_primario, styles.mesma_largura]} onPress={salvarTema}>

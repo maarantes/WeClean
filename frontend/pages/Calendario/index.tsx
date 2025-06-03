@@ -57,9 +57,6 @@ const PaginaCalendario = () => {
   const [loadingTarefas, setLoadingTarefas] = useState(true);
   const [semanaAtiva, setSemanaAtiva] = useState<string>("1");
 
-  const { temaUsuario, aplicarTemaApp,  getTemaStyle, loadingTema } = useTema();
-  const { bgClass, colorClass } = getTemaStyle(temaUsuario);
-
   useEffect(() => {
     const calcularSemanas = () => {
       const primeiroDiaDoMes = new Date(anoAtual, mesAtual, 1).getDay();
@@ -261,13 +258,7 @@ const PaginaCalendario = () => {
     <View style={styles.linha_semana}>
       <TouchableOpacity
         style={[
-          styles.botao_semana,
-          {
-            backgroundColor: aplicarTemaApp
-            ? colorClass.color
-            : bgClass.backgroundColor,
-          },
-          !ativa && styles.desativado
+          styles.botao_semana, !ativa && styles.desativado
         ]}
         onPress={onPress}
       >
@@ -416,11 +407,7 @@ const PaginaCalendario = () => {
           <View style={styles.container_cima_dir}>
             <View>
               <Text style={styles.mes}>MÊS</Text>
-              <Text style={[globalStyles.titulo, {
-                color: aplicarTemaApp
-                  ? colorClass.color
-                  : bgClass.backgroundColor,
-              },]}>
+              <Text style={[globalStyles.titulo, {color: "#2274A5"}]}>
                 {nomesDosMeses[mesAtual]}
               </Text>
             </View>
@@ -443,7 +430,7 @@ const PaginaCalendario = () => {
           </View>
         </View>
 
-          {/* Container de dias roláveis */}
+        {/* Container de dias roláveis */}
         <View style={{ position: "relative", width: "100%"}}>
           <FlatList 
             ListHeaderComponent={<View style={{ width: lateralPadding }} />}
@@ -468,10 +455,10 @@ const PaginaCalendario = () => {
                 <Text
                   style={[
                     styles.diaTexto,
-                    dataSelecionada.getDate() === dia && { color: colorClass.color },
+                    dataSelecionada.getDate() === dia && { color: "white" },
                   ]}
                 >
-                  {dia}
+                  {String(dia).padStart(2, "0")}
                 </Text>
 
                 {/* Círculo abaixo do dia escolhido */}
@@ -483,7 +470,7 @@ const PaginaCalendario = () => {
                     fill="none"
                     style={styles.circuloIcon}
                   >
-                    <Circle cx="22" cy="22" r="18" fill={bgClass.backgroundColor} />
+                    <Circle cx="22" cy="22" r="18" fill={"#2274A5"} />
                   </Svg>
                 )}
               </TouchableOpacity>
@@ -519,14 +506,7 @@ const PaginaCalendario = () => {
 
         <View style={styles.container_escolher}>
           <TouchableOpacity
-            style={[
-              styles.dia_botao,
-              {
-                backgroundColor: aplicarTemaApp
-                  ? colorClass.color
-                  : bgClass.backgroundColor,
-              },
-            ]}
+            style={[styles.dia_botao]}
             onPress={handleDataAnterior}
           >
           <SetaDiaIcon width={44} color={"white"} style={styles.rotate} />
@@ -538,14 +518,7 @@ const PaginaCalendario = () => {
           </View>
 
           <TouchableOpacity
-            style={[
-              styles.dia_botao,
-              {
-                backgroundColor: aplicarTemaApp
-                  ? colorClass.color
-                  : bgClass.backgroundColor,
-              },
-            ]}
+            style={[styles.dia_botao]}
             onPress={handleDataProximo}
           >
             <SetaDiaIcon width={44} color={"white"} />

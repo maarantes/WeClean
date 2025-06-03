@@ -8,13 +8,13 @@ export const styles = StyleSheet.create({
         justifyContent: "center",
         gap: 12,
         paddingVertical: 12,
-        backgroundColor: "#F5F5F5",
+        backgroundColor: "#2274A5",
         borderRadius: 4,
         marginBottom: 40
     },
 
     botao_adicionar_texto: {
-        color: "#606060",
+        color: "white",
         fontFamily: "Inter-SemiBold",
         fontSize: 14
     },

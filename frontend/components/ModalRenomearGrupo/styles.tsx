@@ -24,8 +24,9 @@ modal_container: {
   modal_botao_sair: {
     flexDirection: "row",
     paddingVertical: 8,
+    gap: 8,
     paddingHorizontal: 16,
-    backgroundColor: "black",
+    backgroundColor: "#2274A5",
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
@@ -46,7 +47,7 @@ modal_container: {
     flexDirection: "row",
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#E9F1F6",
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
@@ -54,7 +55,7 @@ modal_container: {
   },
 
   modal_botao_cancelar_texto: {
-    color: "#808080",
+    color: "#2274A5",
     fontFamily: "Inter-SemiBold"
   },
 

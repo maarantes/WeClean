@@ -12,6 +12,8 @@ import { collection, doc, getDoc, getDocs, query, where } from "firebase/firesto
 import { entrarNoGrupoPorCodigo } from "../../../backend/services/grupos/entrarGrupo";
 import { apagarGrupoSozinho } from "../../../backend/services/grupos/apagarGrupoSozinho";
 
+import GrupoIcon from "../../../assets/images/grupo.svg";
+
 interface EntrarGrupoModalProps {
   EntrarGrupoModalActive: boolean;
   setEntrarGrupoModalActive: (visible: boolean) => void;
@@ -236,7 +238,10 @@ const EntrarGrupoModal: React.FC<EntrarGrupoModalProps> = ({
                 {loading ? (
                   <ActivityIndicator color="#FFF" />
                 ) : (
-                  <Text style={styles.modal_botao_sair_texto}>Entrar</Text>
+                  <>
+                    <GrupoIcon width={20} height={20} color="white" />
+                    <Text style={styles.modal_botao_sair_texto}>Entrar</Text>
+                  </>
                 )}
               </TouchableOpacity>
 

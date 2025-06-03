@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator, Dime
 import Modal from "react-native-modal";
 import { styles } from "./styles"; 
 import { renomearGrupo } from "@/backend/services/grupos/renomearGrupo";
+import MaisAdicaoIcon from "../../../assets/images/mais_adicao.svg";
 
 interface RenomearGrupoModalProps {
   RenomearGrupoModalActive: boolean;
@@ -63,13 +64,16 @@ const RenomearGrupoModal: React.FC<RenomearGrupoModalProps> = ({
         />
 
         <View style={styles.modal_botoes}>
-        <TouchableOpacity style={styles.modal_botao_sair} onPress={handleRenomear} disabled={loading}>
-        {loading ? (
-            <ActivityIndicator size="small" color="#FFFFFF" />
-        ) : (
-            <Text style={styles.modal_botao_sair_texto}>Confirmar</Text>
-        )}
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.modal_botao_sair} onPress={handleRenomear} disabled={loading}>
+          {loading ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
+          ) : (
+              <>
+              <MaisAdicaoIcon color="white" />
+              <Text style={styles.modal_botao_sair_texto}>Confirmar</Text>
+              </>
+          )}
+          </TouchableOpacity>
 
           <TouchableOpacity style={styles.modal_botao_cancelar} onPress={() => setRenomearGrupoModalActive(false)}>
             <Text style={styles.modal_botao_cancelar_texto}>Cancelar</Text>

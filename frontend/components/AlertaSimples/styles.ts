@@ -20,12 +20,6 @@ export const styles = StyleSheet.create({
         color: "#404040",
         fontFamily: "Inter-Medium",
         fontSize: 14
-      },
-    
-      alerta_desfazer: {
-        color: "black",
-        fontFamily: "Inter-SemiBold",
-        fontSize: 14
       }
     
 });

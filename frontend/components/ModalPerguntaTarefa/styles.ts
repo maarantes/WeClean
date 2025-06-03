@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#E9F1F6",
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
@@ -42,7 +42,7 @@ export const styles = StyleSheet.create({
   },
 
   modal_botao_cancelar_texto: {
-    color: "#808080",
+    color: "#2274A5",
     fontFamily: "Inter-SemiBold"
   },
 
@@ -57,7 +57,7 @@ export const styles = StyleSheet.create({
     padding: 24,
     borderTopLeftRadius: 8,
     borderBottomLeftRadius: 8,
-    backgroundColor: "black",
+    backgroundColor: "#2274A5",
     alignItems: "center",
     justifyContent: "center"
   },

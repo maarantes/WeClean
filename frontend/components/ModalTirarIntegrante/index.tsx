@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ActivityIndicator, Dimensions, TouchableWithoutFeedback } from "react-native";
 import Modal from "react-native-modal";
 import { styles } from "./styles";
+import RetiradoIcon from "../../../assets/images/retirado_grupo.svg"
 
 interface KickIntegranteModalProps {
   visible: boolean;
@@ -54,7 +55,10 @@ const KickIntegranteModal: React.FC<KickIntegranteModalProps> = ({
             {loading ? (
               <ActivityIndicator size="small" color="#FFFFFF" />
             ) : (
-              <Text style={styles.modal_botao_sair_texto}>Confirmar</Text>
+              <>
+                <RetiradoIcon width={20} height={20} color="white" />
+                <Text style={styles.modal_botao_sair_texto}>Confirmar</Text>
+              </>
             )}
           </TouchableOpacity>
 

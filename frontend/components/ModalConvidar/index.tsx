@@ -35,7 +35,7 @@ const ConvidarModal: React.FC<ConvidarModalProps> = ({
     if (!uid) return;
   
     try {
-      setLoading(true); // <- começa carregando
+      setLoading(true);
       const userRef = doc(db, "Usuarios", uid);
       const userSnap = await getDoc(userRef);
   
@@ -105,7 +105,7 @@ const ConvidarModal: React.FC<ConvidarModalProps> = ({
             {copiado ? (
               <ConcluirIcon width={16} height={16} color={"#FFFFFF"} />
             ) : (
-              <CopiarIcon width={20} height={20} color={"#FFFFFF"} />
+              <CopiarIcon width={20} height={20} color={"#FFFFFF"} strokeWidth={1.5} />
             )}
             <Text style={styles.modal_botao_sair_texto}>
               {copiado ? "Copiado!" : "Copiar"}

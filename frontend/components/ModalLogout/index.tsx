@@ -10,6 +10,8 @@ import { signOut } from "firebase/auth";
 import { auth } from "../../../backend/services/shared/firebaseConfigApp";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import SairIcon from "../../../assets/images/sair.svg";
+
 interface LogoutModalProps {
   LogoutModalActive: boolean;
   setLogoutModalActive: (visible: boolean) => void;
@@ -56,6 +58,7 @@ const LogoutModal: React.FC<LogoutModalProps> = ({
         </Text>
         <View style={styles.modal_botoes}>
           <TouchableOpacity style={styles.modal_botao_sair} onPress={handleLogout}>
+            <SairIcon width={20} height={18} color="white" strokeWidth={1.5} />
             <Text style={styles.modal_botao_sair_texto}>Sair</Text>
           </TouchableOpacity>
 

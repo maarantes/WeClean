@@ -36,8 +36,9 @@ export const styles = StyleSheet.create({
     },
 
     botao_tipo: {
-        backgroundColor: "#F5F5F5",
-        padding: 8,
+        backgroundColor: "#E9F1F6",
+        paddingVertical: 8,
+        paddingHorizontal: 12,
         borderRadius: 4,
     },
 
@@ -47,7 +48,7 @@ export const styles = StyleSheet.create({
     },
 
     botao_tipo_texto: {
-        color: "#808080",
+        color: "#2274A5",
         fontFamily: "Inter-Medium"
     },
 

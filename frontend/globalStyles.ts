@@ -29,22 +29,22 @@ export const globalStyles = StyleSheet.create({
 
   botao_primario: {
     flexDirection: "row",
-    gap: 16,
+    gap: 8,
     paddingVertical: 8,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
-    backgroundColor: "black",
+    backgroundColor: "#2274A5",
     borderRadius: 4,
 },
 
   botao_primario_texto: {
       color: "white",
-      fontFamily: "Inter-Medium"
+      fontFamily: "Inter-SemiBold"
   },
 
 
-
+  // Tipo Padrão
   tema_bg_padrao_primario: {
     backgroundColor: "#2274A5"
   },
@@ -59,7 +59,6 @@ export const globalStyles = StyleSheet.create({
   },
 
   // Tipo Undefined
-
   tema_bg_undefined_primario: {
     backgroundColor: "#F5F5F5"
   },

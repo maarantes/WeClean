@@ -32,7 +32,7 @@ export const styles = StyleSheet.create({
         fontFamily: "Inter-SemiBold",
         fontSize: 14,
         color: "#606060",
-        marginBottom: -10
+        marginBottom: -5
     },
 
     input: {
@@ -55,6 +55,10 @@ export const styles = StyleSheet.create({
     retangulo_container: {
         width: "48%",
         flexDirection: "row"
+    },
+
+    maior: {
+        width: "60%"
     },
 
     retangulo_tema: {
@@ -80,6 +84,7 @@ export const styles = StyleSheet.create({
 
     botao_editar: {
         flexDirection: "row",
+        width: "30%",
         gap: 16,
         paddingVertical: 8,
         justifyContent: "center",
@@ -90,12 +95,12 @@ export const styles = StyleSheet.create({
     },
 
     botao_editar_texto: {
-        color: "#808080",
+        color: "white",
         fontFamily: "Inter-SemiBold"
     },
 
     grupo_texto: {
-        width: "55%",
+        width: "60%",
         backgroundColor: "#F5F5F5",
         padding: 12,
         fontFamily: "Inter-SemiBold",
@@ -106,7 +111,6 @@ export const styles = StyleSheet.create({
     // Modal
 
     modal_container_descricao: {
-        height: "66%",
         width: "100%", 
         alignSelf: "center",
         backgroundColor: "white",
@@ -182,17 +186,6 @@ export const styles = StyleSheet.create({
 
     mesma_largura: {
         width: 200
-    },
-
-    parte_checkbox: {
-        flexDirection: "row",
-        justifyContent: "center",
-        marginTop: 16,
-        alignItems: "center",
-        backgroundColor: "#F5F5F5",
-        padding: 12,
-        borderRadius: 4,
-        gap: 12
     },
     
 });

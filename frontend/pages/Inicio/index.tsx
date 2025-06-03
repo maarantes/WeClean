@@ -58,7 +58,6 @@ const PaginaInicio = () => {
   const [MensagemAlerta, setMensagemAlerta] = useState("");
 
   const [filtro, setFiltro] = useState<"tudo" | "pendente" | "concluido">("tudo");
-  const { temaUsuario, getTemaStyle } = useTema();
 
   const carregarTarefasSemana = async () => {
     setLoading(true);
@@ -193,7 +192,6 @@ const PaginaInicio = () => {
 
         <View style={styles.wrapper_botao_tipo}>
           {["tudo", "pendente", "concluido"].map((tipo) => {
-            const { bgClass, colorClass } = getTemaStyle(temaUsuario);
 
             return (
               <TouchableOpacity
@@ -201,14 +199,14 @@ const PaginaInicio = () => {
                 style={[
                   styles.botao_tipo,
                   filtro === tipo && styles.botao_tipo_ativo,
-                  filtro === tipo && { backgroundColor: bgClass.backgroundColor },
+                  filtro === tipo && { backgroundColor: "#2274A5" },
                 ]}
                 onPress={() => setFiltro(tipo as any)}
               >
                 <Text
                   style={[
                     styles.botao_tipo_texto,
-                    filtro === tipo && { color: colorClass.color },
+                    filtro === tipo && { color: "white" },
                   ]}
                 >
                   {tipo === "tudo"

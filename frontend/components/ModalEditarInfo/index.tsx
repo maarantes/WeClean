@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert, Dimensions, TouchableWi
 import Modal from "react-native-modal";
 import { styles } from "./styles";
 import { atualizarInfoUsuario } from "@/backend/services/auth/editarInfo";
+import MaisAdicaoIcon from "../../../assets/images/mais_adicao.svg";
 
 interface EditarInfoModalProps {
   visible: boolean;
@@ -71,6 +72,7 @@ const EditarInfoModal: React.FC<EditarInfoModalProps> = ({
 
         <View style={styles.modal_botoes}>
           <TouchableOpacity style={styles.modal_botao_sair} onPress={handleSalvar}>
+            <MaisAdicaoIcon width={40} color={"#FFFFFF"} />
             <Text style={styles.modal_botao_sair_texto}>Salvar</Text>
           </TouchableOpacity>
 
