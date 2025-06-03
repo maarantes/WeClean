@@ -100,7 +100,7 @@ export const NotificacaoModal: React.FC<NotificacaoModalProps> = ({
           ) : (
             <>
             <TouchableOpacity
-              style={[styles.botao_excluir, { backgroundColor: bgClass.backgroundColor }]}
+              style={[styles.botao_excluir]}
               onPress={handleLimparNotificacoes}
               disabled={excluindo}
             >

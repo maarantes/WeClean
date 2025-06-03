@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     },
 
     card_icon: {
-        backgroundColor: "#C4C4C4",
+        backgroundColor: "#2274A5",
         padding: 6,
         borderRadius: 50,
     },

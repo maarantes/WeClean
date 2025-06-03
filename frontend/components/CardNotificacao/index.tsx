@@ -2,7 +2,6 @@ import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { styles } from "./styles";
 import { notificacaoConfig } from "./config";
-import { useTema } from "@/frontend/hooks/useTema";
 import { Timestamp } from "firebase/firestore";
 import { formatarDataCriacao } from "@/frontend/utils/formatarDataCriacao";
 
@@ -24,9 +23,6 @@ export const CardNotificacao: React.FC<CardNotificacaoProps> = ({
   const config = notificacaoConfig[tipo];
   const Icone = config?.Icone;
 
-  const { temaUsuario, getTemaStyle } = useTema();
-  const { bgClass, colorClass } = getTemaStyle(temaUsuario);
-
   if (!config) return null;
 
   const descricao =
@@ -38,7 +34,7 @@ export const CardNotificacao: React.FC<CardNotificacaoProps> = ({
     <View style={styles.card_container}>
       <View style={styles.card_cima}>
         <View style={styles.card_esq}>
-          <View style={[styles.card_icon, { backgroundColor: bgClass.backgroundColor }]}>
+          <View style={styles.card_icon}>
             <Icone width={18} height={18} strokeWidth={1.75} color={"white"} />
           </View>
           <Text style={styles.card_titulo}>{config.titulo}</Text>
