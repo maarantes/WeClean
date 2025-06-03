@@ -16,6 +16,7 @@
       }
     },
     "splash": {
+      "image": "./assets/images/splash_background.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },

@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
 
     parte_cima: {
-        marginTop: 42,
+        marginTop: 16,
         alignItems: "center",
         justifyContent: "center"
     },
@@ -41,6 +41,10 @@ export const styles = StyleSheet.create({
         color: "black",
         fontFamily: "Inter-SemiBold",
         fontSize: 14
+    },
+
+    maior: {
+        width: "100%"
     },
 
     desativado: {

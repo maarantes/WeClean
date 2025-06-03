@@ -1,27 +1,26 @@
-import React, { useEffect, useRef, useState } from "react";
-import { View, Animated, Dimensions, StyleSheet } from "react-native";
-import Svg, { Defs, LinearGradient, Stop, Rect } from "react-native-svg";
-import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import React, { useEffect, useRef } from "react";
+import { Animated, Dimensions, StyleSheet, ImageBackground } from "react-native";
+
+import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "@/frontend/routes";
 import { useFonts } from "@/frontend/hooks/UsarFontes";
 import * as NavigationBar from "expo-navigation-bar";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/backend/services/shared/firebaseConfigApp";
 
+import FundoSplash from "../../../assets/images/splash_background.png";
 import LogoWeCleanBranco from "../../../assets/images/logoWeCleanBranco.svg";
 import LogoWeClean from "../../../assets/images/logoWeClean.svg";
 import BolaBranca from "../../../assets/images/bolinha_branca.svg";
 import { StatusBar } from "expo-status-bar";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const PaginaSplash = () => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+type Props = StackScreenProps<RootStackParamList, "Splash"> & {
+  authInitialized: boolean;
+  usuarioLogado: string | null;
+};
+
+const PaginaSplash: React.FC<Props> = ({ navigation, route, authInitialized, usuarioLogado }) => {
   const fontsLoaded = useFonts();
-  const [authInitialized, setAuthInitialized] = useState(false);
-  const [usuarioLogado, setUsuarioLogado] = useState<string | null>(null);
 
-  const logoScale = useRef(new Animated.Value(0.5)).current;
+  const logoScale = useRef(new Animated.Value(0.0)).current;
   const logoTranslateY = useRef(new Animated.Value(0)).current;
   const circleScale = useRef(new Animated.Value(0)).current;
   const circleOpacity = useRef(new Animated.Value(0)).current;
@@ -35,24 +34,18 @@ const PaginaSplash = () => {
   }, []);
 
   useEffect(() => {
-    if (!fontsLoaded) {
-      return;
-    }
+    if (!fontsLoaded || !authInitialized) return;
 
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      setAuthInitialized(true);
-      setUsuarioLogado(firebaseUser ? firebaseUser.uid : null);
-
-      // Iniciar animação do logo
+    const animate = async () => {
       await new Promise<void>((resolve) =>
         Animated.timing(logoScale, {
           toValue: 1,
-          duration: 500,
+          duration: 250,
           useNativeDriver: true,
         }).start(() => resolve())
       );
 
-      if (firebaseUser) {
+      if (usuarioLogado) {
         // Animação para usuário logado
         logoTranslateY.setValue(0);
         Animated.sequence([
@@ -71,32 +64,32 @@ const PaginaSplash = () => {
         });
       } else {
         // Animação para usuário não logado
-        Animated.parallel([
-          Animated.timing(circleOpacity, {
-            toValue: 1,
-            duration: 1,
-            useNativeDriver: true,
-          }),
-          Animated.timing(circleScale, {
-            toValue: 200,
-            duration: 2500,
-            useNativeDriver: true,
-          }),
-          Animated.timing(logoTranslateY, {
-            toValue: -(height / 2) + 100,
-            duration: 1500,
-            useNativeDriver: true,
-          }),
-        ]).start(() => {
-          navigation.reset({ index: 0, routes: [{ name: "Login" }] });
-        });
+        setTimeout(() => {
+          Animated.parallel([
+            Animated.timing(circleOpacity, {
+              toValue: 1,
+              duration: 1,
+              useNativeDriver: true,
+            }),
+            Animated.timing(circleScale, {
+              toValue: 200,
+              duration: 2500,
+              useNativeDriver: true,
+            }),
+            Animated.timing(logoTranslateY, {
+              toValue: -(height / 2) + 100,
+              duration: 1500,
+              useNativeDriver: true,
+            }),
+          ]).start(() => {
+            navigation.reset({ index: 0, routes: [{ name: "Login" }] });
+          });
+        }, 1000);
       }
-    });
-
-    return () => {
-      unsubscribe();
     };
-  }, [fontsLoaded, navigation, height]);
+
+    animate();
+  }, [fontsLoaded, authInitialized, usuarioLogado, height, navigation]);
 
   const logoBrancoOpacity = circleScale.interpolate({
     inputRange: [0, 100, 200],
@@ -109,18 +102,9 @@ const PaginaSplash = () => {
   });
 
   return (
-    <View style={styles.container}>
+    <ImageBackground source={FundoSplash} style={styles.container} resizeMode="cover">
+
       <StatusBar style="light" translucent />
-      <Svg height="100%" width="100%" style={styles.gradient}>
-        <Defs>
-          <LinearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
-            <Stop offset="0%" stopColor="#FFBF00" stopOpacity="1" />
-            <Stop offset="50%" stopColor="#E83F6F" stopOpacity="1" />
-            <Stop offset="100%" stopColor="#2274A5" stopOpacity="1" />
-          </LinearGradient>
-        </Defs>
-        <Rect x="0" y="0" width="100%" height="100%" fill="url(#grad1)" />
-      </Svg>
 
       {/* Bolinha atrás do logo (usuário não logado) */}
       {(!authInitialized || !usuarioLogado) && (
@@ -179,7 +163,7 @@ const PaginaSplash = () => {
           <BolaBranca width="100%" height="100%" />
         </Animated.View>
       )}
-    </View>
+    </ImageBackground>
   );
 };
 

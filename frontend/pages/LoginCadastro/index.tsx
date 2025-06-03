@@ -18,6 +18,7 @@ import { auth, db } from "@/backend/services/shared/firebaseConfigApp";
 import { doc, getDoc } from "firebase/firestore";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StatusBar } from "expo-status-bar";
 
 if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -145,6 +146,7 @@ const PaginaLoginCadastro = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <StatusBar style="dark" translucent={false}/>
       <KeyboardAwareScrollView
         ref={scrollRef}
         enableOnAndroid
@@ -226,7 +228,7 @@ const PaginaLoginCadastro = () => {
 
           {/* Botão */}
           <View style={styles.parte_baixo}>
-            <TouchableOpacity style={globalStyles.botao_primario} onPress={handleLoginOuCadastro}>
+            <TouchableOpacity style={[globalStyles.botao_primario, styles.maior]} onPress={handleLoginOuCadastro}>
               <LoginIcon width={28} height={28} color="#FFFFFF" />
               <Text style={globalStyles.botao_primario_texto}>
                 {abaSelecionada === "login" ? "Entrar" : "Criar conta"}
