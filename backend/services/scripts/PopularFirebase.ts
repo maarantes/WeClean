@@ -77,14 +77,14 @@ const seed = async () => {
     const temas = ["azul", "vinho", "rosa", "amarelo", "laranja", "verde", "turquesa", "menta"];
     const nomes = ["Marco", "Geovana", "Maria", "Joana", "Bruno", "Ana", "Carlos", "Daisy"];
     const emails = [
-      "marco@aa.com",
-      "geovana@aa.com",
-      "maria@aa.com",
-      "joana@aa.com",
-      "bruno@aa.com",
-      "ana@aa.com",
-      "carlos@aa.com",
-      "daisy@aa.com",
+      "marco@gmail.com",
+      "geovana@gmail.com",
+      "maria@gmail.com",
+      "joana@gmail.com",
+      "bruno@gmail.com",
+      "ana@gmail.com",
+      "carlos@gmail.com",
+      "daisy@gmail.com",
     ];
 
     const usuariosCriados: { uid: string; nome: string }[] = [];
