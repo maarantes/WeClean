@@ -2,5 +2,5 @@
   "semi": false,
   "singleQuote": false,
   "trailingComma": "es5",
-  "printWidth": 200
+  "printWidth": 100
 }

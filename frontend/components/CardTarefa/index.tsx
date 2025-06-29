@@ -1,49 +1,49 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "@/backend/services/shared/firebaseConfigApp";
+import React, { useEffect, useState } from "react"
+import { View, Text, TouchableOpacity } from "react-native"
+import { useNavigation } from "@react-navigation/native"
+import { doc, getDoc } from "firebase/firestore"
+import { auth, db } from "@/backend/services/shared/firebaseConfigApp"
 
-import { styles } from "./styles";
-import { globalStyles } from "../../globalStyles";
-import Badge from "../Badge";
+import { styles } from "./styles"
+import { globalStyles } from "../../globalStyles"
+import Badge from "../Badge"
 
-import RelogioIcon from "../../../assets/images/relogio.svg";
-import AlarmeIcon from "../../../assets/images/alarme.svg";
-import ConcluirIcon from "../../../assets/images/concluir.svg";
+import RelogioIcon from "../../../assets/images/relogio.svg"
+import AlarmeIcon from "../../../assets/images/alarme.svg"
+import ConcluirIcon from "../../../assets/images/concluir.svg"
 
-import { excluirTarefa } from "../../../backend/services/tarefas/excluirTarefa";
-import { useComentarios } from "./useCardTarefa";
-import { DetalhesModal } from "./detalhesModal";
-import ComentarioModal from "../ModalComentar";
-import { DeleteConfirmationModal } from "./excluirTarefaModal";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "@/frontend/routes";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { excluirTarefa } from "../../../backend/services/tarefas/excluirTarefa"
+import { useComentarios } from "./useCardTarefa"
+import { DetalhesModal } from "./detalhesModal"
+import ComentarioModal from "../Modals/ModalComentar"
+import { DeleteConfirmationModal } from "./excluirTarefaModal"
+import { StackNavigationProp } from "@react-navigation/stack"
+import { RootStackParamList } from "@/frontend/routes"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 export interface Integrante {
-  uid: string;
-  nome: string;
-  cor_primaria: string;
-  cor_secundaria: string;
+  uid: string
+  nome: string
+  cor_primaria: string
+  cor_secundaria: string
 }
 
 export interface CardTarefaProps {
-  id: string;
-  nome: string;
-  descricao?: string;
-  horario?: string;
-  alarme?: boolean;
-  exibirBotao?: boolean;
-  freq_texto?: string;
-  menor?: boolean;
-  integrantes?: Integrante[];
-  dataInstancia?: string;
-  concluido?: boolean;
-  onUpdateConcluido?: (dataInstancia: string, novoValor: boolean) => void;
-  onTaskDeleted?: () => void;
-  semComentarios?: boolean;
-  instanceId: string;
+  id: string
+  nome: string
+  descricao?: string
+  horario?: string
+  alarme?: boolean
+  exibirBotao?: boolean
+  freq_texto?: string
+  menor?: boolean
+  integrantes?: Integrante[]
+  dataInstancia?: string
+  concluido?: boolean
+  onUpdateConcluido?: (dataInstancia: string, novoValor: boolean) => void
+  onTaskDeleted?: () => void
+  semComentarios?: boolean
+  instanceId: string
 }
 
 export const CardTarefa: React.FC<CardTarefaProps> = ({
@@ -63,39 +63,39 @@ export const CardTarefa: React.FC<CardTarefaProps> = ({
   semComentarios,
   instanceId,
 }) => {
-  const [openDetalhes, setOpenDetalhes] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const [aba, setAba] = useState<"detalhes" | "comentarios">("detalhes");
-  const [openCommentModal, setOpenCommentModal] = useState(false);
+  const [openDetalhes, setOpenDetalhes] = useState(false)
+  const [openDelete, setOpenDelete] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [aba, setAba] = useState<"detalhes" | "comentarios">("detalhes")
+  const [openCommentModal, setOpenCommentModal] = useState(false)
 
-  type CriarTarefaNav = StackNavigationProp<RootStackParamList, "CriarTarefa">;
-  const navigation = useNavigation<CriarTarefaNav>();
-  const dataKey = dataInstancia!;
+  type CriarTarefaNav = StackNavigationProp<RootStackParamList, "CriarTarefa">
+  const navigation = useNavigation<CriarTarefaNav>()
+  const dataKey = dataInstancia!
 
-  const { comentarios, fetchComentarios } = useComentarios(instanceId, openDetalhes);
+  const { comentarios, fetchComentarios } = useComentarios(instanceId, openDetalhes)
 
   useEffect(() => {
-  if (openDetalhes) {
-    setAba("detalhes");
-  }
-}, [openDetalhes]);
+    if (openDetalhes) {
+      setAba("detalhes")
+    }
+  }, [openDetalhes])
 
-  const uidAtual = auth.currentUser?.uid;
-  let integrantesOrdenados = [...integrantes];
+  const uidAtual = auth.currentUser?.uid
+  let integrantesOrdenados = [...integrantes]
   if (uidAtual) {
-    const idx = integrantesOrdenados.findIndex(i => i.uid === uidAtual);
+    const idx = integrantesOrdenados.findIndex((i) => i.uid === uidAtual)
     if (idx > -1) {
-      const [me] = integrantesOrdenados.splice(idx, 1);
-      integrantesOrdenados = [me, ...integrantesOrdenados];
+      const [me] = integrantesOrdenados.splice(idx, 1)
+      integrantesOrdenados = [me, ...integrantesOrdenados]
     }
   }
 
   const handleConcluirPress = () => {
     if (dataInstancia && onUpdateConcluido) {
-      onUpdateConcluido(dataInstancia, !concluido);
+      onUpdateConcluido(dataInstancia, !concluido)
     }
-  };
+  }
 
   return (
     <>
@@ -144,17 +144,10 @@ export const CardTarefa: React.FC<CardTarefaProps> = ({
 
             {exibirBotao && (
               <TouchableOpacity
-                style={[
-                  styles.botao_concluir,
-                  concluido ? styles.botao_concluido : null,
-                ]}
+                style={[styles.botao_concluir, concluido ? styles.botao_concluido : null]}
                 onPress={handleConcluirPress}
               >
-                <ConcluirIcon
-                  width={12}
-                  height={12}
-                  color={concluido ? "#FFFFFF" : "#606060"}
-                />
+                <ConcluirIcon width={12} height={12} color={concluido ? "#FFFFFF" : "#606060"} />
               </TouchableOpacity>
             )}
           </View>
@@ -164,20 +157,20 @@ export const CardTarefa: React.FC<CardTarefaProps> = ({
           visible={openDetalhes}
           onClose={() => setOpenDetalhes(false)}
           onDelete={() => {
-            setOpenDetalhes(false);
-            setOpenDelete(true);
+            setOpenDetalhes(false)
+            setOpenDelete(true)
           }}
           onEdit={async () => {
-            const ref = doc(db, "Tarefas", id);
-            const snap = await getDoc(ref);
+            const ref = doc(db, "Tarefas", id)
+            const snap = await getDoc(ref)
             if (snap.exists()) {
               navigation.navigate("CriarTarefa", {
                 task: snap.data(),
                 dataReferencia: dataKey,
-                tipo: "edicao"
-              });
+                tipo: "edicao",
+              })
             }
-            setOpenDetalhes(false);
+            setOpenDetalhes(false)
           }}
           onOpenComment={() => setOpenCommentModal(true)}
           aba={aba}
@@ -192,7 +185,6 @@ export const CardTarefa: React.FC<CardTarefaProps> = ({
           }}
           comentarios={comentarios}
           semComentarios={semComentarios}
-          
         />
 
         <ComentarioModal
@@ -200,27 +192,26 @@ export const CardTarefa: React.FC<CardTarefaProps> = ({
           setVisible={setOpenCommentModal}
           instanceId={instanceId}
           onCommentAdded={() => {
-            fetchComentarios();
-            }
-          }
+            fetchComentarios()
+          }}
         />
 
         <DeleteConfirmationModal
           visible={openDelete}
           loading={deleting}
           onConfirm={async () => {
-            setDeleting(true);
-            await excluirTarefa(id);
-            setDeleting(false);
-            setOpenDelete(false);
-            await AsyncStorage.setItem("lastAction", "delete");
-            onTaskDeleted?.();
+            setDeleting(true)
+            await excluirTarefa(id)
+            setDeleting(false)
+            setOpenDelete(false)
+            await AsyncStorage.setItem("lastAction", "delete")
+            onTaskDeleted?.()
           }}
           onCancel={() => setOpenDelete(false)}
         />
       </TouchableOpacity>
     </>
-  );
-};
+  )
+}
 
-export default CardTarefa;
+export default CardTarefa

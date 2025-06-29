@@ -1,116 +1,118 @@
 // src/frontend/pages/Tarefas/index.tsx
 
-import React, { useCallback, useEffect, useState } from "react";
-import { Text, ScrollView, TouchableOpacity, View } from "react-native";
-import { doc, getDoc } from "firebase/firestore";
-import { getCoresDoTema } from "@/frontend/utils/temaStyles";
-import { useFocusEffect } from "@react-navigation/native";
+import React, { useCallback, useEffect, useState } from "react"
+import { Text, ScrollView, TouchableOpacity, View } from "react-native"
+import { doc, getDoc } from "firebase/firestore"
+import { getCoresDoTema } from "@/frontend/utils/temaStyles"
+import { useFocusEffect } from "@react-navigation/native"
 
-import { styles } from "./styles";
-import { globalStyles } from "@/frontend/globalStyles";
+import { styles } from "./styles"
+import { globalStyles } from "@/frontend/globalStyles"
 
-import TarefaIcon from "../../../assets/images/tarefa.svg";
-import CardTarefa from "@/frontend/components/CardTarefa";
-import { formatarFrequenciaTexto } from "@/frontend/utils/formatarFrequencia";
-import { obterTarefas } from "../../../backend/services/tarefas/obterTarefas";
-import { auth, db } from "../../../backend/services/shared/firebaseConfigApp";
-import PerguntaTarefaModal from "@/frontend/components/ModalPerguntaTarefa";
-import PaginaWrapper from "@/frontend/components/PaginaWrapper";
-import SkeletonLoaderCard from "@/frontend/components/SkeletonLoaderCard";
-import AlertaSimples from "@/frontend/components/AlertaSimples";
-import { useLastActionListener } from "@/frontend/hooks/useLastActionListener";
+import TarefaIcon from "../../../assets/images/tarefa.svg"
+import CardTarefa from "@/frontend/components/CardTarefa"
+import { formatarFrequenciaTexto } from "@/frontend/utils/formatarFrequencia"
+import { obterTarefas } from "../../../backend/services/tarefas/obterTarefas"
+import { auth, db } from "../../../backend/services/shared/firebaseConfigApp"
+import PerguntaTarefaModal from "@/frontend/components/Modals/ModalPerguntaTarefa"
+import PaginaWrapper from "@/frontend/components/PaginaWrapper"
+import SkeletonLoaderCard from "@/frontend/components/SkeletonLoaderCard"
+import AlertaSimples from "@/frontend/components/AlertaSimples"
+import { useLastActionListener } from "@/frontend/hooks/useLastActionListener"
 
 const PaginaTarefas = () => {
-  const [tarefas, setTarefas] = useState<any[]>([]);
-  const [modalPerguntaTarefaVisivel, setModalPerguntaTarefaVisivel] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [tarefas, setTarefas] = useState<any[]>([])
+  const [modalPerguntaTarefaVisivel, setModalPerguntaTarefaVisivel] = useState(false)
+  const [loading, setLoading] = useState(true)
 
-  const [alertaVisivel, setAlertaVisivel] = useState(false);
-  const [mensagemAlerta, setMensagemAlerta] = useState("");
+  const [alertaVisivel, setAlertaVisivel] = useState(false)
+  const [mensagemAlerta, setMensagemAlerta] = useState("")
 
   const carregarTarefas = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
-      const uid = auth.currentUser?.uid;
-      if (!uid) return;
+      const uid = auth.currentUser?.uid
+      if (!uid) return
 
-      const userRef = doc(db, "Usuarios", uid);
-      const userSnap = await getDoc(userRef);
-      if (!userSnap.exists()) return;
+      const userRef = doc(db, "Usuarios", uid)
+      const userSnap = await getDoc(userRef)
+      if (!userSnap.exists()) return
 
-      const userData = userSnap.data();
-      const grupoId = userData.grupoId || uid;
+      const userData = userSnap.data()
+      const grupoId = userData.grupoId || uid
 
-      const tarefasFirestore = await obterTarefas();
-      const tarefasDoGrupo = tarefasFirestore.filter((t: any) => t.grupoId === grupoId);
+      const tarefasFirestore = await obterTarefas()
+      const tarefasDoGrupo = tarefasFirestore.filter((t: any) => t.grupoId === grupoId)
 
       const tarefasComIntegrantesCompletos = await Promise.all(
         tarefasDoGrupo.map(async (t: any) => {
           const integrantesCompletos = await Promise.all(
             (t.integrantes || []).map(async (userId: string) => {
-              const uRef = doc(db, "Usuarios", userId);
-              const uSnap = await getDoc(uRef);
-              const uData = uSnap.exists() ? uSnap.data() : { apelido: "Desconhecido", tema: "azul" };
-              const { cor_primaria, cor_secundaria } = getCoresDoTema(uData.tema);
-              return { uid: userId, nome: uData.apelido, cor_primaria, cor_secundaria };
+              const uRef = doc(db, "Usuarios", userId)
+              const uSnap = await getDoc(uRef)
+              const uData = uSnap.exists()
+                ? uSnap.data()
+                : { apelido: "Desconhecido", tema: "azul" }
+              const { cor_primaria, cor_secundaria } = getCoresDoTema(uData.tema)
+              return { uid: userId, nome: uData.apelido, cor_primaria, cor_secundaria }
             })
-          );
-          return { ...t, integrantes: integrantesCompletos };
+          )
+          return { ...t, integrantes: integrantesCompletos }
         })
-      );
+      )
 
-      setTarefas(tarefasComIntegrantesCompletos);
+      setTarefas(tarefasComIntegrantesCompletos)
     } catch (error) {
-      console.error("Erro ao carregar tarefas:", error);
+      console.error("Erro ao carregar tarefas:", error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    carregarTarefas();
-  }, []);
+    carregarTarefas()
+  }, [])
 
   useFocusEffect(
     useCallback(() => {
-      carregarTarefas();
+      carregarTarefas()
     }, [])
-  );
+  )
 
   const tarefasPorFrequencia = {
     diariamente: tarefas.filter((t) => t.frequencia?.tipo === "diariamente"),
-    semanal:     tarefas.filter((t) => t.frequencia?.tipo === "semanal"),
-    intervalo:   tarefas.filter((t) => t.frequencia?.tipo === "intervalo"),
-    anualmente:  tarefas.filter((t) => t.frequencia?.tipo === "anualmente"),
-  };
+    semanal: tarefas.filter((t) => t.frequencia?.tipo === "semanal"),
+    intervalo: tarefas.filter((t) => t.frequencia?.tipo === "intervalo"),
+    anualmente: tarefas.filter((t) => t.frequencia?.tipo === "anualmente"),
+  }
 
   useLastActionListener({
     create: () => {
-      carregarTarefas();
-      setMensagemAlerta("Tarefa criada com sucesso!");
-      setAlertaVisivel(true);
+      carregarTarefas()
+      setMensagemAlerta("Tarefa criada com sucesso!")
+      setAlertaVisivel(true)
     },
 
     edit: () => {
-      carregarTarefas();
-      setMensagemAlerta("Tarefa editada com sucesso!");
-      setAlertaVisivel(true);
+      carregarTarefas()
+      setMensagemAlerta("Tarefa editada com sucesso!")
+      setAlertaVisivel(true)
     },
     delete: () => {
-      carregarTarefas();
-      setMensagemAlerta("Tarefa excluída com sucesso!");
-      setAlertaVisivel(true);
+      carregarTarefas()
+      setMensagemAlerta("Tarefa excluída com sucesso!")
+      setAlertaVisivel(true)
     },
-  });
+  })
 
   const SecaoTarefa = ({
     titulo,
     lista,
     placeholder,
   }: {
-    titulo: string;
-    lista: any[];
-    placeholder: string;
+    titulo: string
+    lista: any[]
+    placeholder: string
   }) => (
     <>
       <Text style={[globalStyles.textoNormal, globalStyles.mbottom16]}>{titulo}</Text>
@@ -140,7 +142,7 @@ const PaginaTarefas = () => {
         )}
       </View>
     </>
-  );
+  )
 
   return (
     <PaginaWrapper>
@@ -148,18 +150,14 @@ const PaginaTarefas = () => {
         style={globalStyles.containerPagina}
         contentContainerStyle={{ paddingBottom: 140, paddingTop: 80, flexGrow: 1 }}
       >
-        <Text style={[globalStyles.titulo, globalStyles.mbottom32]}>
-          Tarefas do Grupo
-        </Text>
+        <Text style={[globalStyles.titulo, globalStyles.mbottom32]}>Tarefas do Grupo</Text>
 
         <TouchableOpacity
           style={styles.botao_adicionar}
           onPress={() => setModalPerguntaTarefaVisivel(true)}
         >
           <TarefaIcon width={20} height={20} color={"white"} />
-          <Text style={styles.botao_adicionar_texto}>
-            Criar Nova Tarefa
-          </Text>
+          <Text style={styles.botao_adicionar_texto}>Criar Nova Tarefa</Text>
         </TouchableOpacity>
 
         <SecaoTarefa
@@ -195,7 +193,7 @@ const PaginaTarefas = () => {
         onClose={() => setAlertaVisivel(false)}
       />
     </PaginaWrapper>
-  );
-};
+  )
+}
 
-export default PaginaTarefas;
+export default PaginaTarefas

@@ -1,13 +1,17 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from "react-native"
 
 export const styles = StyleSheet.create({
-
-modal_container: {
+  modal_container: {
     backgroundColor: "white",
     padding: 20,
     borderRadius: 16,
     alignItems: "center",
-    gap: 24
+    gap: 24,
+  },
+
+  bottom_sheet: {
+    borderBottomRightRadius: 0,
+    borderBottomLeftRadius: 0,
   },
 
   modal_titulo: {
@@ -18,10 +22,12 @@ modal_container: {
   modal_texto: {
     fontFamily: "Inter-Medium",
     color: "#606060",
-    fontSize: 14
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 8,
   },
 
-  modal_botao_sair: {
+  modal_botao_primario: {
     flexDirection: "row",
     paddingVertical: 8,
     gap: 8,
@@ -30,17 +36,29 @@ modal_container: {
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
-    width: "45%"
+    width: "48%",
   },
 
-  modal_botao_sair_texto: {
+  modal_botao_vermelho: {
+    backgroundColor: "#E83F6F",
+  },
+
+  desabilitado: {
+    opacity: 0.75,
+  },
+
+  modal_botao_primario_texto: {
     color: "#FFFFFF",
-    fontFamily: "Inter-SemiBold"
+    fontFamily: "Inter-SemiBold",
+  },
+
+  botao_primario_maior: {
+    width: "58%",
   },
 
   modal_botoes: {
     flexDirection: "row",
-    gap: 32
+    gap: "4%",
   },
 
   modal_botao_cancelar: {
@@ -51,12 +69,15 @@ modal_container: {
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
-    width: "45%"
+    width: "48%",
   },
 
   modal_botao_cancelar_texto: {
     color: "#2274A5",
-    fontFamily: "Inter-SemiBold"
-  }
+    fontFamily: "Inter-SemiBold",
+  },
 
-});
+  botao_secundario_menor: {
+    width: "38%",
+  },
+})

@@ -1,26 +1,30 @@
-import React, { useState } from "react";
-import { TouchableOpacity, View, Text } from "react-native";
-import { styles } from "./styles";
+import React, { useState } from "react"
+import { TouchableOpacity, View, Text } from "react-native"
+import { styles } from "./styles"
 
-import SairIcon from "../../../assets/images/sair.svg";
-import PerfilIcon from "../../../assets/images/user.svg";
-import SininhoIcon from "../../../assets/images/sininho.svg";
+import SairIcon from "../../../assets/images/sair.svg"
+import PerfilIcon from "../../../assets/images/user.svg"
+import SininhoIcon from "../../../assets/images/sininho.svg"
 
-import LogoutModal from "../ModalLogout";
-import NotificacaoModal from "../ModalNotificacoes";
+import LogoutModal from "../Modals/ModalLogout"
+import NotificacaoSidebar from "../SidebarNotificacoes"
 
-import { StatusBar } from "expo-status-bar";
-import { globalStyles } from "@/frontend/globalStyles";
-import { useUsuario } from "@/frontend/context/usuarioContext";
+import { StatusBar } from "expo-status-bar"
+import { globalStyles } from "@/frontend/globalStyles"
+import { useUsuario } from "@/frontend/context/usuarioContext"
 
 const ParteCima = () => {
-  const [LogoutModalActive, setLogoutModalActive] = useState(false);
-  const [NotificacaoModalActive, setNotificacaoModalActive] = useState(false);
+  const [LogoutModalActive, setLogoutModalActive] = useState(false)
+  const [NotificacaoSidebarActive, setNotificacaoSidebarActive] = useState(false)
 
-  const { apelido, tema, temNotificacoes, recarregarNotificacoes } = useUsuario();
+  const { apelido, tema, temNotificacoes, recarregarNotificacoes } = useUsuario()
 
-  const bgClass = globalStyles[`tema_bg_${tema}_secundario` as keyof typeof globalStyles] as { backgroundColor: string };
-  const colorClass = globalStyles[`tema_color_${tema}_primario` as keyof typeof globalStyles] as { color: string };
+  const bgClass = globalStyles[`tema_bg_${tema}_secundario` as keyof typeof globalStyles] as {
+    backgroundColor: string
+  }
+  const colorClass = globalStyles[`tema_color_${tema}_primario` as keyof typeof globalStyles] as {
+    color: string
+  }
 
   return (
     <>
@@ -37,7 +41,7 @@ const ParteCima = () => {
           <TouchableOpacity style={styles.botao} onPress={() => setLogoutModalActive(true)}>
             <SairIcon width={24} height={24} color={"#808080"} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.botao} onPress={() => setNotificacaoModalActive(true)}>
+          <TouchableOpacity style={styles.botao} onPress={() => setNotificacaoSidebarActive(true)}>
             <SininhoIcon width={24} height={24} color={"#808080"} />
             {temNotificacoes && <View style={styles.bolinha_notificacao} />}
           </TouchableOpacity>
@@ -48,16 +52,16 @@ const ParteCima = () => {
           setLogoutModalActive={setLogoutModalActive}
         />
 
-        <NotificacaoModal
-          NotificacaoModalActive={NotificacaoModalActive}
-          setNotificacaoModalActive={(v) => {
-          setNotificacaoModalActive(v);
-            if (!v) recarregarNotificacoes();
+        <NotificacaoSidebar
+          NotificacaoSidebarActive={NotificacaoSidebarActive}
+          setNotificacaoSidebarActive={(v) => {
+            setNotificacaoSidebarActive(v)
+            if (!v) recarregarNotificacoes()
           }}
         />
       </View>
     </>
-  );
-};
+  )
+}
 
-export default ParteCima;
+export default ParteCima
