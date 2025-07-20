@@ -1,7 +1,6 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from "react-native"
 
 export const styles = StyleSheet.create({
-  
   container: {
     position: "absolute",
     bottom: 0,
@@ -9,20 +8,35 @@ export const styles = StyleSheet.create({
     right: 0,
     flexDirection: "row",
     justifyContent: "center",
-    gap: 48,
+    gap: 23,
     paddingVertical: 12,
+    paddingHorizontal: 20,
     backgroundColor: "white",
-    elevation: 15
+    elevation: 15,
+  },
+
+  pressable_container: {
+    borderRadius: 100,
+    overflow: "hidden",
+    width: "100%",
   },
 
   botao: {
     gap: 6,
-    alignItems: "center"
+    alignItems: "center",
+    width: "20%",
+  },
+
+  botao_pressable: {
+    alignItems: "center",
+    paddingVertical: 4,
+    width: "100%",
+    borderRadius: 100,
+    overflow: "hidden",
   },
 
   texto: {
-    fontFamily: "Inter-Medium",
-    fontSize: 12
-  }
-
-});
+    fontFamily: "Inter-SemiBold",
+    fontSize: 12,
+  },
+})
