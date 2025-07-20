@@ -1,24 +1,25 @@
-import React, { useCallback, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
-import { doc, getDoc } from "firebase/firestore";
+import React, { useCallback, useState } from "react"
+import { View, Text, ScrollView, TouchableOpacity } from "react-native"
+import { useFocusEffect } from "@react-navigation/native"
+import { doc, getDoc } from "firebase/firestore"
 
-import { styles } from "./styles";
-import { globalStyles } from "@/frontend/globalStyles";
-import { Navbar } from "@/frontend/components/Navbar";
-import CardTarefa from "@/frontend/components/CardTarefa";
-import { formatarFrequenciaTexto } from "@/frontend/utils/formatarFrequencia";
-import AlertaConcluido from "@/frontend/components/AlertaConcluido";
-import AlertaSimples from "@/frontend/components/AlertaSimples";
-import { auth } from "@/backend/services/shared/firebaseConfigApp";
-import { db } from "@/backend/services/shared/firebase";
-import { obterTarefasCalendario } from "@/backend/services/calendario/obterTarefasCalendario";
-import { updateTarefaConcluido } from "@/backend/services/tarefas/updateTarefaConcluido";
-import { useTema } from "@/frontend/hooks/useTema";
-import { getCoresDoTema } from "@/frontend/utils/temaStyles";
-import PaginaWrapper from "@/frontend/components/PaginaWrapper";
-import SkeletonLoaderCard from "@/frontend/components/SkeletonLoaderCard";
-import { useLastActionListener } from "@/frontend/hooks/useLastActionListener";
+import { styles } from "./styles"
+import { globalStyles } from "@/frontend/globalStyles"
+import { Navbar } from "@/frontend/components/Navbar"
+import CardTarefa from "@/frontend/components/CardTarefa"
+import { formatarFrequenciaTexto } from "@/frontend/utils/formatarFrequencia"
+import AlertaConcluido from "@/frontend/components/AlertaConcluido"
+import AlertaSimples from "@/frontend/components/AlertaSimples"
+import { auth } from "@/backend/services/shared/firebaseConfigApp"
+import { db } from "@/backend/services/shared/firebase"
+import { obterTarefasCalendario } from "@/backend/services/calendario/obterTarefasCalendario"
+import { updateTarefaConcluido } from "@/backend/services/tarefas/updateTarefaConcluido"
+import { useTema } from "@/frontend/hooks/useTema"
+import { getCoresDoTema } from "@/frontend/utils/temaStyles"
+import PaginaWrapper from "@/frontend/components/PaginaWrapper"
+import SkeletonLoaderCard from "@/frontend/components/SkeletonLoaderCard"
+import { useLastActionListener } from "@/frontend/hooks/useLastActionListener"
+import BotaoCTA from "@/frontend/components/BotaoCTA"
 
 const DiasDaSemana = [
   "Domingo",
@@ -28,59 +29,59 @@ const DiasDaSemana = [
   "Quinta-feira",
   "Sexta-feira",
   "Sábado",
-];
+]
 
 const SemTarefa = () => (
   <View style={styles.container_sem_tarefa}>
     <Text style={styles.texto_sem_tarefa}>Nenhuma tarefa!</Text>
   </View>
-);
+)
 
 const parseLocalDate = (dateStr: string): Date => {
-  const [year, month, day] = dateStr.split("-").map(Number);
-  return new Date(year, month - 1, day);
-};
+  const [year, month, day] = dateStr.split("-").map(Number)
+  return new Date(year, month - 1, day)
+}
 
 const PaginaInicio = () => {
-  const [tarefasSemana, setTarefasSemana] = useState<{ [data: string]: any[] }>({});
-  const [loading, setLoading] = useState(true);
+  const [tarefasSemana, setTarefasSemana] = useState<{ [data: string]: any[] }>({})
+  const [loading, setLoading] = useState(true)
 
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
+  const [showAlert, setShowAlert] = useState(false)
+  const [alertMessage, setAlertMessage] = useState("")
   const [lastTaskUpdate, setLastTaskUpdate] = useState<{
-    id: string;
-    dataInst: string;
-    prevValue: boolean;
-    instanceId: string;
-  } | null>(null);
+    id: string
+    dataInst: string
+    prevValue: boolean
+    instanceId: string
+  } | null>(null)
 
-  const [AlertaVisivel, setAlertaVisivel] = useState(false);
-  const [MensagemAlerta, setMensagemAlerta] = useState("");
+  const [AlertaVisivel, setAlertaVisivel] = useState(false)
+  const [MensagemAlerta, setMensagemAlerta] = useState("")
 
-  const [filtro, setFiltro] = useState<"tudo" | "pendente" | "concluido">("tudo");
+  const [filtro, setFiltro] = useState<"tudo" | "pendente" | "concluido">("tudo")
 
   const carregarTarefasSemana = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
-      const uid = auth.currentUser?.uid;
-      if (!uid) return;
+      const uid = auth.currentUser?.uid
+      if (!uid) return
 
-      const tarefasDoCalendario = await obterTarefasCalendario();
-      const tarefasFiltradasPorGrupo: { [data: string]: any[] } = {};
+      const tarefasDoCalendario = await obterTarefasCalendario()
+      const tarefasFiltradasPorGrupo: { [data: string]: any[] } = {}
 
       for (const [data, tarefas] of Object.entries(tarefasDoCalendario)) {
-        const doUsuario = tarefas.filter((t: any) => t.integrantes?.includes(uid));
+        const doUsuario = tarefas.filter((t: any) => t.integrantes?.includes(uid))
 
         const tarefasComCores = await Promise.all(
           doUsuario.map(async (t: any) => {
             const integrantesComTema = await Promise.all(
               t.integrantes?.map(async (userId: string) => {
-                const userRef = doc(db, "Usuarios", userId);
-                const userSnap = await getDoc(userRef);
+                const userRef = doc(db, "Usuarios", userId)
+                const userSnap = await getDoc(userRef)
                 const userData = userSnap.exists()
                   ? userSnap.data()
-                  : { apelido: "Desconhecido", tema: "undefined" };
-                const { cor_primaria, cor_secundaria } = getCoresDoTema(userData.tema);
+                  : { apelido: "Desconhecido", tema: "undefined" }
+                const { cor_primaria, cor_secundaria } = getCoresDoTema(userData.tema)
 
                 return {
                   uid: userId,
@@ -88,97 +89,97 @@ const PaginaInicio = () => {
                   tema: userData.tema,
                   cor_primaria,
                   cor_secundaria,
-                };
+                }
               }) || []
-            );
+            )
 
             return {
               ...t,
               integrantes: integrantesComTema,
-            };
+            }
           })
-        );
+        )
 
         if (tarefasComCores.length > 0) {
-          tarefasFiltradasPorGrupo[data] = tarefasComCores;
+          tarefasFiltradasPorGrupo[data] = tarefasComCores
         }
       }
 
-      setTarefasSemana(tarefasFiltradasPorGrupo);
+      setTarefasSemana(tarefasFiltradasPorGrupo)
     } catch (error) {
-      console.error("Erro ao carregar tarefas:", error);
+      console.error("Erro ao carregar tarefas:", error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useFocusEffect(
     useCallback(() => {
-      carregarTarefasSemana();
+      carregarTarefasSemana()
     }, [])
-  );
+  )
 
   const handleDesfazer = () => {
     if (!lastTaskUpdate) {
-      setShowAlert(false);
-      return;
+      setShowAlert(false)
+      return
     }
-    const { id, dataInst, prevValue, instanceId } = lastTaskUpdate;
+    const { id, dataInst, prevValue, instanceId } = lastTaskUpdate
 
-    updateTarefaConcluido(id, dataInst, prevValue);
+    updateTarefaConcluido(id, dataInst, prevValue)
 
     setTarefasSemana((prev) => ({
       ...prev,
       [dataInst]: prev[dataInst].map((t: any) =>
         t.instanceId === instanceId ? { ...t, concluido: prevValue } : t
       ),
-    }));
-    setShowAlert(false);
-    setLastTaskUpdate(null);
-  };
+    }))
+    setShowAlert(false)
+    setLastTaskUpdate(null)
+  }
 
   useLastActionListener({
     edit: () => {
-      carregarTarefasSemana();
-      setMensagemAlerta("Tarefa editada com sucesso!");
-      setAlertaVisivel(true);
+      carregarTarefasSemana()
+      setMensagemAlerta("Tarefa editada com sucesso!")
+      setAlertaVisivel(true)
     },
     delete: () => {
-      carregarTarefasSemana();
-      setMensagemAlerta("Tarefa excluída com sucesso!");
-      setAlertaVisivel(true);
+      carregarTarefasSemana()
+      setMensagemAlerta("Tarefa excluída com sucesso!")
+      setAlertaVisivel(true)
     },
-  });
+  })
 
-  const today = new Date();
-  const startDate = new Date(today);
-  const dayOfWeek = today.getDay();
-  startDate.setDate(today.getDate() - dayOfWeek);
-  const weekDates: string[] = [];
+  const today = new Date()
+  const startDate = new Date(today)
+  const dayOfWeek = today.getDay()
+  startDate.setDate(today.getDate() - dayOfWeek)
+  const weekDates: string[] = []
   for (let i = 0; i < 7; i++) {
-    const currentDate = new Date(startDate);
-    currentDate.setDate(startDate.getDate() + i);
+    const currentDate = new Date(startDate)
+    currentDate.setDate(startDate.getDate() + i)
     const formatted = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
       .toString()
-      .padStart(2, "0")}-${currentDate.getDate().toString().padStart(2, "0")}`;
-    weekDates.push(formatted);
+      .padStart(2, "0")}-${currentDate.getDate().toString().padStart(2, "0")}`
+    weekDates.push(formatted)
   }
 
   const formatarDataKey = (dataKey: string): string => {
-    const [year, month, day] = dataKey.split("-");
-    return `${day}/${month}`;
-  };
+    const [year, month, day] = dataKey.split("-")
+    return `${day}/${month}`
+  }
 
   const filtrarTarefas = (tarefas: any[]) => {
     switch (filtro) {
       case "pendente":
-        return tarefas.filter((t) => !t.concluido);
+        return tarefas.filter((t) => !t.concluido)
       case "concluido":
-        return tarefas.filter((t) => t.concluido);
+        return tarefas.filter((t) => t.concluido)
       default:
-        return tarefas;
+        return tarefas
     }
-  };
+  }
 
   return (
     <PaginaWrapper>
@@ -186,42 +187,28 @@ const PaginaInicio = () => {
         style={globalStyles.containerPagina}
         contentContainerStyle={{ paddingBottom: 140, paddingTop: 80 }}
       >
-        <Text style={[globalStyles.titulo, globalStyles.mbottom32]}>
-          Tarefas da Semana
-        </Text>
+        <Text style={[globalStyles.titulo, globalStyles.mbottom32]}>Tarefas da Semana</Text>
 
         <View style={styles.wrapper_botao_tipo}>
           {["tudo", "pendente", "concluido"].map((tipo) => {
-
             return (
-              <TouchableOpacity
+              <BotaoCTA
                 key={tipo}
-                style={[
-                  styles.botao_tipo,
-                  filtro === tipo && styles.botao_tipo_ativo,
-                  filtro === tipo && { backgroundColor: "#2274A5" },
-                ]}
                 onPress={() => setFiltro(tipo as any)}
+                type={filtro === tipo ? "primario" : "secundario"}
+                size="auto"
+                fontWeight="medium"
               >
-                <Text
-                  style={[
-                    styles.botao_tipo_texto,
-                    filtro === tipo && { color: "white" },
-                  ]}
-                >
-                  {tipo === "tudo"
-                    ? "Tudo"
-                    : tipo.charAt(0).toUpperCase() + tipo.slice(1)}
-                </Text>
-              </TouchableOpacity>
-            );
+                {tipo === "tudo" ? "Tudo" : tipo.charAt(0).toUpperCase() + tipo.slice(1)}
+              </BotaoCTA>
+            )
           })}
         </View>
 
         {weekDates.map((dataKey) => {
-          const dateObj = parseLocalDate(dataKey);
-          const nomeDia = DiasDaSemana[dateObj.getDay()];
-          const tarefas = tarefasSemana[dataKey] || [];
+          const dateObj = parseLocalDate(dataKey)
+          const nomeDia = DiasDaSemana[dateObj.getDay()]
+          const tarefas = tarefasSemana[dataKey] || []
 
           return (
             <View key={dataKey} style={globalStyles.mbottom32}>
@@ -253,20 +240,18 @@ const PaginaInicio = () => {
                           dataInst,
                           prevValue: !novoValor,
                           instanceId: tarefa.instanceId,
-                        });
-                        updateTarefaConcluido(tarefa.id, dataInst, novoValor);
+                        })
+                        updateTarefaConcluido(tarefa.id, dataInst, novoValor)
                         setTarefasSemana((prev) => ({
                           ...prev,
                           [dataInst]: prev[dataInst].map((t) =>
-                            t.instanceId === tarefa.instanceId
-                              ? { ...t, concluido: novoValor }
-                              : t
+                            t.instanceId === tarefa.instanceId ? { ...t, concluido: novoValor } : t
                           ),
-                        }));
+                        }))
                         setAlertMessage(
                           novoValor ? "A tarefa foi concluída" : "A tarefa foi reaberta"
-                        );
-                        setShowAlert(true);
+                        )
+                        setShowAlert(true)
                       }}
                       onTaskDeleted={carregarTarefasSemana}
                     />
@@ -276,7 +261,7 @@ const PaginaInicio = () => {
                 )}
               </View>
             </View>
-          );
+          )
         })}
       </ScrollView>
 
@@ -295,7 +280,7 @@ const PaginaInicio = () => {
         onClose={() => setAlertaVisivel(false)}
       />
     </PaginaWrapper>
-  );
-};
+  )
+}
 
-export default PaginaInicio;
+export default PaginaInicio

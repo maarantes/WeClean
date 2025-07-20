@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react"
 import {
   View,
   Text,
-  TouchableOpacity,
   Dimensions,
   TouchableWithoutFeedback,
-  ActivityIndicator,
 } from "react-native"
 import Modal from "react-native-modal"
 import { styles } from "./styles"
+import BotaoCTA from "../BotaoCTA"
 
 interface ModalWrapperProps {
   isVisible: boolean
@@ -100,37 +99,28 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
 
         <View style={styles.modal_botoes}>
           {mostrarBotaoPrimario && (
-            <TouchableOpacity
-              style={[
-                styles.modal_botao_primario,
-                botaoPrimarioMaior && styles.botao_primario_maior,
-                acaoPerigosa && styles.modal_botao_vermelho,
-                primarioDesabilitado && styles.desabilitado,
-              ]}
+            <BotaoCTA
               onPress={onPrimarioAcao}
-              disabled={primarioDesabilitado}
+              type="primario"
+              danger={acaoPerigosa}
+              dangerCountdown={acaoPerigosa}
+              size={botaoPrimarioMaior ? "grande" : "normal"}
+              icon={icone}
+              loading={loading}
+              disabled={disablePrimario}
             >
-              {loading ? (
-                <ActivityIndicator size="small" color="#FFFFFF" />
-              ) : (
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  {!!icone && <View style={{ marginRight: 8 }}>{icone}</View>}
-                  <Text style={styles.modal_botao_primario_texto}>{textoPrimario}</Text>
-                </View>
-              )}
-            </TouchableOpacity>
+              {botaoPrimarioTexto}
+            </BotaoCTA>
           )}
 
-          <TouchableOpacity
-            style={[
-              styles.modal_botao_cancelar,
-              botaoPrimarioMaior && styles.botao_secundario_menor,
-            ]}
+          <BotaoCTA
             onPress={onClose}
+            type="secundario"
+            size={botaoPrimarioMaior ? "pequeno" : "normal"}
             disabled={loading}
           >
-            <Text style={styles.modal_botao_cancelar_texto}>{botaoSecundarioTexto}</Text>
-          </TouchableOpacity>
+            {botaoSecundarioTexto}
+          </BotaoCTA>
         </View>
       </View>
     </Modal>
